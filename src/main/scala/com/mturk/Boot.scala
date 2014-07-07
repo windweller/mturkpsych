@@ -4,6 +4,7 @@ import akka.actor.{ActorSystem, Props}
 import akka.io.{IO, Tcp}
 import spray.can.Http
 import com.mturk.api._
+import com.mturk.models.pgdb.DAL
 
 //import scala.slick.driver.MySQLDriver.simple._
 import models._
@@ -11,7 +12,7 @@ import models._
 object Boot extends App with MainActors with RootApi {
 
   //construct database tables; it needs improvement
-  //  DAL.databaseInit()
+  DAL.databaseInit()
 
   implicit lazy val system = ActorSystem("mturk-survey")
 

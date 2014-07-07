@@ -9,6 +9,7 @@ import spray.routing.directives.LogEntry
 import java.io.File
 import spray.http.MediaTypes._
 import com.mturk.tasks.SECcompany._
+
 trait AbstractSystem {
   implicit def system: ActorSystem
 }
@@ -35,6 +36,9 @@ trait StaticRoute extends Directives {
   lazy val staticRoute =
     pathEndOrSingleSlash {
         getFromFile(new File("views/home.html"), `text/html`)
+    }
+    path("turk.html") {
+        getFromFile(new File("views/turk.html"), `text/html`)
     } ~
     path("css" / Segment) {fileName =>
         getFromFile(new File("views/css/"+fileName), `text/css`)
@@ -49,6 +53,6 @@ trait StaticRoute extends Directives {
         getFromFile(new File("views/js/" + subFolder + "/" +fileName), `application/javascript`)
     } ~
     path("img" / Segment) {fileName =>
-         getFromFile(new File("img/"+fileName))
+         getFromFile(new File("views/img/"+fileName))
     } ~ complete(NotFound)
 }
