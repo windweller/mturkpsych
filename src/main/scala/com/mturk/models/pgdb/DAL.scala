@@ -16,6 +16,7 @@ object DAL {
         Company.companies.ddl.create
       } else if (MTable.getTables("User").list().isEmpty) {
         User.users.ddl.create
+        MTurker.mTurkers.ddl.create
       }
     }
   }

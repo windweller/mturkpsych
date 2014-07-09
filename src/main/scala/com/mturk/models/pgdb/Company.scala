@@ -62,7 +62,7 @@ object Company {
                     finStateSuppData: String, companyId: Int)(implicit s: Session):
                     (Option[Company], Boolean, Option[String]) = {
     val q = for (c <- companies if c.id === companyId) yield c
-    q.take(1).list() match {
+    q.list() match {
       case Nil => (None, false, Some("companyId is wrong, can't find the company with that id."))
       case list: List[Company] =>
         val company = list.head

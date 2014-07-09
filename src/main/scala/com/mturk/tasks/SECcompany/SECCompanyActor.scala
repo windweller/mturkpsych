@@ -12,7 +12,7 @@ class SECCompanyActor extends Actor with ActorLogging {
 
   def receive = {
 
-    case jObjectFromCasper(jObject) =>
+    case JObjectFromCasper(jObject) =>
       if (jObject.isDefined("casperFileLoc")) {
         val casperFileLoc = jObject.getValue("casperFileLoc")
         val result = DAL.db.withSession{ implicit session =>
@@ -23,7 +23,7 @@ class SECCompanyActor extends Actor with ActorLogging {
         sender ! TransOk(None, succeedOrNot= false, Some("Can't find casperFileLoc value in JSON"))
       }
 
-    case jObjectFromWeb(jObject) =>
+    case JObjectFromWeb(jObject) =>
       if (jObject.isDefined("riskFactor") && jObject.isDefined("managementDisc")
         && jObject.isDefined("finStateSuppData") && jObject.isDefined("companyId")) {
 
@@ -60,9 +60,9 @@ class SECCompanyActor extends Actor with ActorLogging {
 }
 
 object SECCompanyProtocol {
-  case class jObjectFromCasper(jObject: JObject)
+  case class JObjectFromCasper(jObject: JObject)
   case class TransOk(company: Option[Company.Company], succeedOrNot: Boolean, errorMessage: Option[String])
-  case class jObjectFromWeb(jObject: JObject)
+  case class JObjectFromWeb(jObject: JObject)
   case class TransAllOk(companies: Option[List[Company.Company]], succeedOrNot: Boolean, errorMessage: Option[String])
 
   case object WebGetOneCompany

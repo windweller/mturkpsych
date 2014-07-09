@@ -1,66 +1,54 @@
 package com.mturk.tasks.SECcompany
 
-import java.sql.Timestamp
 
 import akka.actor._
-import com.mturk.models.pgdb._
-import org.json4s.JsonAST.JObject
 import org.json4s.{DefaultFormats, Formats}
 import spray.httpx.Json4sSupport
 import spray.routing.Directives
-import spray.routing.authentication._
-import spray.routing.directives.AuthMagnet
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{ExecutionContext, Future}
+import com.mturk.tasks.Util._
 
 
-object JsonImplicits extends Json4sSupport {
-  implicit def json4sFormats: Formats = DefaultFormats
-}
+trait customRoutes {
+  import org.json4s.JsonAST.JObject
+  import spray.routing.Route
+  import Directives._
+  import com.mturk.tasks.SECcompany.SECCompanyProtocol._
+  import akka.pattern.ask
+  import spray.http.StatusCodes._
+  import akka.util.Timeout
+  import scala.concurrent.duration._
+  import JsonImplicits._
 
-case class AuthInfo(username: Option[String], rejectedOrNot: Boolean)
+  implicit val timeout = Timeout(5 seconds)
 
-trait Authenticator {
-
-  def getUser(username: String, token: String): Option[User.User] = {
-    import com.github.nscala_time.time.Imports._
-    //TODO: get from DB
-    if (token == "123" && username == "username")
-      Some(User.User(None, Some("goodUser"), "", "", "", new Timestamp(DateTime.now.getMillis), 1, None))
-    else
-      None
-  }
-
-  def basicUserAuthenticator(implicit ec: ExecutionContext): AuthMagnet[AuthInfo] = {
-    def validateUser(userPass: Option[UserPass]): Option[AuthInfo] = {
-      val user = userPass.map[Option[User.User]](u => getUser(u.user, u.pass))
-      user match {
-        case Some(Some(u)) => Some(AuthInfo(u.name, rejectedOrNot = true))
-        case Some(None) => Some(AuthInfo(None, rejectedOrNot = false))
-        case None => Some(AuthInfo(None, rejectedOrNot = false))
+  def doPost(messageConstructor: JObject => AnyRef,
+             authInfo: AuthInfo, secCompanyActor: ActorRef): Route = {
+    entity(as[JObject]) { jObject =>
+      if (authInfo.rejectedOrNot) {
+        val response = (secCompanyActor ? messageConstructor(jObject)) //this constructs message
+          .mapTo[TransOk]
+          .map(result => result.succeedOrNot match {
+          case true => (OK, "transaction successful")
+          case false => (BadRequest, result.errorMessage)
+        }).recover { case _ => (BadRequest, "An error has occurred! We will fix this")}
+        complete(response)
+      } else {
+        complete(Unauthorized, "Please use HTTP header to authorize this command.")
       }
     }
-
-    def authenticator(userPass: Option[UserPass]): Future[Option[AuthInfo]] = Future {
-      validateUser(userPass)
-    }
-
-    BasicAuth(authenticator _, realm = "Lab Authorized API")
   }
+
 }
 
 class SECCompanyService(secCompanyActor: ActorRef)(implicit system: ActorSystem)
-  extends Directives with Authenticator {
+  extends Directives with Authenticator with customRoutes {
 
   import akka.pattern.ask
-  import akka.util.Timeout
-  import com.mturk.tasks.SECcompany.JsonImplicits._
   import com.mturk.tasks.SECcompany.SECCompanyProtocol._
   import spray.http.StatusCodes._
-  import scala.concurrent.duration._
-
-  implicit val timeout = Timeout(5 seconds)
+  import JsonImplicits._
 
   lazy val route =
     pathPrefix("sec") {
@@ -69,22 +57,10 @@ class SECCompanyService(secCompanyActor: ActorRef)(implicit system: ActorSystem)
       } ~
       pathPrefix("company") {
         pathPrefix("casper") {
+          //http -a username:123 POST http://127.0.0.1:8080/sec/company/casper hello="23"
           authenticate(basicUserAuthenticator) { authInfo =>
             post {
-              entity(as[JObject]) { company: JObject =>
-                if (authInfo.rejectedOrNot) {
-                  val response = (secCompanyActor ? jObjectFromCasper(company))
-                    .mapTo[TransOk]
-                    .map(result => result.succeedOrNot match {
-                      case true => (OK, "transaction successful")
-                      case false => (BadRequest, result.errorMessage)
-                    }).recover { case _ => (BadRequest, "An error has occurred! We will fix this")}
-                    complete(response)
-
-                  } else {
-                    complete(Unauthorized, "Please use HTTP header to authorize this command.")
-                  }
-                }
+                  doPost(JObjectFromCasper.apply, authInfo, secCompanyActor)
               } ~
               put {
                 complete {
@@ -94,29 +70,16 @@ class SECCompanyService(secCompanyActor: ActorRef)(implicit system: ActorSystem)
             }
           } ~
           pathPrefix("web") {
-            authenticate(basicUserAuthenticator) { AuthInfo =>
+            authenticate(basicUserAuthenticator) { authInfo =>
               post {
-                entity(as[JObject]) { company =>
-                  if (AuthInfo.rejectedOrNot) {
-                    val response = (secCompanyActor ? jObjectFromWeb(company))
-                      .mapTo[TransOk]
-                      .map(result => result.succeedOrNot match {
-                      case true => (OK, "transaction successful")
-                      case false => (BadRequest, result.errorMessage)
-                    }).recover { case _ => (BadRequest, "An error has occurred! We will fix this")}
-                    complete(response)
-
-                  } else {
-                    complete(Unauthorized, "Please use HTTP header to authorize this command.")
-                  }
-                }
+                doPost(JObjectFromWeb.apply, authInfo, secCompanyActor)
               } ~
               put {
                 complete {
                   "To be implemented."
                 }
               }
-            }
+            } ~
             get {
               val response = (secCompanyActor ? WebGetOneCompany).mapTo[TransOk]
                 .map(result => result.succeedOrNot match {
@@ -126,7 +89,7 @@ class SECCompanyService(secCompanyActor: ActorRef)(implicit system: ActorSystem)
               complete(response)
             }
           }
-        }~
+        } ~
       pathPrefix("companies") {
         pathPrefix("casper") {
           get {

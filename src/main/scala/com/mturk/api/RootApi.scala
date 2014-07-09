@@ -2,6 +2,7 @@ package com.mturk.api
 
 import akka.actor.{Props, ActorSystem}
 import akka.event.Logging.InfoLevel
+import com.mturk.tasks.mTurkerProgress.MTurkerProgressService
 import spray.http.HttpRequest
 import spray.http.StatusCodes.{MovedPermanently, NotFound }
 import spray.routing.{Directives, RouteConcatenation}
@@ -24,6 +25,7 @@ trait RootApi extends RouteConcatenation with StaticRoute with AbstractSystem {
 
   lazy val routes = logRequest(showReq _) {
     new SECCompanyService(companyActor).route ~
+    new MTurkerProgressService(mTurkerActor).route ~
     staticRoute
   }
 
