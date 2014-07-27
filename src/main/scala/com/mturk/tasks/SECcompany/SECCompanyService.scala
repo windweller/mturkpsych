@@ -39,7 +39,6 @@ trait customRoutes {
       }
     }
   }
-
 }
 
 class SECCompanyService(secCompanyActor: ActorRef)(implicit system: ActorSystem)
@@ -52,8 +51,17 @@ class SECCompanyService(secCompanyActor: ActorRef)(implicit system: ActorSystem)
 
   lazy val route =
     pathPrefix("sec") {
-      pathEnd {
-        complete("Welcome to Dr. Wolff's online lab :)")
+      path("help") {
+        hostName { hn=>
+          val localhostPortConfig = if (hn == "127.0.0.1") ":8080" else ""
+
+          val routeApis = Map[String, (String, String)](
+            "casperUpload" -> ("POST", "http://"+  hn + localhostPortConfig  + "/company/casper"),
+            "webUpload" -> ("POST", "http://"+  hn + localhostPortConfig  + "/company/web"),
+            "webOneCompany" -> ("GET","http://"+  hn + localhostPortConfig  + "/company/web")
+          )
+          complete(routeApis)
+        }
       } ~
       pathPrefix("company") {
         pathPrefix("casper") {
@@ -61,22 +69,20 @@ class SECCompanyService(secCompanyActor: ActorRef)(implicit system: ActorSystem)
           authenticate(basicUserAuthenticator) { authInfo =>
             post {
                   doPost(JObjectFromCasper.apply, authInfo, secCompanyActor)
-              } ~
-              put {
-                complete {
-                  "To be implemented."
-                }
               }
             }
           } ~
           pathPrefix("web") {
             authenticate(basicUserAuthenticator) { authInfo =>
               post {
+              //POST method comes in when one person completes the task
                 doPost(JObjectFromWeb.apply, authInfo, secCompanyActor)
               } ~
               put {
+              //PUT method comes in when one person can't complete the request, need
+              //to retrieve a different document
                 complete {
-                  "To be implemented."
+                  doPost(JObjectFromWebPUT.apply, authInfo, secCompanyActor)
                 }
               }
             } ~
@@ -84,7 +90,7 @@ class SECCompanyService(secCompanyActor: ActorRef)(implicit system: ActorSystem)
               val response = (secCompanyActor ? WebGetOneCompany).mapTo[TransOk]
                 .map(result => result.succeedOrNot match {
                 case true => (OK, result.company.get)
-                case false => (BadRequest, result.errorMessage)
+                case false => (BadRequest, result.errorMessage) //no more company left
               })
               complete(response)
             }
@@ -98,11 +104,9 @@ class SECCompanyService(secCompanyActor: ActorRef)(implicit system: ActorSystem)
               case true => (OK, result.companies.get)
               case false => (BadRequest, result.errorMessage)
             }).recover { case _ => (BadRequest, "An error has occurred! We will fix this")}
-
             complete(response)
           }
         }
       }
     }
 }
-

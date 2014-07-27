@@ -5,6 +5,7 @@ import akka.event.Logging.InfoLevel
 import com.mturk.tasks.mTurkerProgress.MTurkerProgressService
 import spray.http.HttpRequest
 import spray.http.StatusCodes.{MovedPermanently, NotFound }
+import spray.httpx.encoding.Gzip
 import spray.routing.{Directives, RouteConcatenation}
 import spray.routing.directives.LogEntry
 import java.io.File
@@ -38,23 +39,31 @@ trait StaticRoute extends Directives {
   lazy val staticRoute =
     pathEndOrSingleSlash {
         getFromFile(new File("views/home.html"), `text/html`)
-    }
-    path("turk.html") {
+    } ~
+    path("turk") {
         getFromFile(new File("views/turk.html"), `text/html`)
     } ~
     path("css" / Segment) {fileName =>
+      compressResponse(Gzip) {
         getFromFile(new File("views/css/"+fileName), `text/css`)
+      }
     } ~
     path("css" / Segment / Segment) {(subFolder, fileName) =>
-        getFromFile(new File("views/css/"+ subFolder + "/" +fileName))
+      compressResponse(Gzip) {
+        getFromFile(new File("views/css/" + subFolder + "/" + fileName), `text/css`)
+      }
     } ~
     path("js" / Segment) {fileName =>
-      getFromFile(new File("views/js/" + fileName), `application/javascript`)
+      compressResponse(Gzip) {
+        getFromFile(new File("views/js/" + fileName), `application/javascript`)
+      }
     } ~
     path("js" / Segment / Segment) { (subFolder, fileName) =>
-        getFromFile(new File("views/js/" + subFolder + "/" +fileName), `application/javascript`)
+      compressResponse(Gzip) {
+        getFromFile(new File("views/js/" + subFolder + "/" + fileName), `application/javascript`)
+      }
     } ~
     path("img" / Segment) {fileName =>
-         getFromFile(new File("views/img/"+fileName))
+      getFromFile(new File("views/img/"+fileName))
     } ~ complete(NotFound)
 }

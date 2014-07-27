@@ -47,10 +47,9 @@ object Util {
 
     def basicUserAuthenticator(implicit ec: ExecutionContext): AuthMagnet[AuthInfo] = {
       def validateUser(userPass: Option[UserPass]): Option[AuthInfo] = {
-        val user = userPass.map[Option[User.User]](u => getUser(u.user, u.pass))
+        val user = userPass.flatMap[User.User](u => getUser(u.user, u.pass))
         user match {
-          case Some(Some(u)) => Some(AuthInfo(u.name, rejectedOrNot = true))
-          case Some(None) => Some(AuthInfo(None, rejectedOrNot = false))
+          case Some(u) => Some(AuthInfo(u.name, rejectedOrNot = true))
           case None => Some(AuthInfo(None, rejectedOrNot = false))
         }
       }

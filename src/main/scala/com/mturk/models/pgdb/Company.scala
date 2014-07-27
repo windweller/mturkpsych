@@ -7,7 +7,8 @@ import scala.slick.driver.PostgresDriver.simple._
 object Company {
   case class Company(id: Option[Int], s3FileLoc: Option[String], casperFileLoc: Option[String],
                      riskFactor: Option[String], managementDisc: Option[String],
-                     finStateSuppData: Option[String], isRetrieved: Boolean, retrievedTime: Option[Timestamp])
+                     finStateSuppData: Option[String], unableToCompleteCount: Option[Int],
+                     isRetrieved: Boolean, retrievedTime: Option[Timestamp])
 
   class CompanyTable(tag: Tag) extends Table[Company](tag, "Company") {
 
@@ -17,11 +18,12 @@ object Company {
     def riskFactor = column[Option[String]]("COMP_RISK_FACTOR") //Item 1A
     def managementDisc = column[Option[String]]("COMP_MANAGE_DISC") //Item 7. Management's Discussion and Analysis of Financial Condition and Results of Operations
     def finStateSuppData = column[Option[String]]("COMP_FIN_STATEMENT") //Item 8. Financial Statements and Supplementary Data
+    def unableToCompleteCount = column[Option[Int]]("COMP_UNABLE_TO_COMPLETE")
     def isRetrieved = column[Boolean]("COMP_IS_RETTIEVED")
     def retrievedTime = column[Option[Timestamp]]("COMP_RETRIEVED_TIME")
 
     def * = (id, s3FileLoc, casperFileLoc, riskFactor, managementDisc,
-      finStateSuppData, isRetrieved, retrievedTime) <> (Company.tupled, Company.unapply _)
+      finStateSuppData, unableToCompleteCount, isRetrieved, retrievedTime) <> (Company.tupled, Company.unapply _)
   }
 
   val companies = TableQuery[CompanyTable]
@@ -49,7 +51,7 @@ object Company {
       s3Loc.isEmpty match {
         case true => (None, false, Some("casperFileLoc value doesn't fit format and the server can't extract certain value"))
         case false =>
-          val company = Company(None, Some(s3Loc.get), Some(casperFileLoc), None, None, None, isRetrieved = false, None)
+          val company = Company(None, Some(s3Loc.get), Some(casperFileLoc), None, None, None, Some(0), isRetrieved = false, None)
           val companyId = companies returning companies.map(_.id) += company
           (Some(company.copy(id = companyId)), true, None)
       }
@@ -67,10 +69,10 @@ object Company {
       case list: List[Company] =>
         val company = list.head
         val q2 = for (c <- companies if c.id === company.id) yield c
-        val updateCompany = company.copy(riskFactor= Some(riskFactor), managementDisc = Some(managementDisc),
-        finStateSuppData = Some(finStateSuppData))
-        q2.update(updateCompany)
-        (Some(updateCompany), true, None)
+        val updatedCompany = company.copy(riskFactor= Some(riskFactor), managementDisc = Some(managementDisc),
+          finStateSuppData = Some(finStateSuppData))
+        q2.update(updatedCompany)
+        (Some(updatedCompany), true, None)
     }
   }
 
@@ -88,16 +90,21 @@ object Company {
    * order, and return the oldest one (only if it is longer
    * than 1 hr)
    *
+   * Also it will not retrieve companies that have more than
+   * 2 counts of unable to complete
+   *
    * @param s
    * @return one Company object is returned
    */
   def getOneCompany()(implicit s: Session): (Option[Company], Boolean, Option[String]) = {
+    //first query: unretrieved
     val companyFirstQuery = for (c <- companies if c.isRetrieved === false) yield c
     val firstBatchCompanies = companyFirstQuery.list()
     if (firstBatchCompanies.isEmpty) {
 
+      //second query: null ones and unable to complete <= 2
       val companySecondQuery = for (c <- companies if c.riskFactor.isNull
-        && c.managementDisc.isNull && c.finStateSuppData.isNull) yield c
+        && c.managementDisc.isNull && c.finStateSuppData.isNull && c.unableToCompleteCount <= 2) yield c
 
       val secondBatchCompanies = companySecondQuery.sortBy(_.retrievedTime.asc).list()
       if (secondBatchCompanies.isEmpty) {
@@ -121,6 +128,18 @@ object Company {
     val time = new Timestamp(DateTime.now.getMillis)
     q.update(true, Some(time))
     company.copy(retrievedTime = Some(time), isRetrieved = true)
+  }
+
+  def addUnableToComplete(companyId: Int)(implicit s: Session): (Option[Company], Boolean, Option[String]) = {
+    val q = for (c <- companies if c.id === companyId) yield c
+    q.list() match {
+      case Nil => (None, false, Some("companyId is wrong, can't find the company with that id."))
+      case list: List[Company] =>
+        val unableToCompCount = list.head.unableToCompleteCount
+        val updatedCompany = list.head.copy(unableToCompleteCount = Some(unableToCompCount.get + 1))
+        q.update(updatedCompany)
+        (Some(updatedCompany), true, None)
+    }
   }
 
 }

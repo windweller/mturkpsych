@@ -42,6 +42,18 @@ class SECCompanyActor extends Actor with ActorLogging {
           "fields: riskFactor, managementDisc, finStateSuppData, or companyId was not defined in JOSN"))
       }
 
+    case JObjectFromWebPUT(jObject) =>
+       if (jObject.isDefined("companyId")) {
+         jObject.getValueInt("companyId") match {
+           case None => sender ! TransOk(None, succeedOrNot = false, Some("companyId is not a valid number"))
+           case Some(companyId) =>
+             val result = DAL.db.withSession { implicit session =>
+               Company.addUnableToComplete(companyId)
+             }
+             sender ! TransOk(result._1, result._2, result._3)
+         }
+       }
+
     case WebGetOneCompany =>
       val result = DAL.db.withSession{ implicit session =>
         Company.getOneCompany()
@@ -56,13 +68,16 @@ class SECCompanyActor extends Actor with ActorLogging {
             sender ! TransAllOk(Some(companies), succeedOrNot = true, None)
         }
       }
+
+
   }
 }
 
 object SECCompanyProtocol {
   case class JObjectFromCasper(jObject: JObject)
-  case class TransOk(company: Option[Company.Company], succeedOrNot: Boolean, errorMessage: Option[String])
   case class JObjectFromWeb(jObject: JObject)
+  case class JObjectFromWebPUT(jObject: JObject)
+  case class TransOk(company: Option[Company.Company], succeedOrNot: Boolean, errorMessage: Option[String])
   case class TransAllOk(companies: Option[List[Company.Company]], succeedOrNot: Boolean, errorMessage: Option[String])
 
   case object WebGetOneCompany
