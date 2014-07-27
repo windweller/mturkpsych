@@ -1,4 +1,5 @@
 /.idea/
+/project/
 /project/boot/
 /project/plugins/project
 target/
