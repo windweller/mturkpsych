@@ -34,7 +34,9 @@ class MTurkerProgressActor extends Actor with ActorLogging {
       sender ! TransOk(result._1, result._2, result._3)
 
     case UpdateMturkID(id, jObject) =>
-      val mTurkid = if (jObject.isDefined("mturkid")) throw new Exception("mturkid field in PUT request is missing")
+      //the exception being thrown here is not captured by Future.recover() method
+      //why!?
+      val mTurkid = if (!jObject.isDefined("mturkid")) throw new Exception("mturkid field in PUT request is missing")
         else jObject.getValue("mturkid")
       val result: Try[MTurker.MTurker] = DAL.db.withSession { implicit session =>
         Try(MTurker.updateMTurkerId(id, mTurkid))

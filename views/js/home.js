@@ -189,6 +189,7 @@ var global_access = (function($, window, loc, alertify) {
 		mTurkURIPromise: mTurkURIPromise,
 		companyURIPromise: companyURIPromise,
 		ajaxFailureHandle: ajaxFailureHandle,
+		customAjaxFailureHandle: customAjaxFailureHandle,
 		refresh: refresh
 	};
 
@@ -276,8 +277,21 @@ var app = (function($, glo, animate) {
 
 	var companyURIPromise = glo.companyURIPromise;
 
-	function savemTurkID() {
-		
+	//jQuery will not JSON.stringify() the data
+	//it has to be done manually. So stupid.
+	function savemTurkID(id) {
+		var data = {"mturkid": id};
+		mTurkURIPromise.then(function(uris) {
+			Q($.ajax({
+				url: uris.updateMTurkId._2,
+				type: uris.updateMTurkId._1,
+				datatype: "json",
+				contentType: 'application/json; charset=UTF-8',
+				data: JSON.stringify(data)
+			})).fail(function(jqXHR, textStatus, errorThrown) {
+				glo.ajaxFailureHandle(jqXHR, uris.updateMTurkId._2, textStatus, errorThrown);
+			});
+		});
 	}
 
 	//talk to backend to retrieve a new doc's url
@@ -288,10 +302,9 @@ var app = (function($, glo, animate) {
 		});
 	}
 
-	loadNewDocURL();
 
 	return {
-		saveId:savemTurkID()
+		
 	};
 
 }(jQuery, global_access, animate, alertify));

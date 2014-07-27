@@ -69,10 +69,11 @@ class MTurkerProgressService (MTurkerProgressActor: ActorRef)(implicit system: A
           } ~
           //use PUT to update mTurker's ID
           put {
-            entity(as[JObject]) { jObject =>
+            entity(as[JObject]) {jObject =>
               optionalCookie("commToken") {
                 case None =>
-                  complete(Unauthorized, "Please retrieve and add your communication token as 'commToken' cookie.")
+                  complete(Unauthorized, "Please retrieve and add your communication token as 'commToken' cookie. " +
+                    "Or your token is invalid.")
                 case Some(commToken) =>
                   val response = (MTurkerProgressActor ? UpdateMturkID(commToken.content, jObject))
                     .mapTo[TransOk]
@@ -91,7 +92,8 @@ class MTurkerProgressService (MTurkerProgressActor: ActorRef)(implicit system: A
               val localhostPortConfig = if (hn == "127.0.0.1") ":8080" else ""
               val routeApis = Map[String, (String, String)](
                 "mTurkerGet" -> ("GET", "http://" + hn + localhostPortConfig + "/mturker"),
-                "mTurkerRegister" -> ("POST", "http://" + hn + localhostPortConfig + "/mturker")
+                "mTurkerRegister" -> ("POST", "http://" + hn + localhostPortConfig + "/mturker"),
+                "updateMTurkId" -> ("PUT", "http://" + hn + localhostPortConfig + "/mturker")
               )
               complete(routeApis)
             }

@@ -68,7 +68,7 @@ class SECCompanyService(secCompanyActor: ActorRef)(implicit system: ActorSystem)
           //http -a username:123 POST http://127.0.0.1:8080/sec/company/casper hello="23"
           authenticate(basicUserAuthenticator) { authInfo =>
             post {
-                  doPost(JObjectFromCasper.apply, authInfo, secCompanyActor)
+                doPost(JObjectFromCasper.apply, authInfo, secCompanyActor)
               }
             }
           } ~

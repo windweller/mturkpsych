@@ -53,7 +53,7 @@ object MTurker {
   def getByMTurkerId(mTurkId: String)(implicit s: Session) = {
     val q = for (m <- mTurkers if m.mturkId === mTurkId) yield m
     q.list() match {
-      case Nil => throw new Exception("No mTurkId is presented")
+      case Nil => throw new Exception("There is no such mTurkId")
       case list => (Some(list.head), true, None)
     }
   }
