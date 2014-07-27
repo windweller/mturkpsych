@@ -1,0 +1,120 @@
+/* min-width 641px, medium screens */
+@media only screen and (min-width: 40.063em) { 
+	.canvas {
+		padding: 60px 80px 30px 50px;
+	}
+} 
+
+/* min-width 1025px, large screens */
+@media only screen and (min-width: 64.063em) { 
+	.canvas {
+		padding: 60px 120px 30px 120px;
+	}
+} 
+
+label {
+	color: #8a6d3b;
+}
+
+.canvas {
+	border: 18px solid #f3f3f3;
+	background: white;
+}
+
+#uni-logo {
+	float: right;
+    width: 140px;
+    padding: 2px;
+    border: 1px solid #ccc;
+}
+
+
+.heavy-text {
+	font-weight: 500;
+	font-size: 36px;
+}
+
+.explaination-panel {
+	background-color: #fcf8e3;
+	border-color: #faebcc;
+	color: #8a6d3b;
+	border-radius: 3px;
+	border-style: solid;
+	border-width: 1px;
+	margin-bottom: 1.25rem;
+	padding: 1.25rem;
+	font-weight: 300;
+	font-size: 13pt;
+}
+
+.explaination-panel a {
+	color: #8a6d3b;
+}
+
+.explaination-panel a:hover {
+	color: #008cba;
+}
+
+.explaination-panel button {
+	margin: 0 0 0rem;
+}
+
+.img-link {
+	transition: opacity 200ms ease-out;
+}
+
+.img-link:hover {
+	opacity: 0.7;
+	transition: opacity 200ms ease-out;
+}
+
+.panel-header h4 {
+	color: #776B57;
+}
+
+.blockage {
+	border-style: solid;
+	border-width: 2px;
+	border-color: #776B57;
+	border-radius: 5px;
+}
+
+.blockage li {
+	padding-top: 0.7em;
+	padding-bottom: 0.7em;
+	background-color: #fcf8e3;
+	transition: background-color 300ms ease-out;
+}
+
+.blockage li:hover {
+	color: #fff;
+	background-color: #776B57;
+	cursor: pointer;
+	transition: background-color 300ms ease-out;
+}
+
+.blockage li:first-child {
+	border-right-style: solid;
+	border-width: 2px;
+	border-color: #776B57;
+}
+
+.blockage-text li {
+	font-weight: 400;
+}
+
+.yello-textarea {
+	/*background-color: #fcf8e3;*/
+}
+
+.progressMeter {
+	width: 0%;
+}
+
+#panel-instruction-content {
+	overflow: hidden;
+}
+
+#instruction-header {
+	cursor: pointer;
+}
