@@ -1,4 +1,7 @@
-var global_access = (function($, window) {
+/* Global library settings */
+alertify.set({ buttonFocus: "none" });
+
+var global_access = (function($, window, loc, alertify) {
 	'use strict';
 
 	/**
@@ -29,34 +32,32 @@ var global_access = (function($, window) {
 	* retrieve value from cookie,
 	* if no cookie, establish connection
 	*
+	* On second thought, establishing identity is kind of important.
+	* because it can check if Cookies are dirty
+	*
 	**/
 	function retrieveIdentity() {
-		if($.cookie('commToken') && $.cookie('countTask')) {
-			return {
-				'commToken' : $.cookie('commToken'),
-				'countTask' : $.cookie('countTask'),
-				'promiseObj' : null
-			};
-		}else{
-			return {
-				'commToken' : null,
-				'countTask' : null,
-				'promiseObj' : _establishIdentity()
-			};
-		}
+		var promiseObj = _establishIdentity();
+		return {
+			'commToken' : $.cookie('commToken'),
+			'countTask' : $.cookie('countTask'),
+			'promiseObj' : promiseObj
+		};
 	}
 
 	/**
 	* re-establish identity
 	* and replace mTurkIdentity with new identity
 	* return mTurkIdentity, so no need to call again.
+	* Cookies are reset as well
 	**/
 	function refresh() {
-		return {
-			'commToken' : $.cookie('commToken'),
-			'countTask' : $.cookie('countTask'),
-			'promiseObj' : _establishIdentity()
-		};
+		$.removeCookie('commToken');
+		$.removeCookie('countTask');
+
+		var promiseObj = _establishIdentity();
+
+		return retrieveIdentity();
 	}
 
 	/**
@@ -70,16 +71,28 @@ var global_access = (function($, window) {
 	*/
 	function _establishIdentity() {
 		return mTurkURIPromise.then(function(mTurkUris){
-			return $.ajax({
+			return Q($.ajax({
 				url: mTurkUris.mTurkerGet._2,
 				type: mTurkUris.mTurkerGet._1,
 				dataType: 'JSON'
-			})
+			}))
 			.then(function(data){
 				return data;
 			})
 			.fail(function(jqXHR, textStatus, errorThrown) {
-				ajaxFailureHandle(textStatus, errorThrown);
+				//Custom Error Handling
+				customAjaxFailureHandle(jqXHR, mTurkUris.mTurkerGet._2, 
+					textStatus, errorThrown, function(html) {
+						var response = html+"<div class='row'><div class='large-12 columns'><div data-alert class='alert-box info radius'> Click 'OK' button, we can solve this problem " +
+						"for you by resetting your COOKIE. However, doing so will eliminate your current progress. <a href='#'' class='close'>&times;</a></div></div></div>";
+						alertify.confirm(response, function(res) {
+							if (res) {
+								$.removeCookie('commToken');
+								$.removeCookie('countTask');
+								loc.reload();
+							}
+						});
+					});
 			});
 		});
 	}
@@ -105,7 +118,7 @@ var global_access = (function($, window) {
 			return data;
 		})
 		.fail(function(jqXHR, textStatus, errorThrown) {
-			ajaxFailureHandle(textStatus, esrrorThrown);
+			ajaxFailureHandle(jqXHR, baseHostName+'/mturker/help', textStatus, esrrorThrown);
 		});
 	}
 
@@ -131,8 +144,21 @@ var global_access = (function($, window) {
 			return data;
 		})
 		.fail(function(jqXHR, textStatus, errorThrown) {
-			ajaxFailureHandle(textStatus, errorThrown);
+			ajaxFailureHandle(jqXHR, baseHostName+'/sec/help',textStatus, errorThrown);
 		});
+	}
+
+	function _ajaxErrorMsgConstructor(jqXHR, url, textStatus, errorThrown) {
+		var errorMessage = "An error has occured from " + url + ": " + textStatus + " - " + errorThrown +
+			"; response text: "+ jqXHR.responseText;
+		return {
+			txt: errorMessage,
+			html: "<div class='row'><div class='large-12 columns'><h4>An error has occured</h4></div></div>" +
+			"<div class='row'><div class='large-12 columns'><p>Please copy and paste the following information to anie@emory.edu. Thank you!</p></div></div>"+
+			"<div class='row'><div class='large-12 columns'><p>"+errorMessage+"</p></div></div>" + 
+			"<div class='row'><div class='large-12 columns'><p>CommToken: " + 
+			$.cookie('commToken') + " <br> CountTask: " + $.cookie('countTask') + "</p></div></div>"
+		};
 	}
 
 	/**
@@ -141,8 +167,21 @@ var global_access = (function($, window) {
 	* but depending on situation, might
 	* print out error on browser
 	*/
-	function ajaxFailureHandle(textStatus, errorThrown) {
-		console.error("Ahhhh: " + textStatus + " - " + errorThrown);
+	function ajaxFailureHandle(jqXHR, url, textStatus, errorThrown) {
+		var errorMsgs = _ajaxErrorMsgConstructor(jqXHR, url, textStatus, errorThrown);
+		console.error(errorMsgs.txt);
+		alertify.alert(errorMsgs.html);
+	}
+
+	/**
+	* Handle ajax error
+	* Last parameter is a callback function
+	* that executes a customized alertify.js prompt
+	*/
+	function customAjaxFailureHandle(jqXHR, url, textStatus, errorThrown, callback) {
+		var errorMsgs = _ajaxErrorMsgConstructor(jqXHR, url, textStatus, errorThrown);
+		console.error(errorMsgs.txt);
+		callback(errorMsgs.html);
 	}
 
 	return {
@@ -153,7 +192,7 @@ var global_access = (function($, window) {
 		refresh: refresh
 	};
 
-}(jQuery, window));
+}(jQuery, window, location, alertify));
 
 var animate = (function($, glo, alertify) {
 	'use strict';
@@ -193,10 +232,6 @@ var animate = (function($, glo, alertify) {
 			animateProgressBar(progressNum));
 	}
 
-	function taskTextChange() {
-
-	}
-
 	return {
 		taskComplete: taskComplete,
 		taskFail: taskFail
@@ -205,7 +240,7 @@ var animate = (function($, glo, alertify) {
 
 }(jQuery, global_access, alertify));
 
-var app = (function($, glo) {
+var app = (function($, glo, animate) {
 	'use strict';
 
 	/**
@@ -235,17 +270,30 @@ var app = (function($, glo) {
 	* 
 	**/
 
-	var turkerId = global.mTurkIdentity();
+	var turkerId = glo.mTurkIdentity;
 
+	var mTurkURIPromise = glo.mTurkURIPromise;
+
+	var companyURIPromise = glo.companyURIPromise;
 
 	function savemTurkID() {
 		
 	}
 
+	//talk to backend to retrieve a new doc's url
+	//and update on html page
+	function loadNewDocURL() {
+		companyURIPromise.then(function(data) {
+			console.log(data);
+		});
+	}
+
+	loadNewDocURL();
+
 	return {
 		saveId:savemTurkID()
 	};
 
-}(jQuery, global_access));
+}(jQuery, global_access, animate, alertify));
 
 
