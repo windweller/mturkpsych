@@ -103,9 +103,6 @@ label {
 	font-weight: 400;
 }
 
-.yello-textarea {
-	/*background-color: #fcf8e3;*/
-}
 
 .progressMeter {
 	width: 0%;
@@ -117,4 +114,13 @@ label {
 
 #instruction-header {
 	cursor: pointer;
+}
+
+/*Utility CSS*/
+.red {
+	color: #f04124;
+}
+
+.blue {
+	color: #007095;
 }

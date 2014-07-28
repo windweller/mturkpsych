@@ -46,16 +46,27 @@ var global_access = (function($, window, loc, alertify) {
 	}
 
 	/**
-	* re-establish identity
-	* and replace mTurkIdentity with new identity
-	* return mTurkIdentity, so no need to call again.
-	* Cookies are reset as well
+	* reFresh the count of countTaks
+	* refresh after every task being completed
 	**/
 	function refresh() {
-		$.removeCookie('commToken');
 		$.removeCookie('countTask');
 
-		var promiseObj = _establishIdentity();
+		return retrieveIdentity();
+	}
+
+	/**
+	*
+	* Use this with care, only after the individual
+	* completed 10 tasks
+	* this will eliminate all footprint and 
+	* even assign user with a new 
+	* comm token
+	*
+	**/
+	function restart() {
+		$.removeCookie('commToken');
+		$.removeCookie('countTask');
 
 		return retrieveIdentity();
 	}
@@ -77,6 +88,25 @@ var global_access = (function($, window, loc, alertify) {
 				dataType: 'JSON'
 			}))
 			.then(function(data){
+				if (data.mturkId && !$.cookie('mturkId')) {
+					$.cookie('mturkId', data.mturkId);
+				}
+				
+				if (!data.mturkId && $.cookie('mturkId')) {
+					var html = "<div class='row'><div class='large-12 columns'>"+
+					"<p>We detect that you have already typed in a mTurk ID: <kbd>" + $.cookie('mturkId') + "</kbd></p>"
+					+ "<p>If you are the owner of this mTurk ID, click <kbd>Cancel</kbd>. You won't have to type it in again."
+					+ " However, if you are not, or if you are using a public computer, click <kbd>OK</kbd> so we can successfully proceed." + "</p>"
+					+"</div></div><br>";
+					alertify.confirm(html, function(res) {
+						if (res) {
+							$.removeCookie('mturkId');
+							loc.reload();
+						}else{
+							savemTurkID($.cookie('mturkId'));
+						}
+					});
+				}
 				return data;
 			})
 			.fail(function(jqXHR, textStatus, errorThrown) {
@@ -89,6 +119,7 @@ var global_access = (function($, window, loc, alertify) {
 							if (res) {
 								$.removeCookie('commToken');
 								$.removeCookie('countTask');
+								$.removeCookie('mturkId');
 								loc.reload();
 							}
 						});
@@ -147,6 +178,24 @@ var global_access = (function($, window, loc, alertify) {
 			ajaxFailureHandle(jqXHR, baseHostName+'/sec/help',textStatus, errorThrown);
 		});
 	}
+
+	//jQuery will not JSON.stringify() the data
+	//it has to be done manually. So stupid.
+	function savemTurkID(id) {
+		var data = {"mturkid": id};
+		mTurkURIPromise.then(function(uris) {
+			Q($.ajax({
+				url: uris.updateMTurkId._2,
+				type: uris.updateMTurkId._1,
+				datatype: "json",
+				contentType: 'application/json; charset=UTF-8',
+				data: JSON.stringify(data)
+			})).fail(function(jqXHR, textStatus, errorThrown) {
+				glo.ajaxFailureHandle(jqXHR, uris.updateMTurkId._2, textStatus, errorThrown);
+			});
+		});
+	}
+
 
 	function _ajaxErrorMsgConstructor(jqXHR, url, textStatus, errorThrown) {
 		var errorMessage = "An error has occured from " + url + ": " + textStatus + " - " + errorThrown +
@@ -277,22 +326,37 @@ var app = (function($, glo, animate) {
 
 	var companyURIPromise = glo.companyURIPromise;
 
-	//jQuery will not JSON.stringify() the data
-	//it has to be done manually. So stupid.
-	function savemTurkID(id) {
-		var data = {"mturkid": id};
-		mTurkURIPromise.then(function(uris) {
-			Q($.ajax({
-				url: uris.updateMTurkId._2,
-				type: uris.updateMTurkId._1,
-				datatype: "json",
-				contentType: 'application/json; charset=UTF-8',
-				data: JSON.stringify(data)
-			})).fail(function(jqXHR, textStatus, errorThrown) {
-				glo.ajaxFailureHandle(jqXHR, uris.updateMTurkId._2, textStatus, errorThrown);
-			});
+	/*Action triggered logic*/
+
+	(function init() {
+		$('#saveMturkId').click(function(event) {
+			if (!$('#MturkId').val()) { //is the input is null?
+				alertify.alert("<span class='red'>Warning: </span> You must type in your MTurk Id before saving it!");
+			}
+			else if ($("input").prop('disabled')) { //is the input disabled?
+				alertify.alert("<span class='red'>Warning: </span> Your mTurk ID already exists. If there is any error, please email anie@emory.edu");
+			}
+			else {
+
+			};
 		});
-	}
+	})();
+
+
+	/*Supporting functions*/
+
+	/**
+	*
+	* When there is $.cookie('mturkId')	field
+	* update mturkId on the server side.
+	*
+	**/
+	(function autoFillmTurkId() {
+		if ($.cookie('mturkId')) {
+			$('#MturkId').val($.cookie('mturkId'));
+			$("input").prop('disabled', true);
+		}
+	})();
 
 	//talk to backend to retrieve a new doc's url
 	//and update on html page

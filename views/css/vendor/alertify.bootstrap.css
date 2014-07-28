@@ -24,7 +24,8 @@
 	}
 		.alertify-message {
 			padding: 15px;
-			margin: 0;
+			margin-top: 15px;
+			text-align: center;
 		}
 		.alertify-text-wrapper {
 			padding: 0 15px;
