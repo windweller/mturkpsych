@@ -42,4 +42,5 @@ object Config {
   //for possible incorrect postgresql setting
   //to prevent weird connection string automatically set up by Dokku's plugin
   val dbConnect = if (!tempConnect.contains("postgresql")) tempConnect.replace("postgres", "postgresql") else tempConnect
+  println(dbConnect)
 }
