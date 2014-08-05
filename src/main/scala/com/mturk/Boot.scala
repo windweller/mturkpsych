@@ -39,7 +39,6 @@ object Config {
   //database one connect string
   val tempConnect = config.getString("db.postgresql.connect")
 
-  //for possible incorrect postgresql setting
   //to prevent weird connection string automatically set up by Dokku's plugin
 
   val dbConnect = if (!tempConnect.contains("postgresql"))
