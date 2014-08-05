@@ -8,7 +8,7 @@ import scala.slick.jdbc.meta.MTable
 
 object DAL {
 
-  val db = Database.forURL(url = dbURL, user = dbUser, password= dbPassword, driver = dbDriver)
+  val db = Database.forURL(url = dbConnect, driver = dbDriver)
 
   def databaseInit() {
     db.withSession{ implicit session =>

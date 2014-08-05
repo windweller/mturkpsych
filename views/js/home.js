@@ -90,6 +90,8 @@ var global_access = (function($, window, loc, alertify) {
       .then(function(data){
         if (data.mturkId && !$.cookie('mturkId')) {
           $.cookie('mturkId', data.mturkId);
+          $("input").prop('disabled', true);
+          $('#MturkId').val($.cookie('mturkId'));
         }
         
         if (!data.mturkId && $.cookie('mturkId')) {
@@ -237,9 +239,11 @@ var global_access = (function($, window, loc, alertify) {
     mTurkIdentity: mTurkIdentity,
     mTurkURIPromise: mTurkURIPromise,
     companyURIPromise: companyURIPromise,
+    savemTurkID: savemTurkID,
     ajaxFailureHandle: ajaxFailureHandle,
     customAjaxFailureHandle: customAjaxFailureHandle,
-    refresh: refresh
+    refresh: refresh,
+    restart: restart
   };
 
 }(jQuery, window, location, alertify));
@@ -329,17 +333,36 @@ var app = (function($, glo, animate) {
   /*Action triggered logic*/
 
   (function init() {
+
+    /**
+    *
+    * For saving MTurk Id Action
+    *
+    **/
     $('#saveMturkId').click(function(event) {
-      if (!$('#MturkId').val()) { //is the input is null?
+      if (!$('#MturkId').val()) { //is the input null?
         alertify.alert("<span class='red'>Warning: </span> You must type in your MTurk Id before saving it!");
       }
       else if ($("input").prop('disabled')) { //is the input disabled?
         alertify.alert("<span class='red'>Warning: </span> Your mTurk ID already exists. If there is any error, please email anie@emory.edu");
       }
-      else {
-
+      else { //if not, send update, then disable input and create cookie
+        glo.savemTurkID($('#MturkId').val());
+        $("input").prop('disabled', true);
+        $.cookie('mturkId', $('#MturkId').val());
       };
     });
+
+    /**
+    *
+    * For File read in broswer
+    *
+    **/
+
+    $('#readInBrowser').click(function(event) {
+      /* Act on the event */
+    });
+
   })();
 
 

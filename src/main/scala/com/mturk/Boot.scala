@@ -35,4 +35,12 @@ object Config {
   val dbUser = config.getString("db.postgresql.user")
   val dbPassword = config.getString("db.postgresql.password")
   val dbDriver = config.getString("db.postgresql.driver")
+
+  //database one connect string
+  val dbConnect = config.getString("db.postgresql.connect")
+
+  //for possible incorrect postgresql setting
+  //to prevent weird connection string automatically set up by Dokku's plugin
+  if (! dbConnect.contains("postgresql")) dbConnect.replace("postgres", "postgresql")
+
 }

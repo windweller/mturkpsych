@@ -68,8 +68,6 @@ class SECCompanyActor extends Actor with ActorLogging {
             sender ! TransAllOk(Some(companies), succeedOrNot = true, None)
         }
       }
-
-
   }
 }
 

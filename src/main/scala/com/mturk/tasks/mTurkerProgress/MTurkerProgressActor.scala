@@ -1,6 +1,6 @@
 package com.mturk.tasks.mTurkerProgress
 
-import akka.actor.{ActorLogging, Actor}
+import akka.actor.{ActorLogging, Actor, Status}
 import org.json4s.JsonAST.JObject
 import com.mturk.models.pgdb._
 
@@ -36,14 +36,16 @@ class MTurkerProgressActor extends Actor with ActorLogging {
     case UpdateMturkID(id, jObject) =>
       //the exception being thrown here is not captured by Future.recover() method
       //why!?
-      val mTurkid = if (!jObject.isDefined("mturkid")) throw new Exception("mturkid field in PUT request is missing")
-        else jObject.getValue("mturkid")
+      if (!jObject.isDefined("mturkid")) {sender ! Status.Failure(new Exception("mturkid field in PUT request is missing"))}
+
+      val mTurkid = jObject.getValue("mturkid")
+
       val result: Try[MTurker.MTurker] = DAL.db.withSession { implicit session =>
         Try(MTurker.updateMTurkerId(id, mTurkid))
       }
       result match {
         case Success(content) => sender ! TransOk(Some(content), succeedOrNot = true, None)
-        case Failure(ex) => throw ex //let it escalate
+        case Failure(ex) => sender ! Status.Failure(ex) //let it escalate
       }
   }
 }

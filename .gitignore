@@ -1,6 +1,6 @@
 /.idea/
-/project/
 /project/boot/
+/project/project/
 /project/plugins/project
 target/
 lib_managed/
