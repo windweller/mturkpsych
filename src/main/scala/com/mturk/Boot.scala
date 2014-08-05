@@ -5,9 +5,7 @@ import akka.io.{IO, Tcp}
 import spray.can.Http
 import com.mturk.api._
 import com.mturk.models.pgdb.DAL
-
 //import scala.slick.driver.MySQLDriver.simple._
-import models._
 
 object Boot extends App with MainActors with RootApi {
 
@@ -31,17 +29,15 @@ object Config {
   val portWs = config.getInt("service.ports.ws")
 
   //database
-  val dbURL = config.getString("db.postgresql.url")
-  val dbUser = config.getString("db.postgresql.user")
-  val dbPassword = config.getString("db.postgresql.password")
+  val extractPattern = """(\/\/)(.+?):(.+?)@""".r
+
+  val tempConnect = config.getString("db.postgresql.connect")
+  val dbConnect = if (!tempConnect.contains("postgresql"))
+    "jdbc:"+tempConnect.replace("postgres", "postgresql").replace("172.17.42.1", "mindandlanguagelab.com") else tempConnect
+
+  val dbURL = extractPattern.replaceFirstIn(dbConnect, "//")
+  val dbUser = for (m <- extractPattern.findFirstMatchIn(dbConnect)) yield m.group(2)
+  val dbPassword = for (m <- extractPattern.findFirstMatchIn(dbConnect)) yield m.group(3)
   val dbDriver = config.getString("db.postgresql.driver")
 
-  //database one connect string
-  val tempConnect = config.getString("db.postgresql.connect")
-
-  //to prevent weird connection string automatically set up by Dokku's plugin
-
-  val dbConnect = if (!tempConnect.contains("postgresql"))
-                    tempConnect.replace("postgres", "postgresql").replace("172.17.42.1", "mindandlanguagelab.com") else tempConnect
-  println(dbConnect)
 }
