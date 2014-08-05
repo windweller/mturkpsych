@@ -37,10 +37,9 @@ object Config {
   val dbDriver = config.getString("db.postgresql.driver")
 
   //database one connect string
-  val dbConnect = config.getString("db.postgresql.connect")
+  val tempConnect = config.getString("db.postgresql.connect")
 
   //for possible incorrect postgresql setting
   //to prevent weird connection string automatically set up by Dokku's plugin
-  if (! dbConnect.contains("postgresql")) dbConnect.replace("postgres", "postgresql")
-
+  val dbConnect = if (!tempConnect.contains("postgresql")) "jdbc:"+tempConnect.replace("postgres", "postgresql") else tempConnect
 }
