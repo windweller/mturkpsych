@@ -31,7 +31,7 @@ libraryDependencies ++= {
     //database
     "com.typesafe.slick" %%  "slick"         % "2.0.2",
     "mysql"               %  "mysql-connector-java" % "5.1.12",
-    "postgresql" % "postgresql" % "9.1-901.jdbc4"
+    "org.postgresql" % "postgresql" % "9.3-1102-jdbc41"
   )
 }
 
