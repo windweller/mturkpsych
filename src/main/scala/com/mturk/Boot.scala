@@ -44,4 +44,5 @@ object Config {
 
   val dbConnect = if (!tempConnect.contains("postgresql"))
                     tempConnect.replace("postgres", "postgresql").replace("172.17.42.1", "mindandlanguagelab.com") else tempConnect
+  println(dbConnect)
 }
