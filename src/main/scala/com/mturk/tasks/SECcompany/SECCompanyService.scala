@@ -1,9 +1,13 @@
 package com.mturk.tasks.SECcompany
 
 
+import java.io.File
+
 import akka.actor._
 import org.json4s.{DefaultFormats, Formats}
+import spray.http.MediaTypes._
 import spray.httpx.Json4sSupport
+import spray.httpx.encoding.Gzip
 import spray.routing.Directives
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -94,7 +98,23 @@ class SECCompanyService(secCompanyActor: ActorRef)(implicit system: ActorSystem)
               })
               complete(response)
             }
-          }
+          } ~
+          pathPrefix("file") {
+            path("txt" / Segment) { fileName =>
+              get {
+                compressResponse(Gzip) {
+                  getFromFile(new File("views/js/" + fileName), `text/plain`)
+                }
+              }
+            } ~
+            path("html" / Segment) { fileName =>
+              get {
+                compressResponse(Gzip) {
+                  getFromFile(new File("views/js/" + fileName), `text/plain`)
+                }
+              }
+            } ~ complete(NotFound)
+        }
         } ~
       pathPrefix("companies") {
         pathPrefix("casper") {
