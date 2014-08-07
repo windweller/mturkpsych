@@ -5,7 +5,7 @@ import com.github.nscala_time.time.Imports._
 import scala.slick.driver.PostgresDriver.simple._
 
 object Company {
-  case class Company(id: Option[Int], s3FileLoc: Option[String], casperFileLoc: Option[String],
+  case class Company(id: Option[Int], s3FileLoc: Option[String], localFileLoc: Option[String],
                      riskFactor: Option[String], managementDisc: Option[String],
                      finStateSuppData: Option[String], unableToCompleteCount: Option[Int],
                      isRetrieved: Boolean, retrievedTime: Option[Timestamp])
@@ -14,7 +14,7 @@ object Company {
 
     def id = column[Option[Int]]("COMP_ID", O.PrimaryKey, O.AutoInc)
     def s3FileLoc = column[Option[String]]("COMP_S3_FILE_LOC")
-    def casperFileLoc = column[Option[String]]("COMP_CASPER_FILE_LOC")
+    def localFileLoc = column[Option[String]]("COMP_LOCAL_FILE_LOC")
     def riskFactor = column[Option[String]]("COMP_RISK_FACTOR") //Item 1A
     def managementDisc = column[Option[String]]("COMP_MANAGE_DISC") //Item 7. Management's Discussion and Analysis of Financial Condition and Results of Operations
     def finStateSuppData = column[Option[String]]("COMP_FIN_STATEMENT") //Item 8. Financial Statements and Supplementary Data
@@ -22,7 +22,7 @@ object Company {
     def isRetrieved = column[Boolean]("COMP_IS_RETTIEVED")
     def retrievedTime = column[Option[Timestamp]]("COMP_RETRIEVED_TIME")
 
-    def * = (id, s3FileLoc, casperFileLoc, riskFactor, managementDisc,
+    def * = (id, s3FileLoc, localFileLoc, riskFactor, managementDisc,
       finStateSuppData, unableToCompleteCount, isRetrieved, retrievedTime) <> (Company.tupled, Company.unapply _)
   }
 
@@ -35,8 +35,9 @@ object Company {
     company.copy(id = companyId)
   }
 
+  /* Not in actual use */
   def insertCasper(casperFileLoc: String)(implicit s: Session): (Option[Company], Boolean, Option[String]) = {
-    val companyQuery = for (c <- companies if c.casperFileLoc === casperFileLoc) yield c
+    val companyQuery = for (c <- companies if c.localFileLoc === casperFileLoc) yield c
 
     if (companyQuery.list().isEmpty) {
       /*
@@ -57,6 +58,22 @@ object Company {
       }
     } else {
       (None, false, Some("One company file sharing the same casperFileLoc value already exists"))
+    }
+  }
+
+  //Use Try[Company] to capture this
+  def insertCompany(fileURL: Option[String], localFileLoc: String)(implicit s: Session): Company = {
+
+    if (fileURL.isEmpty) throw new Exception("URL is empty")
+
+    val companyQuery = for (c <- companies if c.localFileLoc === localFileLoc) yield c
+    if (companyQuery.list().isEmpty) {
+      val company = Company(None, Some("http://mturk-company.mindandlanguagelab.com/company/file/"+fileURL.get),
+        Some(localFileLoc), None, None, None, Some(0), isRetrieved = false, None)
+      val companyId = companies returning companies.map(_.id) += company
+      company.copy(id = companyId)
+    }else{
+      throw new Exception("a file sharing the same localFileLoc value already exists")
     }
   }
 

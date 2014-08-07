@@ -53,6 +53,8 @@ class SECCompanyService(secCompanyActor: ActorRef)(implicit system: ActorSystem)
   import spray.http.StatusCodes._
   import JsonImplicits._
 
+  val fileRoot = "/root/experiments/mturk-company/docs/ProcessedSEC10KFiles"
+
   lazy val route =
     pathPrefix("sec") {
       path("help") {
@@ -103,14 +105,14 @@ class SECCompanyService(secCompanyActor: ActorRef)(implicit system: ActorSystem)
             path("txt" / Segment) { fileName =>
               get {
                 compressResponse(Gzip) {
-                  getFromFile(new File("views/js/" + fileName), `text/plain`)
+                  getFromFile(new File(fileRoot + fileName), `text/plain`)
                 }
               }
             } ~
             path("html" / Segment) { fileName =>
               get {
                 compressResponse(Gzip) {
-                  getFromFile(new File("views/js/" + fileName), `text/plain`)
+                  getFromFile(new File(fileRoot + fileName), `text/html`)
                 }
               }
             } ~ complete(NotFound)

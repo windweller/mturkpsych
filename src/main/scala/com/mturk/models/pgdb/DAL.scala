@@ -1,5 +1,6 @@
 package com.mturk.models.pgdb
 
+import java.io.IOException
 import java.nio.file._
 
 import com.mturk.Config._
@@ -24,29 +25,43 @@ object DAL {
       else if (MTable.getTables("User").list().isEmpty) {
         User.users.ddl.create
       }
-      else if (MTable.getTables("").list().isEmpty) {
+      else if (MTable.getTables("MTurk").list().isEmpty) {
         MTurker.mTurkers.ddl.create
+        /**
+         * This is part of initialization of MTurk Table
+         * We are saving all company files into this table
+         * Scanning our server's directories
+         */
+        val filePath = "/root/experiments/mturk-company/docs/ProcessedSEC10KFiles"
+
+        val files = readFileNames(filePath)
+        saveToDataBase(files)
       }
     }
+  }
 
-    //Scan the specific folder and store file info on database
-    //Will only work in server enviornment
-    val filePath = "/root/experiments/mturk-company/docs/ProcessedSEC10KFiles"
+  def readFileNames(filePath: String):Option[List[Path]] = {
+    val p = Paths.get(filePath)
+    val stream = Try(Files.newDirectoryStream(p))
 
-//    val files = readFileNames()
-//
-//    def readFileNames():Try[List[Path]] = {
-//      val p = Paths.get(filePath)
-//      val stream = Try(Files.newDirectoryStream(p))
-//      stream.map[List[Path]](ds =>
-//        while(ds.iterator().hasNext){
-//          ds.iterator().next()
-//        }
-//      )
-//      for {
-//        stream <- Try(Files.newDirectoryStream(p))
-//        file:Path <- stream.iterator()
-//      } yield file.getFileName
-//    }
+    val listOfFiles = List[Path]()
+    stream.map[Unit]{stream =>
+      while (stream.iterator().hasNext) {
+        listOfFiles :+ stream.iterator().next()
+      }
+    }
+    if(listOfFiles.isEmpty) None else Some(listOfFiles)
+  }
+
+  def saveToDataBase(paths: Option[List[Path]]) {
+    db.withSession { implicit session =>
+      for (ps <- paths; filepath <- ps) {
+        val regex = "(2012.+)".r
+        val url = regex.findFirstIn(filepath.toString)
+        val company = Try(Company.insertCompany(url, filepath.toString)).recover{
+          case e: Exception => println(e.getMessage)
+        }
+      }
+    }
   }
 }
