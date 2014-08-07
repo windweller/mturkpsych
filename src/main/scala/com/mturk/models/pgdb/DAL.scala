@@ -21,12 +21,7 @@ object DAL {
     db.withSession{ implicit session =>
       if (MTable.getTables("Company").list().isEmpty) {
         Company.companies.ddl.create
-      }
-      else if (MTable.getTables("User").list().isEmpty) {
-        User.users.ddl.create
-      }
-      else if (MTable.getTables("MTurk").list().isEmpty) {
-        MTurker.mTurkers.ddl.create
+
         /**
          * This is part of initialization of MTurk Table
          * We are saving all company files into this table
@@ -36,6 +31,13 @@ object DAL {
 
         val files = readFileNames(filePath)
         saveToDataBase(files)
+
+      }
+      else if (MTable.getTables("User").list().isEmpty) {
+        User.users.ddl.create
+      }
+      else if (MTable.getTables("MTurk").list().isEmpty) {
+        MTurker.mTurkers.ddl.create
       }
     }
   }

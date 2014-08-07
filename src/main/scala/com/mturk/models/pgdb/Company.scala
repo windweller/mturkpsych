@@ -5,7 +5,7 @@ import com.github.nscala_time.time.Imports._
 import scala.slick.driver.PostgresDriver.simple._
 
 object Company {
-  case class Company(id: Option[Int], s3FileLoc: Option[String], localFileLoc: Option[String],
+  case class Company(id: Option[Int], txtURL: Option[String], htmlURL: Option[String], localFileLoc: Option[String],
                      riskFactor: Option[String], managementDisc: Option[String],
                      finStateSuppData: Option[String], unableToCompleteCount: Option[Int],
                      isRetrieved: Boolean, retrievedTime: Option[Timestamp])
@@ -13,7 +13,8 @@ object Company {
   class CompanyTable(tag: Tag) extends Table[Company](tag, "Company") {
 
     def id = column[Option[Int]]("COMP_ID", O.PrimaryKey, O.AutoInc)
-    def s3FileLoc = column[Option[String]]("COMP_S3_FILE_LOC")
+    def txtURL = column[Option[String]]("COMP_TXT_URL")
+    def htmlURL = column[Option[String]]("COMP_HTML_URL")
     def localFileLoc = column[Option[String]]("COMP_LOCAL_FILE_LOC")
     def riskFactor = column[Option[String]]("COMP_RISK_FACTOR") //Item 1A
     def managementDisc = column[Option[String]]("COMP_MANAGE_DISC") //Item 7. Management's Discussion and Analysis of Financial Condition and Results of Operations
@@ -22,7 +23,7 @@ object Company {
     def isRetrieved = column[Boolean]("COMP_IS_RETTIEVED")
     def retrievedTime = column[Option[Timestamp]]("COMP_RETRIEVED_TIME")
 
-    def * = (id, s3FileLoc, localFileLoc, riskFactor, managementDisc,
+    def * = (id, txtURL, htmlURL, localFileLoc, riskFactor, managementDisc,
       finStateSuppData, unableToCompleteCount, isRetrieved, retrievedTime) <> (Company.tupled, Company.unapply _)
   }
 
@@ -52,7 +53,7 @@ object Company {
       s3Loc.isEmpty match {
         case true => (None, false, Some("casperFileLoc value doesn't fit format and the server can't extract certain value"))
         case false =>
-          val company = Company(None, Some(s3Loc.get), Some(casperFileLoc), None, None, None, Some(0), isRetrieved = false, None)
+          val company = Company(None, Some(s3Loc.get), None, Some(casperFileLoc), None, None, None, Some(0), isRetrieved = false, None)
           val companyId = companies returning companies.map(_.id) += company
           (Some(company.copy(id = companyId)), true, None)
       }
@@ -68,7 +69,8 @@ object Company {
 
     val companyQuery = for (c <- companies if c.localFileLoc === localFileLoc) yield c
     if (companyQuery.list().isEmpty) {
-      val company = Company(None, Some("http://mturk-company.mindandlanguagelab.com/company/file/"+fileURL.get),
+      val rootURL = "http://mturk-company.mindandlanguagelab.com/company/file/"
+      val company = Company(None, Some(rootURL+"txt/"+fileURL.get), Some(rootURL + "html/"+fileURL.get),
         Some(localFileLoc), None, None, None, Some(0), isRetrieved = false, None)
       val companyId = companies returning companies.map(_.id) += company
       company.copy(id = companyId)

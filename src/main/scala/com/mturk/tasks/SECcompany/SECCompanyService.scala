@@ -53,7 +53,7 @@ class SECCompanyService(secCompanyActor: ActorRef)(implicit system: ActorSystem)
   import spray.http.StatusCodes._
   import JsonImplicits._
 
-  val fileRoot = "/root/experiments/mturk-company/docs/ProcessedSEC10KFiles"
+  val fileRoot = "/root/experiments/mturk-company/docs/ProcessedSEC10KFiles/"
 
   lazy val route =
     pathPrefix("sec") {
