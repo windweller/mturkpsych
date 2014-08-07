@@ -6,7 +6,7 @@ import java.nio.file._
 import com.mturk.Config._
 import scala.slick.driver.PostgresDriver.simple._
 import scala.slick.jdbc.meta.MTable
-import scala.util.Try
+import scala.util.{Failure, Success, Try}
 import scala.collection.JavaConverters
 
 
@@ -44,13 +44,15 @@ object DAL {
 
   def readFileNames(filePath: String):Option[List[Path]] = {
     val p = Paths.get(filePath)
-    val stream = Try(Files.newDirectoryStream(p))
+    val stream: Try[DirectoryStream[Path]] = Try(Files.newDirectoryStream(p))
 
     val listOfFiles = List[Path]()
-    stream.map[Unit]{stream =>
-      while (stream.iterator().hasNext) {
-        listOfFiles :+ stream.iterator().next()
-      }
+    stream match {
+      case Success(st) =>
+        while (st.iterator().hasNext) {
+          listOfFiles :+ st.iterator().next()
+        }
+      case Failure(ex) => println(s"The file path is incorrect: ${ex.getMessage}")
     }
     if(listOfFiles.isEmpty) None else Some(listOfFiles)
   }
