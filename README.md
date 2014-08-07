@@ -1,4 +1,4 @@
-MTurk Psych
+MTurk Psych [![Build Status](https://travis-ci.org/windweller/mturkpsych.svg?branch=master)](https://travis-ci.org/windweller/mturkpsych.svg?branch=master)  
 ==========
 
 This website is used to run the Psychology experiment (mTurk tasks). It is built purely using Spray REST API library and Spray-Can as the server. This website leverages Akka's incredible Actor concurrency and ditched traditional MVC framework to embrace JavaScript endpoint construction.
