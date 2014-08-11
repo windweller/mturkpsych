@@ -67,6 +67,10 @@ object DAL {
       println(Files.isReadable(head))
       println(Files.exists(head))
 
+      val currentRelativePath = Paths.get("")
+      val s = currentRelativePath.toAbsolutePath.toString
+      println(s)
+
       if (Files.isDirectory(head)) {
         val stream: Try[DirectoryStream[Path]] = Try(Files.newDirectoryStream(head))
         println("reached point 2")
