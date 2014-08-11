@@ -1,13 +1,13 @@
 package com.mturk.models.pgdb
 
-import java.io.IOException
 import java.nio.file._
+import scala.collection.mutable.ListBuffer
+import scala.util.{Failure, Success, Try}
+import scala.annotation.tailrec
 
 import com.mturk.Config._
 import scala.slick.driver.PostgresDriver.simple._
 import scala.slick.jdbc.meta.MTable
-import scala.util.{Failure, Success, Try}
-import scala.collection.JavaConverters
 
 
 object DAL {
@@ -18,7 +18,9 @@ object DAL {
   }
 
   def databaseInit() {
+
     db.withSession{ implicit session =>
+
       if (MTable.getTables("Company").list().isEmpty) {
         Company.companies.ddl.create
 
@@ -27,16 +29,16 @@ object DAL {
          * We are saving all company files into this table
          * Scanning our server's directories
          */
-        val filePath = "/root/experiments/mturk-company/docs/ProcessedSEC10KFiles"
-
-        val files = readFileNames(filePath)
+        println(secFileLoc)
+        val files = readFileNames(secFileLoc)
         saveToDataBase(files)
-
       }
-      else if (MTable.getTables("User").list().isEmpty) {
+
+      if (MTable.getTables("User").list().isEmpty) {
         User.users.ddl.create
       }
-      else if (MTable.getTables("MTurk").list().isEmpty) {
+
+      if (MTable.getTables("MTurker").list().isEmpty) {
         MTurker.mTurkers.ddl.create
       }
     }
@@ -44,17 +46,40 @@ object DAL {
 
   def readFileNames(filePath: String):Option[List[Path]] = {
     val p = Paths.get(filePath)
-    val stream: Try[DirectoryStream[Path]] = Try(Files.newDirectoryStream(p))
 
-    val listOfFiles = List[Path]()
-    stream match {
-      case Success(st) =>
-        while (st.iterator().hasNext) {
-          listOfFiles :+ st.iterator().next()
+    val resultList = recursiveTraverse(ListBuffer[Path](p), ListBuffer[Path]())
+    if(resultList.isEmpty) None else Some(resultList.toList)
+  }
+
+  @tailrec
+  def recursiveTraverse(filePaths: ListBuffer[Path], resultFiles: ListBuffer[Path]): ListBuffer[Path] = {
+
+    if (filePaths.isEmpty) resultFiles
+    else {
+      val head = filePaths.head
+      val tail = filePaths.tail
+
+      if (Files.isDirectory(head)) {
+        val stream: Try[DirectoryStream[Path]] = Try(Files.newDirectoryStream(head))
+        stream match {
+          case Success(st) =>
+            val iterator = st.iterator()
+            while (iterator.hasNext) {
+              tail += iterator.next()   //kidding me? This generates a new List not modifying old one
+            }
+          case Failure(ex) => println(s"The file path is incorrect: ${ex.getMessage}")
         }
-      case Failure(ex) => println(s"The file path is incorrect: ${ex.getMessage}")
+        stream.map(ds => ds.close())
+        recursiveTraverse(tail, resultFiles)
+      }
+      else{
+        if (head.toString.contains(".txt")) {
+          recursiveTraverse(tail, resultFiles += head)
+        }else{
+          recursiveTraverse(tail, resultFiles)
+        }
+      }
     }
-    if(listOfFiles.isEmpty) None else Some(listOfFiles)
   }
 
   def saveToDataBase(paths: Option[List[Path]]) {

@@ -33,7 +33,7 @@ object Config {
 
   val tempConnect = config.getString("db.postgresql.connect")
   val dbConnect = if (!tempConnect.contains("postgresql"))
-                    "jdbc:"+tempConnect.replace("postgres", "postgresql").replace("172.17.42.1", "mindandlanguagelab.com")
+                   "jdbc:"+tempConnect.replace("postgres", "postgresql").replace("172.17.42.1", "104.131.214.249")
                   else tempConnect
 
   val dbURL = extractPattern.replaceFirstIn(dbConnect, "//")
@@ -41,4 +41,6 @@ object Config {
   val dbPassword = for (m <- extractPattern.findFirstMatchIn(dbConnect)) yield m.group(3)
   val dbDriver = config.getString("db.postgresql.driver")
 
+  //for mturk-comapny task: load file location parameter
+  val secFileLoc = config.getString("file.sec-file-loc")
 }
