@@ -9,9 +9,12 @@ class SECCompanyInitTimers(totalCount: Option[Int]) extends Actor with ActorLogg
   var currentProgress = 0
 
   /* Use progress bar to update initialization */
-  println("Initialization Starts Now!")
+
   val bar = new ProgressBar()
-  if (totalCount.isDefined) bar.update(currentProgress, totalCount.get)
+  if (totalCount.isDefined) {
+    println("Initialization Starts Now!")
+    bar.update(currentProgress, totalCount.get)
+  }
 
   def receive = {
     case InitAddOne =>

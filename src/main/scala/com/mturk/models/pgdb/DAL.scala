@@ -61,12 +61,14 @@ object DAL {
       val head = filePaths.head
       val tail = filePaths.tail
 
+      println("reached point 1")
       if (Files.isDirectory(head)) {
         val stream: Try[DirectoryStream[Path]] = Try(Files.newDirectoryStream(head))
+        println("reached point 2")
         stream match {
           case Success(st) =>
             val iterator = st.iterator()
-            println("reached this far")
+            println("reached point 3")
             println(iterator.hasNext)
             while (iterator.hasNext) {
               tail += iterator.next()   //kidding me? This generates a new List not modifying old one
