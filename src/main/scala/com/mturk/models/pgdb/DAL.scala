@@ -1,6 +1,8 @@
 package com.mturk.models.pgdb
 
 import java.nio.file._
+import akka.actor.{Props, ActorSystem}
+
 import scala.collection.mutable.ListBuffer
 import scala.util.{Failure, Success, Try}
 import scala.annotation.tailrec
@@ -17,7 +19,7 @@ object DAL {
     case _ => Database.forURL(url = dbURL, user=dbUser.get, password=dbPassword.get, driver = dbDriver)
   }
 
-  def databaseInit() {
+  def databaseInit()(implicit system: ActorSystem) {
 
     db.withSession{ implicit session =>
 
@@ -82,7 +84,11 @@ object DAL {
     }
   }
 
-  def saveToDataBase(paths: Option[List[Path]]) {
+  def saveToDataBase(paths: Option[List[Path]])(implicit system: ActorSystem) {
+    import com.mturk.tasks.timer.SECCompanyInitTimers
+    import com.mturk.tasks.timer.SECCompanyInitTimersMsg._
+
+    val timer = system.actorOf(Props(new SECCompanyInitTimers(paths.getOrElse(List()).size)))
     db.withSession { implicit session =>
       for (ps <- paths; filepath <- ps) {
         val regex = "(2012.+)".r
@@ -90,6 +96,7 @@ object DAL {
         val company = Try(Company.insertCompany(url, filepath.toString)).recover{
           case e: Exception => println(e.getMessage)
         }
+        timer ! InitAddOne
       }
     }
   }

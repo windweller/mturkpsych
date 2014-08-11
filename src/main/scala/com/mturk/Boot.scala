@@ -10,9 +10,9 @@ import com.mturk.models.pgdb.DAL
 object Boot extends App with MainActors with RootApi {
 
   //construct database tables; it needs improvement
-  DAL.databaseInit()
-
   implicit lazy val system = ActorSystem("mturk-survey")
+
+  DAL.databaseInit()
 
   IO(Http) ! Http.Bind(rootService, interface = Config.host, port = Config.portHTTP)
 }
