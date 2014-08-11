@@ -1,8 +1,8 @@
 package com.mturk.models.pgdb
 
-import java.nio.file._
-import akka.actor.{Props, ActorSystem}
 
+import akka.actor.{Props, ActorSystem}
+import java.nio.file._
 import scala.collection.mutable.ListBuffer
 import scala.util.{Failure, Success, Try}
 import scala.annotation.tailrec
@@ -66,6 +66,8 @@ object DAL {
         stream match {
           case Success(st) =>
             val iterator = st.iterator()
+            println("reached this far")
+            println(iterator.hasNext)
             while (iterator.hasNext) {
               tail += iterator.next()   //kidding me? This generates a new List not modifying old one
             }
@@ -88,7 +90,8 @@ object DAL {
     import com.mturk.tasks.timer.SECCompanyInitTimers
     import com.mturk.tasks.timer.SECCompanyInitTimersMsg._
 
-    val timer = system.actorOf(Props(new SECCompanyInitTimers(paths.getOrElse(List()).size)))
+    val timer = system.actorOf(Props(new SECCompanyInitTimers(paths.map(l => l.size))))
+
     db.withSession { implicit session =>
       for (ps <- paths; filepath <- ps) {
         val regex = "(2012.+)".r
