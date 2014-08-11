@@ -62,6 +62,7 @@ object DAL {
       val tail = filePaths.tail
 
       println("reached point 1")
+      println(head.toString)
       println(Files.isDirectory(head))
       if (Files.isDirectory(head)) {
         val stream: Try[DirectoryStream[Path]] = Try(Files.newDirectoryStream(head))
