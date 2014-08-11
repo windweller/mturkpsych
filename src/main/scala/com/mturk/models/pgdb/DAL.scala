@@ -48,7 +48,7 @@ object DAL {
 
   def readFileNames(filePath: String):Option[List[Path]] = {
     val p = Paths.get(filePath)
-
+    ///root/experiments/mturk-company/docs/ProcessedSEC10KFiles
     val resultList = recursiveTraverse(ListBuffer[Path](p), ListBuffer[Path]())
     if(resultList.isEmpty) None else Some(resultList.toList)
   }
@@ -62,6 +62,7 @@ object DAL {
       val tail = filePaths.tail
 
       println("reached point 1")
+      println(Files.isDirectory(head))
       if (Files.isDirectory(head)) {
         val stream: Try[DirectoryStream[Path]] = Try(Files.newDirectoryStream(head))
         println("reached point 2")
