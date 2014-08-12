@@ -48,7 +48,6 @@ object DAL {
 
   def readFileNames(filePath: String):Option[List[Path]] = {
     val p = Paths.get(filePath)
-    ///root/experiments/mturk-company/docs/ProcessedSEC10KFiles
     val resultList = recursiveTraverse(ListBuffer[Path](p), ListBuffer[Path]())
     if(resultList.isEmpty) None else Some(resultList.toList)
   }
@@ -61,24 +60,14 @@ object DAL {
       val head = filePaths.head
       val tail = filePaths.tail
 
-      println("reached point 1")
-      println(head.toString)
-      println(Files.isDirectory(head))
-      println(Files.isReadable(head))
-      println(Files.exists(head))
-
-      val currentRelativePath = Paths.get("")
-      val s = currentRelativePath.toAbsolutePath.toString
-      println(s)
+      val currentRelativePath = Paths.get("/app/ProcessedSEC10KFiles")
+      println(Files.isDirectory(currentRelativePath))
 
       if (Files.isDirectory(head)) {
         val stream: Try[DirectoryStream[Path]] = Try(Files.newDirectoryStream(head))
-        println("reached point 2")
         stream match {
           case Success(st) =>
             val iterator = st.iterator()
-            println("reached point 3")
-            println(iterator.hasNext)
             while (iterator.hasNext) {
               tail += iterator.next()   //kidding me? This generates a new List not modifying old one
             }
