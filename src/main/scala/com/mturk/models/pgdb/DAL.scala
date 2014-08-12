@@ -60,14 +60,10 @@ object DAL {
       val head = filePaths.head
       val tail = filePaths.tail
 
-      val currentRelativePath = Paths.get("/app/ProcessedSEC10KFiles")
-      println(Files.isDirectory(head))
-
       if (Files.isDirectory(head)) {
         val stream: Try[DirectoryStream[Path]] = Try(Files.newDirectoryStream(head))
         stream match {
           case Success(st) =>
-          println("start iterator...")
             val iterator = st.iterator()
             while (iterator.hasNext) {
               tail += iterator.next()   //kidding me? This generates a new List not modifying old one
