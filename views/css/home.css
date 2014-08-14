@@ -16,6 +16,12 @@ label {
 	color: #8a6d3b;
 }
 
+kbd {
+	color: #fff;
+	background-color: #8a6d3b;
+	border-color: #faebcc;
+}
+
 .canvas {
 	border: 18px solid #f3f3f3;
 	background: white;
@@ -118,6 +124,10 @@ label {
 
 #instruction-header {
 	cursor: pointer;
+}
+
+.hint {
+	zoom: 0.9;
 }
 
 /*Utility CSS*/

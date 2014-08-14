@@ -164,8 +164,7 @@ object Company {
         //the old company is updated with count + 1
         //now retrieve a different company for user and js will update the link
         //and send altertify message
-
-        (Some(updatedCompany), true, None)
+        getOneCompany()
     }
   }
 

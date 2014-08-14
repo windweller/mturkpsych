@@ -86,7 +86,7 @@ class SECCompanyService(secCompanyActor: ActorRef)(implicit system: ActorSystem)
               } ~
               put {
               //PUT method comes in when one person can't complete the request, need
-              //to retrieve a different document
+              //to retrieve a different document returned
                 complete {
                   doPost(JObjectFromWebPUT.apply, authInfo, secCompanyActor)
                 }

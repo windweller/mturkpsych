@@ -1,5 +1,6 @@
 /* Global library settings */
 alertify.set({ buttonFocus: "none" });
+alertify.set({ delay: 10000 }); //for logging messages
 
 var global_access = (function($, window, loc, alertify) {
   'use strict';
@@ -257,8 +258,9 @@ var animate = (function($, glo, alertify) {
     alertify.success("Hey! A new task has arrived!");
   }
 
-  function taskFail() {
-    alertify.alert("Message");
+  function taskFail(progressNum) {
+    scrollTopFail();
+    collapseAnimate(progressNum, $("#panel-instruction-content"));
   }
 
   function animateProgressBar(progressNum) {
@@ -285,6 +287,11 @@ var animate = (function($, glo, alertify) {
     var body = $("html, body");
     body.animate({scrollTop:0}, '300', 'swing', 
       animateProgressBar(progressNum));
+  }
+
+  function scrollTopFail() {
+    var body = $("html, body");
+    body.animate({scrollTop:0}, '300', 'swing');
   }
 
   return {
@@ -346,6 +353,12 @@ var app = (function($, glo, animate) {
   (function init() {
 
     /**
+    * For File read in broswer or download
+    * data format is above loadNewDocURL()
+    **/
+      updateDocLinks(fileURIPromise);
+
+    /**
     * For saving MTurk Id Action
     **/
     $('#saveMturkId').click(function(event) {
@@ -366,28 +379,44 @@ var app = (function($, glo, animate) {
     * For uncompletable files
     **/
     $('#unableToComplete').click(function(event) {
-      
+      var newURIPromises = unableToComplete();
+      updateDocLinks(newURIPromises);
+      alertify.log("We have swapped the document for you!");
+      animate.taskFail($.cookie('countTask'));
     });
 
     /**
     *  For completed text
+    *  check on fields first
     **/
     $('DoneNext').click(function(event) {
+      if (textFields.riskFactor.val() != "" 
+        && textFields.managementDis.val() != ""
+        && textFields.finanState.val() != "") {
+        //now they are filled up, but are they authentic?
+        //let's check the length of each section
+        var lengthOfFirst = textFields.riskFactor.val().length;
+        var lengthOfSecond = textFields.managementDis.val().length;
+        var lengthOfThird = textFields.finanState.val().length;
 
+        if (lengthOfFirst <= 30 || lengthOfSecond <= 30 || lengthOfThird <= 30) {
+          alertify.alert("The input of those text fields appear to be very short. " +
+            "We can't let this pass our check system. Sorry. Please click "+
+            "<span class='red'>Unable to Complete</span> button.");
+        }
+
+        //add more tests/checks here
+
+        //then send out ajax, trigger animation
+
+
+      }else{
+        alertify.alert("One or multiple textareas aren't filled." +
+          " If the document is corrupted or doesn't contain all three fields, " +
+          "please click the red button <span class='red'>Unable to Complete</span> "+
+          " at the bottom of the page. ");
+      }
     });
-
-    /**
-    * For File read in broswer or download
-    * data format is above loadNewDocURL()
-    **/
-      fileURIPromise.then(function(data) {
-        $("#readInBrowser").attr('href', data.htmlURL);
-      });
-
-      fileURIPromise.then(function(data) {
-        $("#downloadFile").attr('href', data.txtURL);
-      });
-
 
   })();
 
@@ -407,6 +436,13 @@ var app = (function($, glo, animate) {
     }
   })();
 
+  function updateDocLinks(promise) {
+    promise.then(function(data) {
+        $("#readInBrowser").attr('href', data.htmlURL);
+        $("#downloadFile").attr('href', data.txtURL);
+      });
+  }
+
   //talk to backend to retrieve a new doc's url
   //and update on html page
   // {"htmlURL": "http://mturk-company.mindandlanguagelab.com/company/file/html/2012QTR1/0000003453-12-000026-finalDoc.txt",
@@ -420,10 +456,28 @@ var app = (function($, glo, animate) {
 
   function loadNewDocURL() {
     if (document.URL.indexOf("turk") >= 0) {
-      return companyURIPromise.then(function(uris) {
+      return companyURIPromise.then(function (uris) {
         return Q($.ajax({
           url: uris.webOneCompany._2,
           type: uris.webOneCompany._1,
+          datatype: "json",
+          contentType: 'application/json; charset=UTF-8'
+        }))
+        .then(function (data) {
+          return data;
+        })
+        .fail(function (jqXHR, textStatus, errorThrown) {
+          glo.ajaxFailureHandle(jqXHR, uris.webOneCompany._2, textStatus, errorThrown);
+        });
+      });
+    }
+  }
+
+    function unableToComplete() {
+      return companyURIPromise.then(function(uris) {
+        return Q($.ajax({
+          url: uris.webUnableToComp._2,
+          type: uris.webUnableToComp._1,
           datatype: "json",
           contentType: 'application/json; charset=UTF-8'
         }))
@@ -431,11 +485,11 @@ var app = (function($, glo, animate) {
           return data;
         })
         .fail(function(jqXHR, textStatus, errorThrown) {
-          glo.ajaxFailureHandle(jqXHR, uris.webOneCompany._2, textStatus, errorThrown);
+          glo.ajaxFailureHandle(jqXHR, uris.webUnableToComp._2, textStatus, errorThrown);
         });
       });
     }
-  }
+
 
   return {
     fileURIPromise: fileURIPromise
