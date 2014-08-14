@@ -52,8 +52,7 @@ class SECCompanyService(secCompanyActor: ActorRef)(implicit system: ActorSystem)
   import com.mturk.tasks.SECcompany.SECCompanyProtocol._
   import spray.http.StatusCodes._
   import JsonImplicits._
-
-  val fileRoot = "/root/experiments/mturk-company/docs/ProcessedSEC10KFiles/"
+  import com.mturk.Config._
 
   lazy val route =
     pathPrefix("sec") {
@@ -62,9 +61,10 @@ class SECCompanyService(secCompanyActor: ActorRef)(implicit system: ActorSystem)
           val localhostPortConfig = if (hn == "127.0.0.1") ":8080" else ""
 
           val routeApis = Map[String, (String, String)](
-            "casperUpload" -> ("POST", "http://"+  hn + localhostPortConfig  + "/company/casper"),
-            "webUpload" -> ("POST", "http://"+  hn + localhostPortConfig  + "/company/web"),
-            "webOneCompany" -> ("GET","http://"+  hn + localhostPortConfig  + "/company/web")
+            "casperUpload" -> ("POST", "http://"+  hn + localhostPortConfig  + "/sec/company/casper"),
+            "webUpload" -> ("POST", "http://"+  hn + localhostPortConfig  + "/sec/company/web"),
+            "webUnableToComp" -> ("PUT", "http://"+  hn + localhostPortConfig  + "/sec/company/web"),
+            "webOneCompany" -> ("GET","http://"+  hn + localhostPortConfig  + "/sec/company/web")
           )
           complete(routeApis)
         }
@@ -92,14 +92,16 @@ class SECCompanyService(secCompanyActor: ActorRef)(implicit system: ActorSystem)
                 }
               }
             } ~
-            get {
-              val response = (secCompanyActor ? WebGetOneCompany).mapTo[TransOk]
-                .map(result => result.succeedOrNot match {
-                case true => (OK, result.company.get)
-                case false => (BadRequest, result.errorMessage) //no more company left
-              })
-              complete(response)
-            }
+              get {
+                complete{
+                  val response = (secCompanyActor ? WebGetOneCompany).mapTo[TransOk]
+                    .map(result => result.succeedOrNot match {
+                    case true => (OK, result.company.get)
+                    case false => (BadRequest, result.errorMessage) //no more company left
+                  })
+                  response
+                }
+              }
           } ~
           pathPrefix("file") {
             path("txt" / Segment) { fileName =>

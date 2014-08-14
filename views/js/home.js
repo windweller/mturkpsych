@@ -330,7 +330,11 @@ var app = (function($, glo, animate) {
 
   var companyURIPromise = glo.companyURIPromise;
 
-  /*Action triggered logic*/
+  var fileURIPromise = loadNewDocURL();
+
+  /*
+  * Action triggering main logic
+  */
 
   (function init() {
 
@@ -360,7 +364,22 @@ var app = (function($, glo, animate) {
     **/
 
     $('#readInBrowser').click(function(event) {
+      /* data format is above loadNewDocURL() */
+      fileURIPromise.then(function(data) {
+        var win = window.open(data.htmlURL, '_blank');
+        win.focus();
+      });
+    });
+
+    /**
+    *  For File to be downloaded as .html
+    **/
+
+    $('#downloadFile').click(function(event) {
       /* Act on the event */
+      fileURIPromise.then(function(data) {
+        var win = window.open(data.txtURL, '_blank');
+      });
     });
 
   })();
@@ -383,15 +402,36 @@ var app = (function($, glo, animate) {
 
   //talk to backend to retrieve a new doc's url
   //and update on html page
+  // {"htmlURL": "http://mturk-company.mindandlanguagelab.com/company/file/html/2012QTR1/0000003453-12-000026-finalDoc.txt",
+  //  "id": 2,
+  //  "isRetrieved": true,
+  //  "localFileLoc": "/Users/Aimingnie/Desktop/webapp/ProcessedSEC10KFiles/2012QTR1/0000003453-12-000026-finalDoc.txt",
+  //  "retrievedTime": "2014-08-13T15:57:29Z",
+  //  "txtURL": "http://mturk-company.mindandlanguagelab.com/company/file/txt/2012QTR1/0000003453-12-000026-finalDoc.txt",
+  //  "unableToCompleteCount": 0 }
+  // need id to mark as "unable to retrieve"
+
   function loadNewDocURL() {
-    companyURIPromise.then(function(data) {
-      console.log(data);
-    });
+    // if (document.URL.indexOf("turk") >= 0) {
+      companyURIPromise.then(function(uris) {
+        var response = Q($.ajax({
+          url: uris.webOneCompany._2,
+          type: uris.webOneCompany._1,
+          datatype: "json",
+          contentType: 'application/json; charset=UTF-8'
+        }))
+        .then(function(data) {
+          return data;
+        })
+        .fail(function(jqXHR, textStatus, errorThrown) {
+          glo.ajaxFailureHandle(jqXHR, uris.webOneCompany._2, textStatus, errorThrown);
+        });
+      });
+    // }
   }
 
-
   return {
-    
+    fileURIPromise: fileURIPromise
   };
 
 }(jQuery, global_access, animate, alertify));

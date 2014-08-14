@@ -1,6 +1,7 @@
 package com.mturk.models.pgdb
 
 import java.sql.Timestamp
+import akka.actor.ActorLogging
 import com.github.nscala_time.time.Imports._
 import scala.slick.driver.PostgresDriver.simple._
 
@@ -117,15 +118,17 @@ object Company {
    */
   def getOneCompany()(implicit s: Session): (Option[Company], Boolean, Option[String]) = {
     //first query: unretrieved
-    val companyFirstQuery = for (c <- companies if c.isRetrieved === false) yield c
+    val companyFirstQuery = for (c <- companies
+         if c.isRetrieved === false && c.unableToCompleteCount <= 2) yield c
+
     val firstBatchCompanies = companyFirstQuery.list()
     if (firstBatchCompanies.isEmpty) {
-
       //second query: null ones and unable to complete <= 2
+      //first step, mark those qualifying companies' "isRetrieved" = False
       val companySecondQuery = for (c <- companies if c.riskFactor.isNull
         && c.managementDisc.isNull && c.finStateSuppData.isNull && c.unableToCompleteCount <= 2) yield c
 
-      val secondBatchCompanies = companySecondQuery.sortBy(_.retrievedTime.asc).list()
+      val secondBatchCompanies = companySecondQuery.sortBy(_.retrievedTime.asc).list()  //start from earliest record
       if (secondBatchCompanies.isEmpty) {
         (None, false, Some("There is no document fitting requirements left"))
       } else {
@@ -143,6 +146,7 @@ object Company {
   }
 
   def updateOnRetrieval(company: Company)(implicit s: Session) = {
+    println("company passed in for update: "+ company.id)
     val q = for (c <- companies if c.id === company.id) yield (c.isRetrieved, c.retrievedTime)
     val time = new Timestamp(DateTime.now.getMillis)
     q.update(true, Some(time))

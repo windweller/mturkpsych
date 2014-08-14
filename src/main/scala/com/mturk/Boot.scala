@@ -43,4 +43,5 @@ object Config {
 
   //for mturk-comapny task: load file location parameter
   val secFileLoc = config.getString("file.sec-file-loc")
+  val fileRoot = config.getString("file.file-root")
 }
