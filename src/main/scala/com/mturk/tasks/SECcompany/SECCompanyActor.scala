@@ -39,7 +39,7 @@ class SECCompanyActor extends Actor with ActorLogging {
         }
       }else{
         sender ! TransOk(None, succeedOrNot = false, Some("At least one of four " +
-          "fields: riskFactor, managementDisc, finStateSuppData, or companyId was not defined in JOSN"))
+          "fields: riskFactor, managementDisc, finStateSuppData, or companyId was not defined in JSON"))
       }
 
     case JObjectFromWebPUT(jObject) =>

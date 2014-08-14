@@ -57,7 +57,7 @@ class SECCompanyService(secCompanyActor: ActorRef)(implicit system: ActorSystem)
   lazy val route =
     pathPrefix("sec") {
       path("help") {
-        hostName { hn=>
+        hostName { hn =>
           val localhostPortConfig = if (hn == "127.0.0.1") ":8080" else ""
 
           val routeApis = Map[String, (String, String)](
@@ -93,28 +93,37 @@ class SECCompanyService(secCompanyActor: ActorRef)(implicit system: ActorSystem)
               }
             } ~
               get {
-                complete{
-                  val response = (secCompanyActor ? WebGetOneCompany).mapTo[TransOk]
-                    .map(result => result.succeedOrNot match {
-                    case true => (OK, result.company.get)
-                    case false => (BadRequest, result.errorMessage) //no more company left
-                  })
+                hostName { hn =>
+                  complete {
+                    val response = (secCompanyActor ? WebGetOneCompany).mapTo[TransOk]
+                      .map(result => result.succeedOrNot match {
+                      case true =>
+                        val localhostPortConfig = if (hn == "127.0.0.1") ":8080" else ""
+                        val newTxtURL = "http://" +  hn + localhostPortConfig  + result.company.get.txtURL.get
+                        val newHtmlURL = "http://" +  hn + localhostPortConfig  + result.company.get.htmlURL.get
+                        (OK, result.company.get.copy(txtURL = Some(newTxtURL), htmlURL = Some(newHtmlURL)))
+                      case false => (BadRequest, result.errorMessage) //no more company left
+                        //TODO: make sure the other side responds to error well
+                    })
                   response
+                  }
                 }
               }
           } ~
           pathPrefix("file") {
-            path("txt" / Segment) { fileName =>
+            path("txt" / Rest) { fileName =>
               get {
+                println(secFileLoc + fileName)
                 compressResponse(Gzip) {
-                  getFromFile(new File(fileRoot + fileName), `text/plain`)
+                  getFromFile(new File(secFileLoc + fileName), `application/octet-stream`)
                 }
               }
             } ~
-            path("html" / Segment) { fileName =>
+            path("html" / Rest) { fileName =>
               get {
+                println(secFileLoc + fileName)
                 compressResponse(Gzip) {
-                  getFromFile(new File(fileRoot + fileName), `text/html`)
+                  getFromFile(new File(secFileLoc + fileName), `text/html`)
                 }
               }
             } ~ complete(NotFound)

@@ -254,6 +254,7 @@ var animate = (function($, glo, alertify) {
   function taskComplete(progressNum) {
     scrollTop(animateProgressBar, progressNum);
     collapseAnimate(progressNum, $("#panel-instruction-content"));
+    alertify.success("Hey! A new task has arrived!");
   }
 
   function taskFail() {
@@ -332,6 +333,12 @@ var app = (function($, glo, animate) {
 
   var fileURIPromise = loadNewDocURL();
 
+  var textFields = {
+    riskFactor: $('#riskFactor'),
+    managementDis: $('#managementDis'),
+    finanState: $('#finanState')
+  };
+
   /*
   * Action triggering main logic
   */
@@ -339,9 +346,7 @@ var app = (function($, glo, animate) {
   (function init() {
 
     /**
-    *
     * For saving MTurk Id Action
-    *
     **/
     $('#saveMturkId').click(function(event) {
       if (!$('#MturkId').val()) { //is the input null?
@@ -358,29 +363,31 @@ var app = (function($, glo, animate) {
     });
 
     /**
-    *
-    * For File read in broswer
-    *
+    * For uncompletable files
     **/
-
-    $('#readInBrowser').click(function(event) {
-      /* data format is above loadNewDocURL() */
-      fileURIPromise.then(function(data) {
-        var win = window.open(data.htmlURL, '_blank');
-        win.focus();
-      });
+    $('#unableToComplete').click(function(event) {
+      
     });
 
     /**
-    *  For File to be downloaded as .html
+    *  For completed text
     **/
+    $('DoneNext').click(function(event) {
 
-    $('#downloadFile').click(function(event) {
-      /* Act on the event */
-      fileURIPromise.then(function(data) {
-        var win = window.open(data.txtURL, '_blank');
-      });
     });
+
+    /**
+    * For File read in broswer or download
+    * data format is above loadNewDocURL()
+    **/
+      fileURIPromise.then(function(data) {
+        $("#readInBrowser").attr('href', data.htmlURL);
+      });
+
+      fileURIPromise.then(function(data) {
+        $("#downloadFile").attr('href', data.txtURL);
+      });
+
 
   })();
 
@@ -412,9 +419,9 @@ var app = (function($, glo, animate) {
   // need id to mark as "unable to retrieve"
 
   function loadNewDocURL() {
-    // if (document.URL.indexOf("turk") >= 0) {
-      companyURIPromise.then(function(uris) {
-        var response = Q($.ajax({
+    if (document.URL.indexOf("turk") >= 0) {
+      return companyURIPromise.then(function(uris) {
+        return Q($.ajax({
           url: uris.webOneCompany._2,
           type: uris.webOneCompany._1,
           datatype: "json",
@@ -427,7 +434,7 @@ var app = (function($, glo, animate) {
           glo.ajaxFailureHandle(jqXHR, uris.webOneCompany._2, textStatus, errorThrown);
         });
       });
-    // }
+    }
   }
 
   return {

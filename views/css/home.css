@@ -93,6 +93,10 @@ label {
 	transition: background-color 300ms ease-out;
 }
 
+.blockage li:hover a {
+	color: #fff;
+}
+
 .blockage li:first-child {
 	border-right-style: solid;
 	border-width: 2px;

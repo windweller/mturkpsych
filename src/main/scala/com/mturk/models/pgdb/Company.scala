@@ -70,8 +70,8 @@ object Company {
 
     val companyQuery = for (c <- companies if c.localFileLoc === localFileLoc) yield c
     if (companyQuery.list().isEmpty) {
-      val rootURL = "http://mturk-company.mindandlanguagelab.com/company/file/"
-      val company = Company(None, Some(rootURL+"txt/"+fileURL.get), Some(rootURL + "html/"+fileURL.get),
+
+      val company = Company(None, Some("/sec/company/file/txt/"+fileURL.get), Some("/sec/company/file/html/"+fileURL.get),
         Some(localFileLoc), None, None, None, Some(0), isRetrieved = false, None)
       val companyId = companies returning companies.map(_.id) += company
       company.copy(id = companyId)
@@ -161,6 +161,10 @@ object Company {
         val unableToCompCount = list.head.unableToCompleteCount
         val updatedCompany = list.head.copy(unableToCompleteCount = Some(unableToCompCount.get + 1))
         q.update(updatedCompany)
+        //the old company is updated with count + 1
+        //now retrieve a different company for user and js will update the link
+        //and send altertify message
+
         (Some(updatedCompany), true, None)
     }
   }

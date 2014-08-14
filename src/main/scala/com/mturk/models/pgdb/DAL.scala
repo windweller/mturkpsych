@@ -54,7 +54,6 @@ object DAL {
 
   @tailrec
   def recursiveTraverse(filePaths: ListBuffer[Path], resultFiles: ListBuffer[Path]): ListBuffer[Path] = {
-
     if (filePaths.isEmpty) resultFiles
     else {
       val head = filePaths.head
@@ -74,7 +73,7 @@ object DAL {
         recursiveTraverse(tail, resultFiles)
       }
       else{
-        if (head.toString.contains(".txt")) {
+        if (head.toString.contains(".html") || head.toString.contains(".txt")) {
           recursiveTraverse(tail, resultFiles += head)
         }else{
           recursiveTraverse(tail, resultFiles)
