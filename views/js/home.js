@@ -25,26 +25,7 @@ var global_access = (function($, window, loc, alertify) {
   var companyURIPromise = companyURIretrieve();
 
   //contains progress counter in data.countTask
-  var mTurkIdentity = retrieveIdentity();
-
-  /**
-  *
-  * Check if the cookie is already set,
-  * retrieve value from cookie,
-  * if no cookie, establish connection
-  *
-  * On second thought, establishing identity is kind of important.
-  * because it can check if Cookies are dirty
-  *
-  **/
-  function retrieveIdentity() {
-    var promiseObj = _establishIdentity();
-    return {
-      'commToken' : $.cookie('commToken'),
-      'countTask' : $.cookie('countTask'),
-      'promiseObj' : promiseObj
-    };
-  }
+  var mTurkIdentity = _establishIdentity();
 
   /**
   * reFresh the count of countTaks
@@ -53,8 +34,7 @@ var global_access = (function($, window, loc, alertify) {
   **/
   function refresh() {
     $.removeCookie('countTask');
-
-    return retrieveIdentity();
+    return _establishIdentity();
   }
 
   /**
@@ -69,8 +49,7 @@ var global_access = (function($, window, loc, alertify) {
   function restart() {
     $.removeCookie('commToken');
     $.removeCookie('countTask');
-
-    return retrieveIdentity();
+    return _establishIdentity();
   }
 
   /**
@@ -100,11 +79,15 @@ var global_access = (function($, window, loc, alertify) {
           var html = "<div class='row'><div class='large-12 columns'>"+
           "<p>We detect that you have already typed in a mTurk ID: <kbd>" + $.cookie('mturkId') + "</kbd></p>"
           + "<p>If you are the owner of this mTurk ID, click <kbd>Cancel</kbd>. You won't have to type it in again."
-          + " However, if you are not, or if you are using a public computer, click <kbd>OK</kbd> so we can successfully proceed." + "</p>"
+          + " However, if you are not, or if you are using a public computer, click <kbd>OK</kbd> so we can successfully proceed." 
+          + " Bare in mind if you click <kbd>OK</kbd>, your progress will be completely lost.</p>"
+          + "<p> You might also be seeing this message if you are here for the second time. If so, you are welcome! Please click <kbd>Cancel</kbd>. </p>"
           +"</div></div><br>";
           alertify.confirm(html, function(res) {
             if (res) {
               $.removeCookie('mturkId');
+              $.removeCookie('commToken');
+              $.removeCookie('countTask');
               loc.reload();
             }else{
               savemTurkID($.cookie('mturkId'));
@@ -114,13 +97,13 @@ var global_access = (function($, window, loc, alertify) {
 
         //reset task count
         $.cookie("countTask", data.countTask);
-        
+
         return data;
       })
-      .fail(function(jqXHR, textStatus, errorThrown) {
+      .fail(function(jqXHR) {
         //Custom Error Handling
-        customAjaxFailureHandle(jqXHR, mTurkUris.mTurkerGet._2,
-          textStatus, errorThrown, function(html) {
+        customAjaxFailureHandle(jqXHR, mTurkUris.mTurkerGet._2
+          , function(html) {
             var response = html+"<div class='row'><div class='large-12 columns'><div data-alert class='alert-box info radius'> Click 'OK' button, we can solve this problem " +
             "for you by resetting your COOKIE. However, doing so will eliminate your current progress. <a href='#'' class='close'>&times;</a></div></div></div>";
             alertify.confirm(response, function(res) {
@@ -156,8 +139,8 @@ var global_access = (function($, window, loc, alertify) {
     .then(function(data) {
       return data;
     })
-    .fail(function(jqXHR, textStatus, errorThrown) {
-      ajaxFailureHandle(jqXHR, baseHostName+'/mturker/help', textStatus, esrrorThrown);
+    .fail(function(jqXHR) {
+      ajaxFailureHandle(jqXHR, baseHostName+'/mturker/help');
     });
   }
 
@@ -182,8 +165,8 @@ var global_access = (function($, window, loc, alertify) {
     .then(function(data) {
       return data;
     })
-    .fail(function(jqXHR, textStatus, errorThrown) {
-      ajaxFailureHandle(jqXHR, baseHostName+'/sec/help',textStatus, errorThrown);
+    .fail(function(jqXHR) {
+      ajaxFailureHandle(jqXHR, baseHostName+'/sec/help');
     });
   }
 
@@ -198,16 +181,16 @@ var global_access = (function($, window, loc, alertify) {
         datatype: "json",
         contentType: 'application/json; charset=UTF-8',
         data: JSON.stringify(data)
-      })).fail(function(jqXHR, textStatus, errorThrown) {
-        glo.ajaxFailureHandle(jqXHR, uris.updateMTurkId._2, textStatus, errorThrown);
+      })).fail(function(jqXHR) {
+        glo.ajaxFailureHandle(jqXHR, uris.updateMTurkId._2);
       });
     });
   }
 
 
-  function _ajaxErrorMsgConstructor(jqXHR, url, textStatus, errorThrown) {
-    var errorMessage = "An error has occured from " + url + ": " + textStatus + " - " + errorThrown +
-      "; response text: "+ jqXHR.responseText;
+  function _ajaxErrorMsgConstructor(jqXHR, url) {
+    var errorMessage = "An error has occured from " + url + ": " + jqXHR.status + " - " + jqXHR.statusText +
+      ". response text: "+ jqXHR.responseText;
     return {
       txt: errorMessage,
       html: "<div class='row'><div class='large-12 columns'><h4>An error has occured</h4></div></div>" +
@@ -224,8 +207,8 @@ var global_access = (function($, window, loc, alertify) {
   * but depending on situation, might
   * print out error on browser
   */
-  function ajaxFailureHandle(jqXHR, url, textStatus, errorThrown) {
-    var errorMsgs = _ajaxErrorMsgConstructor(jqXHR, url, textStatus, errorThrown);
+  function ajaxFailureHandle(jqXHR, url) {
+    var errorMsgs = _ajaxErrorMsgConstructor(jqXHR, url);
     console.error(errorMsgs.txt);
     alertify.alert(errorMsgs.html);
   }
@@ -235,8 +218,8 @@ var global_access = (function($, window, loc, alertify) {
   * Last parameter is a callback function
   * that executes a customized alertify.js prompt
   */
-  function customAjaxFailureHandle(jqXHR, url, textStatus, errorThrown, callback) {
-    var errorMsgs = _ajaxErrorMsgConstructor(jqXHR, url, textStatus, errorThrown);
+  function customAjaxFailureHandle(jqXHR, url, callback) {
+    var errorMsgs = _ajaxErrorMsgConstructor(jqXHR, url);
     console.error(errorMsgs.txt);
     callback(errorMsgs.html);
   }
@@ -338,7 +321,7 @@ var app = (function($, glo, animate) {
   *
   **/
 
-  var turkerId = glo.mTurkIdentity;
+  var turkerIdentity = glo.mTurkIdentity;
 
   var mTurkURIPromise = glo.mTurkURIPromise;
 
@@ -375,18 +358,22 @@ var app = (function($, glo, animate) {
     * For saving MTurk Id Action
     **/
     $('#saveMturkId').click(function(event) {
-      if (!$('#MturkId').val()) { //is the input null?
-        alertify.alert("<span class='red'>Warning: </span> You must type in your MTurk Id before saving it!");
-      }
-      else if ($("input").prop('disabled')) { //is the input disabled?
-        alertify.alert("<span class='red'>Warning: </span> Your mTurk ID already exists. If there is any error, please email anie@emory.edu");
-      }
-      else { //if not, send update, then disable input and create cookie
-        glo.savemTurkID($('#MturkId').val());
-        $("input").prop('disabled', true);
-        $.cookie('mturkId', $('#MturkId').val());
-      };
+      saveMTurkIdEvent();
     });
+
+    /**
+    * mTurk Id input field hit enter key
+    **/
+
+    $("#MturkId").keydown(function (e) {
+      switch (e.keyCode) {
+        case 13: // enter
+          saveMTurkIdEvent();
+          e.preventDefault();
+          break;
+      }
+    });
+    
 
     /**
     * For Unable to Complete
@@ -460,35 +447,23 @@ var app = (function($, glo, animate) {
             finStateSuppData: textFields.finanState.val()
           }
 
-          sendOutTextArea(data);
-        });
+          //this result contains updated mTurker info
+          //Do not refresh() because that won't be accurate!
+          //result = {id: 2, mturkId: "asdfasdf", countTask: 5, commToken: "f2f6f305-ea5f-49bd-8921-ea8f70718d34"}
+          var result = sendOutTextArea(data);
 
+          //decide if the count is already up to 10
+          if ($.cookie("countTask") >= 9) {
+            //if the cookie indicates it's the 9th one
+            //then retrieve identity again
 
-        //decide if the count is already up to 10
-        if ($.cookie("countTask") >= 5) {
-          //if the cookie indicates it's the 9th one
-          //then retrieve identity again
-          var identity = glo.refresh();
-          if (identity.countTask == 5) {
-            //enter complete sequence; no need to handle "else", because
-            //refresh process resets cookies
-            alertify.alert("Awesome! You have completed ten tasks. Close this page and go back to" +
-              " mTurk now! After 10 seconds, we will send you back to starting page.");
-
-            //this erases all footprint
-            glo.restart();
-
-            //bind event to "OK" to redirect
-            $('#alertify-ok').click(function(event) {
-             window.location = baseHostName;
+            result.then(function(data) {
+              if (data.countTask == 10) {
+                allComplete("You have completed ten tasks.", data.commToken);
+              }
             });
-
-            //10 seconds after auto-redirect
-            setTimeout(function() {
-              window.location = baseHostName;
-            }, 5000);
           }
-        }
+        });
 
       }else{
         alertify.alert("One or multiple textareas aren't filled." +
@@ -513,13 +488,17 @@ var app = (function($, glo, animate) {
   *
   **/
   (function autoFillmTurkId() {
-    if ($.cookie('mturkId')) {
-      $('#MturkId').val($.cookie('mturkId'));
-      $("input").prop('disabled', true);
-    }
-    if ($.cookie('countTask')) {
-      animate.animateProgressBar($.cookie('countTask'));
-    }
+    
+    turkerIdentity.then(function(data) {
+      if (data.mturkId) {
+        $('#MturkId').val(data.mturkId);
+        $("input").prop('disabled', true);
+      }
+      if (data.countTask) {
+        animate.animateProgressBar(data.countTask);
+      }
+    });
+
   })();
 
   function updateDocLinks(promise) {
@@ -529,6 +508,60 @@ var app = (function($, glo, animate) {
         $("#downloadFile").attr('href', data.txtURL);
       });
     }
+  }
+
+  function saveMTurkIdEvent() {
+    if (!$('#MturkId').val()) { //is the input null?
+      alertify.alert("<span class='red'>Warning: </span> You must type in your MTurk Id before saving it!");
+    }
+    else if ($("input").prop('disabled')) { //is the input disabled?
+      alertify.alert("<span class='red'>Warning: </span> Your mTurk ID already exists. If there is any error, please email anie@emory.edu");
+    }
+    else { //if not, send update, then disable input and create cookie
+      glo.savemTurkID($('#MturkId').val());
+      $("input").prop('disabled', true);
+      $.cookie('mturkId', $('#MturkId').val());
+    };
+  }
+
+  function allComplete(customMessage, commToken) {
+      //enter complete sequence; no need to handle "else", because
+      //refresh process resets cookies
+      alertify.alert("<div class='row'><div class='large-12 columns'><h4>Awesome!</h4></div></div>" +
+        "<div class='row'><div class='large-12 columns'><p>"+customMessage+" Close this page and go back to" +
+        " mTurk now! You have one minute to copy and paste following string to your Amazon mTurk window:</p></div></div>" +
+        "<div class='row text-center'><div class='large-12 columns'><kbd>"+commToken+"</kbd></div></div><br><br>");
+
+        //this erases all footprint
+        glo.restart();
+
+        //bind event to "OK" to redirect
+        $('#alertify-ok').click(function(event) {
+           window.location = baseHostName;
+        });
+
+        //60 seconds after auto-redirect
+        setTimeout(function() {
+          window.location = baseHostName;
+        }, 60000);
+  }
+
+  //when a mTurker did not complete any task at all
+  //and we have no more document left
+  //this is triggered.
+  function rejectMessage() {
+    alertify.alert("<div class='row'><div class='large-12 columns'><h4>Sorry!</h4></div></div>" +
+        "<div class='row'><div class='large-12 columns'><p>We don't have more tasks for you right now! Close this page and go back to" +
+        " mTurk now! We apologize for this inconvenience! </p></div></div><br>");
+    //bind event to "OK" to redirect
+    $('#alertify-ok').click(function(event) {
+       window.location = baseHostName;
+    });
+
+    //60 seconds after auto-redirect
+    setTimeout(function() {
+      window.location = baseHostName;
+    }, 60000);
   }
 
 
@@ -555,8 +588,28 @@ var app = (function($, glo, animate) {
         .then(function (data) {
           return data;
         })
-        .fail(function (jqXHR, textStatus, errorThrown) {
-          glo.ajaxFailureHandle(jqXHR, uris.webOneCompany._2, textStatus, errorThrown);
+        .fail(function (jqXHR) {
+          //this might fail under multiple situations
+          if (jqXHR.responseText == JSON.stringify("There is no document fitting requirements left")) {
+            //one is that there is no more document to retrieve
+
+            var data = glo.refresh();
+            //then decide if the user completed at least one task
+            data.then(function(mturker) {
+              if (mturker.countTask >= 1) {
+                var message = "You are the lucky one! It turns out we don't have more documents for you to complete! Congrats!";
+                allComplete(message, $.cookie("commToken"));
+              }
+              else{
+                //the mturker didn't complete shit
+                rejectMessage();
+              }
+            });
+          }
+          else{
+            glo.ajaxFailureHandle(jqXHR, uris.webOneCompany._2);
+          }
+
         });
       });
     }
@@ -578,8 +631,8 @@ var app = (function($, glo, animate) {
         .then(function(data) {
           return data;
         })
-        .fail(function(jqXHR, textStatus, errorThrown) {
-          glo.ajaxFailureHandle(jqXHR, uris.webUnableToComp._2, textStatus, errorThrown);
+        .fail(function(jqXHR) {
+          glo.ajaxFailureHandle(jqXHR, uris.webUnableToComp._2);
         });
       });
     }
@@ -590,8 +643,8 @@ var app = (function($, glo, animate) {
     * Expect nothing in return
     **/
     function sendOutTextArea(data) {
-        companyURIPromise.then(function(uris) {
-          Q($.ajax({
+        return companyURIPromise.then(function(uris) {
+          return Q($.ajax({
             url: uris.webUpload._2,
             type: uris.webUpload._1,
             datatype: "json",
@@ -600,10 +653,10 @@ var app = (function($, glo, animate) {
           }))
           .then(function(data) {
               //trigger animation, cookie of count is already updated through the process
-              oneTaskCompletMTurk();
+              return oneTaskCompletMTurk();
           })
-          .fail(function(jqXHR, textStatus, errorThrown) {
-            glo.ajaxFailureHandle(jqXHR, uris.webUpload._2, textStatus, errorThrown);
+          .fail(function(jqXHR) {
+            glo.ajaxFailureHandle(jqXHR, uris.webUpload._2);
           });
         });
     }
@@ -620,8 +673,8 @@ var app = (function($, glo, animate) {
     * clean out those fields
     **/
     function oneTaskCompletMTurk() {
-      mTurkURIPromise.then(function(uris) {
-        Q($.ajax({
+      return mTurkURIPromise.then(function(uris) {
+        return Q($.ajax({
           url: uris.taskComplete._2,
           type: uris.taskComplete._1,
           datatype: "json",
@@ -635,9 +688,11 @@ var app = (function($, glo, animate) {
           textFields.riskFactor.val("");
           textFields.managementDis.val("");
           textFields.finanState.val("");
+
+          return data;
         })
-        .fail(function(jqXHR, textStatus, errorThrown) {
-          glo.ajaxFailureHandle(jqXHR, uris.taskComplete._2, textStatus, errorThrown);
+        .fail(function(jqXHR) {
+          glo.ajaxFailureHandle(jqXHR, uris.taskComplete._2);
         });
       });
     }
