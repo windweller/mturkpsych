@@ -1,6 +1,7 @@
 package com.mturk.tasks.SECcompany
 
 import akka.actor.{ActorLogging, Actor}
+import com.mturk.tasks.Util.AuthInfo
 import org.json4s.JsonAST.JObject
 import com.mturk.models.pgdb._
 
@@ -12,7 +13,7 @@ class SECCompanyActor extends Actor with ActorLogging {
 
   def receive = {
 
-    case JObjectFromCasper(jObject) =>
+    case JObjectFromCasper(jObject, authInfo) =>
       if (jObject.isDefined("casperFileLoc")) {
         val casperFileLoc = jObject.getValue("casperFileLoc")
         val result = DAL.db.withSession{ implicit session =>
@@ -23,7 +24,7 @@ class SECCompanyActor extends Actor with ActorLogging {
         sender ! TransOk(None, succeedOrNot= false, Some("Can't find casperFileLoc value in JSON"))
       }
 
-    case JObjectFromWeb(jObject) =>
+    case JObjectFromWeb(jObject, authInfo) =>
       if (jObject.isDefined("riskFactor") && jObject.isDefined("managementDisc")
         && jObject.isDefined("finStateSuppData") && jObject.isDefined("companyId")) {
 
@@ -42,7 +43,7 @@ class SECCompanyActor extends Actor with ActorLogging {
           "fields: riskFactor, managementDisc, finStateSuppData, or companyId was not defined in JSON"))
       }
 
-    case JObjectFromWebPUT(jObject) =>
+    case JObjectFromWebPUT(jObject, authInfo) =>
        if (jObject.isDefined("companyId")) {
          jObject.getValueInt("companyId") match {
            case None => sender ! TransOk(None, succeedOrNot = false, Some("companyId is not a valid number"))
@@ -72,9 +73,9 @@ class SECCompanyActor extends Actor with ActorLogging {
 }
 
 object SECCompanyProtocol {
-  case class JObjectFromCasper(jObject: JObject)
-  case class JObjectFromWeb(jObject: JObject)
-  case class JObjectFromWebPUT(jObject: JObject)
+  case class JObjectFromCasper(jObject: JObject, authInfo: AuthInfo)
+  case class JObjectFromWeb(jObject: JObject, authInfo: AuthInfo)
+  case class JObjectFromWebPUT(jObject: JObject, authInfo: AuthInfo)
   case class TransOk(company: Option[Company.Company], succeedOrNot: Boolean, errorMessage: Option[String])
   case class TransAllOk(companies: Option[List[Company.Company]], succeedOrNot: Boolean, errorMessage: Option[String])
 

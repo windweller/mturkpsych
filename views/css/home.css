@@ -95,7 +95,6 @@ kbd {
 .blockage li:hover {
 	color: #fff;
 	background-color: #776B57;
-	cursor: pointer;
 	transition: background-color 300ms ease-out;
 }
 

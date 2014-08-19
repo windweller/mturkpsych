@@ -1,8 +1,11 @@
 package com.mturk.tasks
 
+import com.mturk.models.pgdb.{MTurker, DAL}
 import org.json4s.{DefaultFormats, Formats}
 import org.json4s.JsonAST.JObject
 import spray.httpx.Json4sSupport
+
+import scala.util.{Failure, Success, Try}
 
 object Util {
 
@@ -21,9 +24,10 @@ object Util {
     implicit def json4sFormats: Formats = DefaultFormats
   }
 
-  case class AuthInfo(username: Option[String], rejectedOrNot: Boolean)
+  case class AuthInfo(mturker: Option[MTurker.MTurker], accepted: Boolean)
 
   /**
+   * @deprecated
    * Basic Auth authenticator used
    * by all other tasks
    * usage: authenticate(basicUserAuthenticator) { authInfo => }
@@ -36,29 +40,34 @@ object Util {
     import spray.routing.directives.AuthMagnet
     import scala.concurrent.{Future, ExecutionContext}
 
-    def getUser(username: String, token: String): Option[User.User] = {
-      import com.github.nscala_time.time.Imports._
-      //TODO: get from DB
-      if (token == "26666" && username == "emory")
-        Some(User.User(None, Some("goodUser"), "", "", Some(""), new Timestamp(DateTime.now.getMillis), 1))
-      else
-        None
-    }
-
-    def basicUserAuthenticator(implicit ec: ExecutionContext): AuthMagnet[AuthInfo] = {
-      def validateUser(userPass: Option[UserPass]): Option[AuthInfo] = {
-        val user = userPass.flatMap[User.User](u => getUser(u.user, u.pass))
-        user match {
-          case Some(u) => Some(AuthInfo(u.name, rejectedOrNot = true))
-          case None => Some(AuthInfo(None, rejectedOrNot = false))
+    //Actually get MTurker is important, not "users"
+    //it would be mturk id and mturk commToken
+    def getUser(token: String): AuthInfo = {
+      DAL.db.withSession { implicit session =>
+        val mTurker = Try(MTurker.getByToken(token))
+        mTurker match {
+          case Success(result) =>
+            if (result._2) AuthInfo(result._1, accepted = true)
+            else AuthInfo(None, accepted=false)
+          case Failure(ex) => println("Basic Authentication error: "+ex.getMessage); AuthInfo(None, accepted=false)
         }
       }
-
-      def authenticator(userPass: Option[UserPass]): Future[Option[AuthInfo]] = Future {
-        validateUser(userPass)
-      }
-
-      BasicAuth(authenticator _, realm = "Lab Authorized API")
     }
+
+//    def basicUserAuthenticator(implicit ec: ExecutionContext): AuthMagnet[AuthInfo] = {
+//      def validateUser(userPass: Option[UserPass]): Option[AuthInfo] = {
+//        val mturker = userPass.flatMap[MTurker.MTurker](u => getUser(u.user, u.pass))
+//        mturker match {
+//          case Some(m) => println("authen passed!");Some(AuthInfo(m.mturkId, rejectedOrNot = true))
+//          case None => throw new Exception //Some(AuthInfo(None, rejectedOrNot = false))
+//        }
+//      }
+//
+//      def authenticator(userPass: Option[UserPass]): Future[Option[AuthInfo]] = Future {
+//        validateUser(userPass)
+//      }
+//
+//      BasicAuth(authenticator _, realm = "Lab Authorized API")
+//    }
   }
 }

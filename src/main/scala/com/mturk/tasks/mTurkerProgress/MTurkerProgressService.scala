@@ -86,6 +86,25 @@ class MTurkerProgressService (MTurkerProgressActor: ActorRef)(implicit system: A
             }
           }
       } ~
+      pathPrefix("task") {
+        post {
+          optionalCookie("commToken") {
+            case None =>
+              complete(Unauthorized, "Please retrieve and add your communication token as 'commToken' cookie. " +
+                "Or your token is invalid.")
+            case Some(commToken) =>
+              val response = (MTurkerProgressActor ? CompleteOneTask(commToken.content))
+                .mapTo[TransOk]
+                .map(message => (OK, message.mturker.get))
+                .recover {
+                case e => (BadRequest, e.getMessage)
+              }
+              //can't set up the COOKIE  of countTask on server
+              //Must set up on the client side
+              complete(response)
+          }
+        }
+      } ~
         pathPrefix("help") {
           pathEnd {
             hostName { hn =>
@@ -93,7 +112,8 @@ class MTurkerProgressService (MTurkerProgressActor: ActorRef)(implicit system: A
               val routeApis = Map[String, (String, String)](
                 "mTurkerGet" -> ("GET", "http://" + hn + localhostPortConfig + "/mturker"),
                 "mTurkerRegister" -> ("POST", "http://" + hn + localhostPortConfig + "/mturker"),
-                "updateMTurkId" -> ("PUT", "http://" + hn + localhostPortConfig + "/mturker")
+                "updateMTurkId" -> ("PUT", "http://" + hn + localhostPortConfig + "/mturker"),
+                "taskComplete" -> ("POST", "http://" + hn + localhostPortConfig + "/mturker/task")
               )
               complete(routeApis)
             }

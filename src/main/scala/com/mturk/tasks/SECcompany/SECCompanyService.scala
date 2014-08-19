@@ -4,6 +4,7 @@ package com.mturk.tasks.SECcompany
 import java.io.File
 
 import akka.actor._
+import org.json4s.JsonAST.JObject
 import org.json4s.{DefaultFormats, Formats}
 import spray.http.MediaTypes._
 import spray.httpx.Json4sSupport
@@ -27,11 +28,11 @@ trait customRoutes {
 
   implicit val timeout = Timeout(5 seconds)
 
-  def doPost(messageConstructor: JObject => AnyRef,
+  def doPost(messageConstructor: (JObject, AuthInfo) => AnyRef,
              authInfo: AuthInfo, secCompanyActor: ActorRef): Route = {
     entity(as[JObject]) { jObject =>
-      if (authInfo.rejectedOrNot) {
-        val response = (secCompanyActor ? messageConstructor(jObject)) //this constructs message
+      if (authInfo.accepted) {
+        val response = (secCompanyActor ? messageConstructor(jObject, authInfo)) //this constructs message
           .mapTo[TransOk]
           .map(result => result.succeedOrNot match {
           case true => (OK, "transaction successful")
@@ -72,26 +73,46 @@ class SECCompanyService(secCompanyActor: ActorRef)(implicit system: ActorSystem)
       pathPrefix("company") {
         pathPrefix("casper") {
           //http -a username:123 POST http://127.0.0.1:8080/sec/company/casper hello="23"
-          authenticate(basicUserAuthenticator) { authInfo =>
             post {
+              cookie("commToken") { commToken =>
+                val authInfo = getUser(commToken.content)
                 doPost(JObjectFromCasper.apply, authInfo, secCompanyActor)
               }
             }
           } ~
           pathPrefix("web") {
-            authenticate(basicUserAuthenticator) { authInfo =>
               post {
-              //POST method comes in when one person completes the task
-                doPost(JObjectFromWeb.apply, authInfo, secCompanyActor)
+                entity(as[JObject]) { jObject =>
+                  //POST method comes in when one person completes the task
+                  optionalCookie("commToken") {
+                    case None =>
+                      complete(Unauthorized, "Please retrieve and add your communication token as cookie.")
+                    case Some(commToken) =>
+                      val authInfo = getUser(commToken.content)
+                      doPost(JObjectFromWeb.apply, authInfo, secCompanyActor)
+                  }
+                }
               } ~
               put {
-              //PUT method comes in when one person can't complete the request, need
-              //to retrieve a different document returned
-                complete {
-                  doPost(JObjectFromWebPUT.apply, authInfo, secCompanyActor)
+                entity(as[JObject]) { jObject =>
+                  //PUT method comes in when one person can't complete the request, need
+                  //to retrieve a different document returned
+                  optionalCookie("commToken") {
+                    case None =>
+                      complete(Unauthorized, "Please retrieve and add your communication token as cookie.")
+                    case Some(commToken) =>
+                      val authInfo = getUser(commToken.content)
+                      if (!authInfo.accepted) complete((Unauthorized, "Communication Token authentication not passed."))
+                      val response = (secCompanyActor ? JObjectFromWebPUT(jObject, authInfo))
+                        .mapTo[TransOk]
+                        .map(result => result.succeedOrNot match {
+                        case true => (OK, result.company.get)
+                        case false => (Unauthorized, result.errorMessage)
+                      })
+                      complete(response)
+                  }
                 }
-              }
-            } ~
+              } ~
               get {
                 hostName { hn =>
                   complete {

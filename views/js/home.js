@@ -49,6 +49,7 @@ var global_access = (function($, window, loc, alertify) {
   /**
   * reFresh the count of countTaks
   * refresh after every task being completed
+  * countTask is set up by server, not need to manually set up
   **/
   function refresh() {
     $.removeCookie('countTask');
@@ -60,8 +61,8 @@ var global_access = (function($, window, loc, alertify) {
   *
   * Use this with care, only after the individual
   * completed 10 tasks
-  * this will eliminate all footprint and 
-  * even assign user with a new 
+  * this will eliminate all footprint and
+  * even assign user with a new
   * comm token
   *
   **/
@@ -77,9 +78,9 @@ var global_access = (function($, window, loc, alertify) {
   * should only be called by refresh
   * and retrieveIdentity
   * @returns a promise with data
-    Object {id: 5, 
-    countTask: 0, 
-    commToken: "21ea4fb9-c49f-4c81-835d-be6233d9b0f9"} 
+    Object {id: 5,
+    countTask: 0,
+    commToken: "21ea4fb9-c49f-4c81-835d-be6233d9b0f9"}
   */
   function _establishIdentity() {
     return mTurkURIPromise.then(function(mTurkUris){
@@ -94,7 +95,7 @@ var global_access = (function($, window, loc, alertify) {
           $("input").prop('disabled', true);
           $('#MturkId').val($.cookie('mturkId'));
         }
-        
+
         if (!data.mturkId && $.cookie('mturkId')) {
           var html = "<div class='row'><div class='large-12 columns'>"+
           "<p>We detect that you have already typed in a mTurk ID: <kbd>" + $.cookie('mturkId') + "</kbd></p>"
@@ -110,11 +111,15 @@ var global_access = (function($, window, loc, alertify) {
             }
           });
         }
+
+        //reset task count
+        $.cookie("countTask", data.countTask);
+        
         return data;
       })
       .fail(function(jqXHR, textStatus, errorThrown) {
         //Custom Error Handling
-        customAjaxFailureHandle(jqXHR, mTurkUris.mTurkerGet._2, 
+        customAjaxFailureHandle(jqXHR, mTurkUris.mTurkerGet._2,
           textStatus, errorThrown, function(html) {
             var response = html+"<div class='row'><div class='large-12 columns'><div data-alert class='alert-box info radius'> Click 'OK' button, we can solve this problem " +
             "for you by resetting your COOKIE. However, doing so will eliminate your current progress. <a href='#'' class='close'>&times;</a></div></div></div>";
@@ -134,7 +139,7 @@ var global_access = (function($, window, loc, alertify) {
   /**
   * @returns a Promise object
   * call mTurkURIretrieve().then() to
-  * get data: 
+  * get data:
     Object {mTurkerGet: Object, mTurkerRegister: Object}
     mTurkerGet: Object
     mTurkerRegister: Object
@@ -157,17 +162,17 @@ var global_access = (function($, window, loc, alertify) {
   }
 
   /**
-  * 
+  *
   * @returns a Promise object
-  * call companyURIretrieve().then() to 
-    get data: 
+  * call companyURIretrieve().then() to
+    get data:
     Object {mTurkerGet: Object, mTurkerRegister: Object}
     mTurkerGet: Object
     mTurkerRegister: Object
     use this to access:
     data.mTurkerGet._1 -> access method
     data.mTurkerGet._2 -> access address
-  **/ 
+  **/
   function companyURIretrieve() {
     return Q($.ajax({
       url: baseHostName + '/sec/help',
@@ -207,8 +212,8 @@ var global_access = (function($, window, loc, alertify) {
       txt: errorMessage,
       html: "<div class='row'><div class='large-12 columns'><h4>An error has occured</h4></div></div>" +
       "<div class='row'><div class='large-12 columns'><p>Please copy and paste the following information to anie@emory.edu. Thank you!</p></div></div>"+
-      "<div class='row'><div class='large-12 columns'><p>"+errorMessage+"</p></div></div>" + 
-      "<div class='row'><div class='large-12 columns'><p>CommToken: " + 
+      "<div class='row'><div class='large-12 columns'><p>"+errorMessage+"</p></div></div>" +
+      "<div class='row'><div class='large-12 columns'><p>CommToken: " +
       $.cookie('commToken') + " <br> CountTask: " + $.cookie('countTask') + "</p></div></div>"
     };
   }
@@ -285,7 +290,7 @@ var animate = (function($, glo, alertify) {
 
   function scrollTop(animateProgressBar, progressNum) {
     var body = $("html, body");
-    body.animate({scrollTop:0}, '300', 'swing', 
+    body.animate({scrollTop:0}, '300', 'swing',
       animateProgressBar(progressNum));
   }
 
@@ -296,6 +301,7 @@ var animate = (function($, glo, alertify) {
 
   return {
     taskComplete: taskComplete,
+    animateProgressBar: animateProgressBar,
     taskFail: taskFail
   };
 
@@ -310,7 +316,7 @@ var app = (function($, glo, animate) {
   * Application Logic
   *
   * Capture/handle various actions inside the page
-  * including form submit, form check, 
+  * including form submit, form check,
   * call animate instructions
   *
   * Define actions listed below:
@@ -328,8 +334,8 @@ var app = (function($, glo, animate) {
   * 5). Clear text fields
   * 4. Task Unable to Complete action
   * 1). Submit to server; update cookie
-  * 2). 
-  * 
+  * 2).
+  *
   **/
 
   var turkerId = glo.mTurkIdentity;
@@ -339,6 +345,13 @@ var app = (function($, glo, animate) {
   var companyURIPromise = glo.companyURIPromise;
 
   var fileURIPromise = loadNewDocURL();
+
+  var baseHostName = window.location.origin;
+
+  var stateOfDocButtons = {
+    readInBrowser: 0,
+    downloadFile: 0
+  };
 
   var textFields = {
     riskFactor: $('#riskFactor'),
@@ -376,21 +389,45 @@ var app = (function($, glo, animate) {
     });
 
     /**
-    * For uncompletable files
+    * For Unable to Complete
     **/
     $('#unableToComplete').click(function(event) {
-      var newURIPromises = unableToComplete();
-      updateDocLinks(newURIPromises);
-      alertify.log("We have swapped the document for you!");
-      animate.taskFail($.cookie('countTask'));
+      
+      fileURIPromise.then(function(file) {
+        var data = {
+          companyId: file.id
+        };
+        var newURIPromises = unableToComplete(data);
+        updateDocLinks(newURIPromises);
+        alertify.log("We have swapped the document for you!");
+        animate.taskFail($.cookie('countTask'));
+      });
+    });
+
+    /**
+    * Force people to click on doc retrieval button first
+    **/
+    $("#readInBrowser").click(function(event) {
+      stateOfDocButtons.readInBrowser = 1;
+    });
+    $("#downloadFile").click(function(event) {
+      stateOfDocButtons.downloadFile = 1;
     });
 
     /**
     *  For completed text
     *  check on fields first
     **/
-    $('DoneNext').click(function(event) {
-      if (textFields.riskFactor.val() != "" 
+    $('#DoneNext').click(function(event) {
+
+      //check if mTurk id is typed in (for BasicAuth sake)
+      if (!$.cookie('mturkId')) {
+        alertify.alert("You must type in your mTurk ID before starting the task.");
+      }
+      else {
+
+      //passing through the first check
+      if (textFields.riskFactor.val() != ""
         && textFields.managementDis.val() != ""
         && textFields.finanState.val() != "") {
         //now they are filled up, but are they authentic?
@@ -405,10 +442,53 @@ var app = (function($, glo, animate) {
             "<span class='red'>Unable to Complete</span> button.");
         }
 
-        //add more tests/checks here
+        // if (stateOfDocButtons.downloadFile == 0 && 
+        //   stateOfDocButtons.readInBrowser == 0) {
+        //   alertify.alert("Please click <span class='red'>Read in your web browser</span>" +
+        //     " or <span class='red'>Download HTML file</span> first. If this is an error, please email" +
+        //     "anie@emory.edu");
+        // }
 
-        //then send out ajax, trigger animation
+        //add more tests/checks here if needed
 
+        //then send out ajax
+        fileURIPromise.then(function(file) {
+          var data = {
+            companyId: file.id,
+            riskFactor: textFields.riskFactor.val(),
+            managementDisc: textFields.managementDis.val(),
+            finStateSuppData: textFields.finanState.val()
+          }
+
+          sendOutTextArea(data);
+        });
+
+
+        //decide if the count is already up to 10
+        if ($.cookie("countTask") >= 5) {
+          //if the cookie indicates it's the 9th one
+          //then retrieve identity again
+          var identity = glo.refresh();
+          if (identity.countTask == 5) {
+            //enter complete sequence; no need to handle "else", because
+            //refresh process resets cookies
+            alertify.alert("Awesome! You have completed ten tasks. Close this page and go back to" +
+              " mTurk now! After 10 seconds, we will send you back to starting page.");
+
+            //this erases all footprint
+            glo.restart();
+
+            //bind event to "OK" to redirect
+            $('#alertify-ok').click(function(event) {
+             window.location = baseHostName;
+            });
+
+            //10 seconds after auto-redirect
+            setTimeout(function() {
+              window.location = baseHostName;
+            }, 5000);
+          }
+        }
 
       }else{
         alertify.alert("One or multiple textareas aren't filled." +
@@ -416,7 +496,10 @@ var app = (function($, glo, animate) {
           "please click the red button <span class='red'>Unable to Complete</span> "+
           " at the bottom of the page. ");
       }
+    }
     });
+
+    //add more binding events below here
 
   })();
 
@@ -434,14 +517,20 @@ var app = (function($, glo, animate) {
       $('#MturkId').val($.cookie('mturkId'));
       $("input").prop('disabled', true);
     }
+    if ($.cookie('countTask')) {
+      animate.animateProgressBar($.cookie('countTask'));
+    }
   })();
 
   function updateDocLinks(promise) {
-    promise.then(function(data) {
+    if (promise) {
+      promise.then(function(data) {
         $("#readInBrowser").attr('href', data.htmlURL);
         $("#downloadFile").attr('href', data.txtURL);
       });
+    }
   }
+
 
   //talk to backend to retrieve a new doc's url
   //and update on html page
@@ -473,12 +562,17 @@ var app = (function($, glo, animate) {
     }
   }
 
-    function unableToComplete() {
+    /**
+    * Must pass Basic Authen
+    * Must send in company Id
+    **/
+    function unableToComplete(data) {
       return companyURIPromise.then(function(uris) {
         return Q($.ajax({
           url: uris.webUnableToComp._2,
           type: uris.webUnableToComp._1,
           datatype: "json",
+          data:JSON.stringify(data),
           contentType: 'application/json; charset=UTF-8'
         }))
         .then(function(data) {
@@ -486,6 +580,64 @@ var app = (function($, glo, animate) {
         })
         .fail(function(jqXHR, textStatus, errorThrown) {
           glo.ajaxFailureHandle(jqXHR, uris.webUnableToComp._2, textStatus, errorThrown);
+        });
+      });
+    }
+
+    /**
+    * This function sends out data to server
+    * Must pass Basic Auth
+    * Expect nothing in return
+    **/
+    function sendOutTextArea(data) {
+        companyURIPromise.then(function(uris) {
+          Q($.ajax({
+            url: uris.webUpload._2,
+            type: uris.webUpload._1,
+            datatype: "json",
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify(data)
+          }))
+          .then(function(data) {
+              //trigger animation, cookie of count is already updated through the process
+              oneTaskCompletMTurk();
+          })
+          .fail(function(jqXHR, textStatus, errorThrown) {
+            glo.ajaxFailureHandle(jqXHR, uris.webUpload._2, textStatus, errorThrown);
+          });
+        });
+    }
+
+    /**
+    * This function receive response from server
+    * as data, then update the COOKIE of "countTask"
+    * because the server side can't send out cookie
+    *   var textFields = {
+          riskFactor: $('#riskFactor'),
+          managementDis: $('#managementDis'),
+          finanState: $('#finanState')
+        };
+    * clean out those fields
+    **/
+    function oneTaskCompletMTurk() {
+      mTurkURIPromise.then(function(uris) {
+        Q($.ajax({
+          url: uris.taskComplete._2,
+          type: uris.taskComplete._1,
+          datatype: "json",
+          contentType: 'application/json; charset=UTF-8'
+        }))
+        .then(function(data) {
+          //Object {id: 1, mturkId: "asdfasdfwere", countTask: 1, commToken: "ff52be2a-ee2c-4a58-b4f6-7ee2b4aaa9fb"}
+          //update COOKIE
+          $.cookie('countTask', data.countTask);
+          animate.taskComplete(data.countTask);
+          textFields.riskFactor.val("");
+          textFields.managementDis.val("");
+          textFields.finanState.val("");
+        })
+        .fail(function(jqXHR, textStatus, errorThrown) {
+          glo.ajaxFailureHandle(jqXHR, uris.taskComplete._2, textStatus, errorThrown);
         });
       });
     }

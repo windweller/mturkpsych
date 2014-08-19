@@ -1,6 +1,7 @@
 package com.mturk.models.pgdb
 
-import java.sql.Timestamp
+import java.sql.{Blob, Timestamp}
+import javax.sql.rowset.serial.SerialBlob
 import akka.actor.ActorLogging
 import com.github.nscala_time.time.Imports._
 import scala.slick.driver.PostgresDriver.simple._
@@ -17,9 +18,9 @@ object Company {
     def txtURL = column[Option[String]]("COMP_TXT_URL")
     def htmlURL = column[Option[String]]("COMP_HTML_URL")
     def localFileLoc = column[Option[String]]("COMP_LOCAL_FILE_LOC")
-    def riskFactor = column[Option[String]]("COMP_RISK_FACTOR") //Item 1A
-    def managementDisc = column[Option[String]]("COMP_MANAGE_DISC") //Item 7. Management's Discussion and Analysis of Financial Condition and Results of Operations
-    def finStateSuppData = column[Option[String]]("COMP_FIN_STATEMENT") //Item 8. Financial Statements and Supplementary Data
+    def riskFactor = column[Option[String]]("COMP_RISK_FACTOR", O.DBType("TEXT")) //Item 1A
+    def managementDisc = column[Option[String]]("COMP_MANAGE_DISC", O.DBType("TEXT")) //Item 7. Management's Discussion and Analysis of Financial Condition and Results of Operations
+    def finStateSuppData = column[Option[String]]("COMP_FIN_STATEMENT", O.DBType("TEXT")) //Item 8. Financial Statements and Supplementary Data
     def unableToCompleteCount = column[Option[Int]]("COMP_UNABLE_TO_COMPLETE")
     def isRetrieved = column[Boolean]("COMP_IS_RETTIEVED")
     def retrievedTime = column[Option[Timestamp]]("COMP_RETRIEVED_TIME")

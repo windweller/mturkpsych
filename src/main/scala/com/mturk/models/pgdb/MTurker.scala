@@ -54,7 +54,7 @@ object MTurker {
     val q = for (m <- mTurkers if m.mturkId === mTurkId) yield m
     q.list() match {
       case Nil => throw new Exception("There is no such mTurkId")
-      case list => (Some(list.head), true, None)
+      case list => list.head
     }
   }
 
@@ -69,7 +69,7 @@ object MTurker {
   def completeOneTask(token: String)(implicit s: Session): (Option[MTurker], Boolean, Option[String]) = {
     val q = for (m <- mTurkers if m.commToken === token) yield m
     q.list() match {
-      case Nil => (None, false, Some("there is no such communication token, authorization failed"))
+      case Nil => (None, false, Some("there is no such mTurk Id, authorization failed"))
       case list =>
         val task = list.head.countTask
         q.update(list.head.copy(countTask = task + 1))
