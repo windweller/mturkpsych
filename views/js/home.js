@@ -423,47 +423,62 @@ var app = (function($, glo, animate) {
         var lengthOfSecond = textFields.managementDis.val().length;
         var lengthOfThird = textFields.finanState.val().length;
 
+        var passedCheck = true;
+
         if (lengthOfFirst <= 30 || lengthOfSecond <= 30 || lengthOfThird <= 30) {
           alertify.alert("The input of those text fields appear to be very short. " +
-            "We can't let this pass our check system. Sorry. Please click "+
+            "We can't let this pass our check system. Sorry. If it is the real "+
+            "extraction from the document and we are blocking you, please click "+
             "<span class='red'>Unable to Complete</span> button.");
+          passedCheck = false;
         }
-
-        // if (stateOfDocButtons.downloadFile == 0 && 
-        //   stateOfDocButtons.readInBrowser == 0) {
-        //   alertify.alert("Please click <span class='red'>Read in your web browser</span>" +
-        //     " or <span class='red'>Download HTML file</span> first. If this is an error, please email" +
-        //     "anie@emory.edu");
-        // }
+        else if (textFields.riskFactor.val() == textFields.managementDis.val() ||
+          textFields.managementDis.val() == textFields.finanState.val() ||
+          textFields.riskFactor.val() == textFields.finanState.val()) {
+          alertify.alert("The input of those text fields appear to be exactly the same. " +
+            "We can't let this pass our check system. Sorry. If it is the real "+
+            "extraction from the document and we are blocking you, please click "+
+            "<span class='red'>Unable to Complete</span> button.");
+          passedCheck = false;
+        }
+        else if (stateOfDocButtons.downloadFile == 0 && 
+          stateOfDocButtons.readInBrowser == 0) {
+          alertify.alert("Please click <span class='red'>Read in your web browser</span>" +
+            " or <span class='red'>Download HTML file</span> first. If this is an error, please email" +
+            "anie@emory.edu");
+          passedCheck = false;
+        }
 
         //add more tests/checks here if needed
 
         //then send out ajax
-        fileURIPromise.then(function(file) {
-          var data = {
-            companyId: file.id,
-            riskFactor: textFields.riskFactor.val(),
-            managementDisc: textFields.managementDis.val(),
-            finStateSuppData: textFields.finanState.val()
-          }
+        if (passedCheck) {
+          fileURIPromise.then(function(file) {
+            var data = {
+              companyId: file.id,
+              riskFactor: textFields.riskFactor.val(),
+              managementDisc: textFields.managementDis.val(),
+              finStateSuppData: textFields.finanState.val()
+            }
 
-          //this result contains updated mTurker info
-          //Do not refresh() because that won't be accurate!
-          //result = {id: 2, mturkId: "asdfasdf", countTask: 5, commToken: "f2f6f305-ea5f-49bd-8921-ea8f70718d34"}
-          var result = sendOutTextArea(data);
+            //this result contains updated mTurker info
+            //Do not refresh() because that won't be accurate!
+            //result = {id: 2, mturkId: "asdfasdf", countTask: 5, commToken: "f2f6f305-ea5f-49bd-8921-ea8f70718d34"}
+            var result = sendOutTextArea(data);
 
-          //decide if the count is already up to 10
-          if ($.cookie("countTask") >= 9) {
-            //if the cookie indicates it's the 9th one
-            //then retrieve identity again
+            //decide if the count is already up to 10
+            if ($.cookie("countTask") >= 9) {
+              //if the cookie indicates it's the 9th one
+              //then retrieve identity again
 
-            result.then(function(data) {
-              if (data.countTask == 10) {
-                allComplete("You have completed ten tasks.", data.commToken);
-              }
-            });
-          }
-        });
+              result.then(function(data) {
+                if (data.countTask == 10) {
+                  allComplete("You have completed ten tasks.", data.commToken);
+                }
+              });
+            }
+          });
+        }
 
       }else{
         alertify.alert("One or multiple textareas aren't filled." +
