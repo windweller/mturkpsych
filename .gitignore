@@ -9,3 +9,6 @@ test-output/
 *.jar
 *.iml
 *.txt
+*.key
+*.key.secure
+*.csr

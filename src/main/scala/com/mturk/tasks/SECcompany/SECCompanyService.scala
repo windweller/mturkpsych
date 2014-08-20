@@ -60,12 +60,13 @@ class SECCompanyService(secCompanyActor: ActorRef)(implicit system: ActorSystem)
       path("help") {
         hostName { hn =>
           val localhostPortConfig = if (hn == "127.0.0.1") ":8080" else ""
+          val httpPrefix = if (hn == "127.0.0.1") "http://" else "https://"
 
           val routeApis = Map[String, (String, String)](
-            "casperUpload" -> ("POST", "http://"+  hn + localhostPortConfig  + "/sec/company/casper"),
-            "webUpload" -> ("POST", "http://"+  hn + localhostPortConfig  + "/sec/company/web"),
-            "webUnableToComp" -> ("PUT", "http://"+  hn + localhostPortConfig  + "/sec/company/web"),
-            "webOneCompany" -> ("GET","http://"+  hn + localhostPortConfig  + "/sec/company/web")
+            "casperUpload" -> ("POST", httpPrefix +  hn + localhostPortConfig  + "/sec/company/casper"),
+            "webUpload" -> ("POST", httpPrefix +  hn + localhostPortConfig  + "/sec/company/web"),
+            "webUnableToComp" -> ("PUT", httpPrefix +  hn + localhostPortConfig  + "/sec/company/web"),
+            "webOneCompany" -> ("GET",httpPrefix +  hn + localhostPortConfig  + "/sec/company/web")
           )
           complete(routeApis)
         }

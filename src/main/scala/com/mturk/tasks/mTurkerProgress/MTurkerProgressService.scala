@@ -109,11 +109,12 @@ class MTurkerProgressService (MTurkerProgressActor: ActorRef)(implicit system: A
           pathEnd {
             hostName { hn =>
               val localhostPortConfig = if (hn == "127.0.0.1") ":8080" else ""
+              val httpPrefix = if (hn == "127.0.0.1") "http://" else "https://"
               val routeApis = Map[String, (String, String)](
-                "mTurkerGet" -> ("GET", "http://" + hn + localhostPortConfig + "/mturker"),
-                "mTurkerRegister" -> ("POST", "http://" + hn + localhostPortConfig + "/mturker"),
-                "updateMTurkId" -> ("PUT", "http://" + hn + localhostPortConfig + "/mturker"),
-                "taskComplete" -> ("POST", "http://" + hn + localhostPortConfig + "/mturker/task")
+                "mTurkerGet" -> ("GET", httpPrefix + hn + localhostPortConfig + "/mturker"),
+                "mTurkerRegister" -> ("POST", httpPrefix + hn + localhostPortConfig + "/mturker"),
+                "updateMTurkId" -> ("PUT", httpPrefix + hn + localhostPortConfig + "/mturker"),
+                "taskComplete" -> ("POST", httpPrefix + hn + localhostPortConfig + "/mturker/task")
               )
               complete(routeApis)
             }
