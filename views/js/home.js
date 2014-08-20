@@ -18,6 +18,10 @@ var global_access = (function($, window, loc, alertify) {
   *
   **/
 
+  //Configured for IE 10
+  if (!window.location.origin)
+   window.location.origin = window.location.protocol+"//"+window.location.host;
+
   var baseHostName = window.location.origin;
 
   var mTurkURIPromise = mTurkURIretrieve();
