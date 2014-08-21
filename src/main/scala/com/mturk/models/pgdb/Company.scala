@@ -1,8 +1,6 @@
 package com.mturk.models.pgdb
 
-import java.sql.{Blob, Timestamp}
-import javax.sql.rowset.serial.SerialBlob
-import akka.actor.ActorLogging
+import java.sql.Timestamp
 import com.github.nscala_time.time.Imports._
 import scala.slick.driver.PostgresDriver.simple._
 

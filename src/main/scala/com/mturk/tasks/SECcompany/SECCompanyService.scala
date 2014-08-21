@@ -150,7 +150,7 @@ class SECCompanyService(secCompanyActor: ActorRef)(implicit system: ActorSystem)
               }
             } ~ complete(NotFound)
         }
-        } ~
+      } ~
       pathPrefix("companies") {
         pathPrefix("casper") {
           get {

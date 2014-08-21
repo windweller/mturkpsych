@@ -3,6 +3,7 @@ package com.mturk.api
 import akka.actor.Props
 import com.mturk.tasks.SECcompany._
 import com.mturk.tasks.mTurkerProgress.MTurkerProgressActor
+import com.mturk.tasks.triadTest.TriadTestActor
 
 /**
  * Created by Aimingnie on 5/14/14.
@@ -13,5 +14,6 @@ trait MainActors {
 
   lazy val companyActor = system.actorOf(Props[SECCompanyActor], "SECCompany")
   lazy val mTurkerActor = system.actorOf(Props[MTurkerProgressActor], "mTurker")
+  lazy val triadActor = system.actorOf(Props[TriadTestActor], "triad")
 
 }

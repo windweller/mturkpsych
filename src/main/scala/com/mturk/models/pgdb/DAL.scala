@@ -43,6 +43,11 @@ object DAL {
       if (MTable.getTables("MTurker").list().isEmpty) {
         MTurker.mTurkers.ddl.create
       }
+
+      if (MTable.getTables("Triad").list().isEmpty) {
+        Triad.triads.ddl.create
+      }
+
     }
   }
 

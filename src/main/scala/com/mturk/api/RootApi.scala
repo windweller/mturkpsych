@@ -3,6 +3,7 @@ package com.mturk.api
 import akka.actor.{Props, ActorSystem}
 import akka.event.Logging.InfoLevel
 import com.mturk.tasks.mTurkerProgress.MTurkerProgressService
+import com.mturk.tasks.triadTest.TriadTestService
 import spray.http.HttpRequest
 import spray.http.StatusCodes.{MovedPermanently, NotFound }
 import spray.httpx.encoding.Gzip
@@ -27,6 +28,7 @@ trait RootApi extends RouteConcatenation with StaticRoute with AbstractSystem {
   lazy val routes = logRequest(showReq _) {
     new SECCompanyService(companyActor).route ~
     new MTurkerProgressService(mTurkerActor).route ~
+    new TriadTestService(triadActor).route ~
     staticRoute
   }
 
@@ -40,8 +42,17 @@ trait StaticRoute extends Directives {
     pathEndOrSingleSlash {
         getFromFile(new File("views/home.html"), `text/html`)
     } ~
-    path("turk") {
-        getFromFile(new File("views/turk.html"), `text/html`)
+    path("sec") {
+      getFromFile(new File("views/sec.html"), `text/html`)
+    } ~
+    path("secturk") {
+      getFromFile(new File("views/secturk.html"), `text/html`)
+    } ~
+    path("triad") {
+      getFromFile(new File("views/triad.html"), `text/html`)
+    } ~
+    path("triadturk") {
+      getFromFile(new File("views/triadturk.html"), `text/html`)
     } ~
     path("css" / Segment) {fileName =>
       compressResponse(Gzip) {

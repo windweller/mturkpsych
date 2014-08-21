@@ -10,7 +10,6 @@ class MTurkerProgressActor extends Actor with ActorLogging {
 
   import com.mturk.tasks.Util._
   import com.mturk.tasks.mTurkerProgress.MTurkerProgressProtocol._
-  import JsonImplicits._
   import scala.util.{Success,Failure}
 
 
@@ -28,14 +27,13 @@ class MTurkerProgressActor extends Actor with ActorLogging {
       sender ! TransOk(result._1, result._2, result._3)
 
     case CompleteOneTask(token) =>
-      val result = DAL.db.withSession {implicit session =>
+      val result = DAL.db.withSession { implicit session =>
         MTurker.completeOneTask(token)
       }
       sender ! TransOk(result._1, result._2, result._3)
 
     case UpdateMturkID(id, jObject) =>
-      //the exception being thrown here is not captured by Future.recover() method
-      //why!?
+
       if (!jObject.isDefined("mturkid")) {sender ! Status.Failure(new Exception("mturkid field in PUT request is missing"))}
 
       val mTurkid = jObject.getValue("mturkid")
