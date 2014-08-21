@@ -1,0 +1,130 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MTurk Experiment | Welcome</title>
+    <link rel="icon" type="image/png" href="img/favicon.ico">
+    <link rel="stylesheet" href="css/vendor/foundation.css" />
+    <link rel="stylesheet" href="css/vendor/foundation-icons.css" />
+    <link rel="stylesheet" href="css/vendor/animate.css">
+
+    <link rel="stylesheet" href="css/vendor/alertify.core.css">
+    <link rel="stylesheet" href="css/vendor/alertify.bootstrap.css">
+    <link rel="stylesheet" href="css/site.css">
+     <!-- deployment JS 
+    <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.7.1/modernizr.min.js"></script>
+    -->
+  </head>
+  <body>
+
+  <div class="canvas"> 
+
+    <div class="row">
+      <div class="large-12 columns">
+        <div class="row text-center">
+          <h1 class="heavy-text">Task Page</h1>
+          <br>
+          <p>Your current progress: &nbsp;<span id="taskDisplay">0</span>/10 </p>
+        </div>
+          <div class="progress large-12 success round">
+            <span id="progressBar" class="meter progressMeter"></span> <!-- style="width: 80%" -->
+          </div>
+
+        <div class="explaination-panel"> 
+
+          <div class="panel-header text-center">
+            <h4 id="instruction-header">Instruction: </h4>
+          </div>
+          
+          <div id="panel-instruction-content">
+            <p>The documents you will be working with are called 10-K reports, which are filed annually by specific companies to the SEC (Stock Exchange Committee). Each document has a fixed structure but differs in content. Your task is to extract three sections out of each of these documents, and then copy and paste the content of these sections to this webpage. Only once all three sections have been posted will you be allowed continue on to the next document. </p>
+            <p>You will click the link below, which will open a new webpage that contains the file. Downloading will be slow because some files are very large (20mb - 30mb). We encourage you to use the <a href="http://www.mozilla.org/en-US/firefox/new/" target="_blank"><b>Firefox</b></a> browser <a href="http://www.mozilla.org/en-US/firefox/new/" target="_blank"><img class="img-link" width="32px" src="img/firefox_icon.png"></a>.
+            </p>
+
+            <div class="row">
+              <div class="small-11 columns">
+                <div class="row">
+                  <div class="small-6 columns">
+                    <label for="right-label" class="right inline">Type in your MTurk ID to start: </label>
+                  </div>
+                  <div class="small-4 columns">
+                    <input type="text" id="MturkId" placeholder="MTurk ID">
+                  </div>
+                  <div class="small-2 columns">
+                    <button id="saveMturkId" class="tiny radius">Save</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          
+        </div>
+
+        <div class="explaination-panel"> 
+          <div class="panel-header text-center">
+            <h4>Task Start: </h4>
+            <p>You can choose one of two ways to start your task: </p>
+          </div>
+
+          <ul class="medium-block-grid-2 large-block-grid-2 text-center blockage">
+            <li><a id="readInBrowser" href="" target="_tab">Read in your web browser</a></li>
+            <li><a id="downloadFile" href="" target="_tab">Download HTML file</a></li>
+          </ul>
+  
+          <br>
+
+          <ul class="medium-block-grid-2 large-block-grid-2 blockage-text text-center">
+            <li>Please go to the newly opened page. It might take a while to load, and if it <b>freezes</b> (more than 10 minutes), try opening the page again. If the page still won't load, click the button on the right to download the file.</li>
+            <li>Double click the file you downloaded. It will open in your default browser. Or you can <b>right click</b> the file, choose "Open With", and find "Firefox" browser in the list if you have installed it. </li>
+          </ul>
+
+<!--      <div class="row text-center">
+            <p>When you are done with the task, <br> you can close the document page because there will be a new document for your next task.</p>            
+          </div> -->
+
+        </div>
+
+        <div class="explaination-panel">
+          <div class="panel-header text-center">
+            <h4>Complete Task: </h4>
+            <p>Extract the sections (labelled "Items") from the document, and then copy and paste the text. If any one "Item" is missing, please go to the bottom of this page and click the "Unable to complete" button, and you will be given a new document. However, you still need to complete 10 documents to be paid. </p> 
+            <p>Documents should appear as regular HTML pages, which may contain strange symbols. If they appear to be unreadable, click the "Unable to complete" button. </p>
+          </div>
+          <p>Task 1: <br> Find Item 1A. Risk Factor</p>
+          <p class="hint"><kbd>Hint:</kbd> Sometimes one section spans through a few pages.</p>
+          <textarea class="yello-textarea" name="risk_factor" id="riskFactor" rows="8"></textarea>
+          <p>Task 2: <br> Find Item 7. Management's Discussion and Analysis of Financial Condition and Results of Operations</p>
+          <p class="hint"><kbd>Hint:</kbd> This section can be very very very long. Do not copy and paste the tables or anything inside them, only text is needed. </p>
+          <textarea class="yello-textarea" name="management_dis" id="managementDis" rows="8"></textarea>
+          <p>Task 3: <br> Find Item 8. Financial Statements and Supplementary Data</p>
+          <p class="hint"><kbd>Hint:</kbd> You should look for "reporting" or "report" as section head. Again, do not copy and paste the tables or anything inside them, only text is needed.</p>
+          <textarea class="yello-textarea" name="finan_state" id="finanState" rows="8"></textarea>
+        </div>
+
+        <div class="explaination-panel text-center">
+          <button id="unableToComplete" class="alert">Unable to Complete</button>
+          <button id="DoneNext" class="success">I'm done! Next!</button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+ <!-- deployment JS 
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery.simpleWeather/2.6.0/jquery.simpleWeather.min.js"></script>
+  -->
+    <script src="js/vendor/jquery-2.1.1.min.js"></script>
+    <script src="js/vendor/foundation.min.js"></script>
+    <script src="js/vendor/jquery.cookie.js"></script>
+    <script src="js/vendor/alertify.min.js"></script>
+    <script src="js/vendor/q.min.js"></script>
+    <script src="js/home.min.js"></script>
+    <script>
+      $(document).foundation();
+    </script>
+  </body>
+</html>
