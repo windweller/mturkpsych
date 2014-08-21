@@ -5,20 +5,30 @@ import scala.util.Try
 
 object Triad {
 
-  case class Triad(id: Option[Int], verb: String, assignedCategory: String, recognized: String,
-                      timeTakenToRecognize: String, verbFromTheSameSide: String, verFromTheOppositeSide: String)
+//  val fields = List("verbTop", "verbTopCate", "verbLeft", "verbLeftCate",
+//    "verbRight", "verbRightCate", "predict", "reactionTime", "response")
+
+  case class Triad(id: Option[Int], commToken: String, phase: String, verbTop: String, verbTopCate: String, verbLeft: String,
+                      verbLeftCate: String, verbRight: String, verbRightCate: String,
+                      predict: String, reactionTime: String, response: String)
 
   class TriadTable(tag: Tag) extends Table[Triad](tag, "Triad") {
     def id = column[Option[Int]]("TRIAD_ID", O.PrimaryKey, O.AutoInc)
-    def verb = column[String]("TRIAD_VERB")
-    def assignedCategory = column[String]("TRIAD_ASSIGNED_CATEGORY")
-    def recognized = column[String]("TRIAD_RECOGNIZED") //this is stored in cookie
-    def timeTakenToRecognize = column[String]("TRIAD_TIME_TO_RECOGNIZE")
-    def verbFromTheSameSide = column[String]("TRIAD_VERB_FROM_SAME_CATE")
-    def verFromTheOppositeSide = column[String]("TRIAD_VERB_FROM_OPPO_CATE")
+    def commToken = column[String]("TRIAD_COMM_TOKEN")
+    def phase = column[String]("TRIAD_PHASE")
+    def verbTop = column[String]("TRIAD_VERB_TOP")
+    def verbTopCate = column[String]("TRIAD_VERB_TOP_CATE")
+    def verbLeft = column[String]("TRIAD_VERB_LEFT") //this is stored in cookie
+    def verbLeftCate = column[String]("TRIAD_VERB_LEFT_CATE")
+    def verbRight = column[String]("TRIAD_VERB_RIGHT")
+    def verbRightCate = column[String]("TRIAD_VERB_RIGHT_CATE")
+    def predict = column[String]("TRIAD_PREDICT")
+    def reactionTime = column[String]("TRIAD_REACTION_TIME")
+    def response = column[String]("TRIAD_RESPONSE")
 
-    def * = (id, verb, assignedCategory, recognized,
-      timeTakenToRecognize, verbFromTheSameSide, verFromTheOppositeSide) <> (Triad.tupled, Triad.unapply)
+    def * = (id, commToken, phase, verbTop, verbTopCate, verbLeft,
+      verbLeftCate, verbRight, verbRightCate, predict,
+      reactionTime, response) <> (Triad.tupled, Triad.unapply)
   }
 
   val triads = TableQuery[TriadTable]

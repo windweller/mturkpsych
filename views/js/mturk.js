@@ -1,8 +1,11 @@
 /* Global library settings */
 alertify.set({ buttonFocus: "none" });
-alertify.set({ delay: 10000 }); //for logging messages
+//for logging messages
+alertify.set({ delay: 10000 }); 
 
-var mturk.global_access = (function($, window, loc, alertify) {
+var mturk = {};
+
+mturk.global_access = (function($, window, loc, alertify) {
   'use strict';
 
   /**
@@ -27,6 +30,8 @@ var mturk.global_access = (function($, window, loc, alertify) {
   var mTurkURIPromise = mTurkURIretrieve();
 
   var companyURIPromise = companyURIretrieve();
+
+  var triadURIPromise = triadURIretrieve();
 
   //contains progress counter in data.countTask
   var mTurkIdentity = _establishIdentity();
@@ -174,6 +179,32 @@ var mturk.global_access = (function($, window, loc, alertify) {
     });
   }
 
+  /**
+  *
+  * @returns a Promise object
+  * the data looks like
+  * {
+    "triadResultUpload": {
+        "_1": "POST",
+        "_2": "http://127.0.0.1:8080/triad/result/"
+    }
+  }
+  *
+  **/
+  function triadURIretrieve() {
+    return Q($.ajax({
+      url: baseHostName + '/triad/help',
+      type: 'GET',
+      dataType: 'JSON'
+    }))
+    .then(function(data) {
+      return data;
+    })
+    .fail(function(jqXHR) {
+      ajaxFailureHandle(jqXHR, baseHostName+'/triad/help');
+    });
+  }
+
   //jQuery will not JSON.stringify() the data
   //it has to be done manually. So stupid.
   function savemTurkID(id) {
@@ -232,6 +263,7 @@ var mturk.global_access = (function($, window, loc, alertify) {
     mTurkIdentity: mTurkIdentity,
     mTurkURIPromise: mTurkURIPromise,
     companyURIPromise: companyURIPromise,
+    triadURIPromise: triadURIPromise,
     savemTurkID: savemTurkID,
     ajaxFailureHandle: ajaxFailureHandle,
     customAjaxFailureHandle: customAjaxFailureHandle,
@@ -249,7 +281,7 @@ var mturk.global_access = (function($, window, loc, alertify) {
 *
 **/
 
-var mturk.animate = (function($, glo, alertify) {
+mturk.animate = (function($, glo, alertify) {
   'use strict';
 
   function taskComplete(progressNum) {
@@ -301,7 +333,4 @@ var mturk.animate = (function($, glo, alertify) {
   };
 
 
-}(jQuery, global_access, alertify));
-
-
-
+}(jQuery, mturk.global_access, alertify));

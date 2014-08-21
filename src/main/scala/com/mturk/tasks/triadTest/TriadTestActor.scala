@@ -7,23 +7,21 @@ import com.mturk.tasks.Util._
 import scala.util.{Success,Failure}
 
 
-//  case class Triad(id: Option[Int], verb: String, assignedCategory: Int, recognized: Int,
-//  timeTakenToRecognize: Double, verbFromTheSameSide: String, verFromTheOppositeSide: String)
-
 class TriadTestActor extends Actor with ActorLogging {
 
   import com.mturk.tasks.triadTest.TriadTestActorProtocol._
 
   def receive = {
     case JObjectTriadResult(jObject) =>
-      val fields = List("verb", "assignedCategory", "recognized", "timeTakenToRecognize",
-        "verbFromTheSameSide", "verFromTheOppositeSide")
+      val fields = List("phase", "commToken", "verbTop", "verbTopCate", "verbLeft", "verbLeftCate",
+        "verbRight", "verbRightCate", "predict", "reactionTime", "response")
 
       extractJObjectEntity(fields, jObject) match {
         case Right(fieldsValue) =>
           DAL.db.withSession { implicit session =>
             val result = Triad.insert(Triad.Triad(None, fieldsValue(0), fieldsValue(1),
-              fieldsValue(2), fieldsValue(3), fieldsValue(4), fieldsValue(5)))
+              fieldsValue(2), fieldsValue(3), fieldsValue(4), fieldsValue(5), fieldsValue(6),
+              fieldsValue(7), fieldsValue(8), fieldsValue(9), fieldsValue(10)))
             result match {
               case Success(t) => sender ! TransOk(Some(t), None)
               case Failure(ex) => sender ! TransOk(None, Some(ex.getMessage))
@@ -32,7 +30,6 @@ class TriadTestActor extends Actor with ActorLogging {
         case Left(errorString) =>
           sender ! TransOk(None, Some(errorString))
       }
-
   }
 }
 

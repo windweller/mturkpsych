@@ -26,7 +26,7 @@ class TriadTestService(triadTestActor: ActorRef)(implicit system: ActorSystem)
           val httpPrefix = if (hn == "127.0.0.1") "http://" else "https://"
 
           val routeApis = Map[String, (String, String)](
-            "triadResultUpload" -> ("POST", httpPrefix +  hn + localhostPortConfig  + "/triad/result/")
+            "triadResultUpload" -> ("POST", httpPrefix +  hn + localhostPortConfig  + "/triad/result")
           )
           complete(routeApis)
         }
