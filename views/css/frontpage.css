@@ -1,0 +1,29 @@
+.task-ad-block li {
+	border-style: solid;
+	border-width: 2px;
+	border-color: #776B57;
+	border-radius: 5px;
+	padding: 0.5em;
+	width: 150px;
+	height: 150px;
+	margin-left: 0.6em;
+	line-height: 120px;
+	transition: background-color 300ms ease-out;
+}
+
+.task-ad-block li:hover {
+	color: #fff;
+	background-color: #776B57;
+	transition: background-color 300ms ease-out;
+}
+
+.task-ad-block li a {
+	color: #8a6d3b;
+	display: inline-block;
+  	vertical-align: middle;
+  	line-height: normal;     
+}
+
+.task-ad-block li:hover a {
+	color: #fff;
+}
