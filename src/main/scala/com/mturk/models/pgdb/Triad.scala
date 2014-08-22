@@ -12,7 +12,7 @@ object Triad {
                       verbLeftCate: String, verbRight: String, verbRightCate: String,
                       predict: String, reactionTime: String, response: String)
 
-  class TriadTable(tag: Tag) extends Table[Triad](tag, "Triad") {
+  class TriadTable(tag: Tag) extends Table[Triad](tag, "Triad2") {
     def id = column[Option[Int]]("TRIAD_ID", O.PrimaryKey, O.AutoInc)
     def commToken = column[String]("TRIAD_COMM_TOKEN")
     def phase = column[String]("TRIAD_PHASE")
