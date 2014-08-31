@@ -460,9 +460,9 @@ var app = (function($, glo, animate) {
           fileURIPromise.then(function(file) {
             var data = {
               companyId: file.id,
-              riskFactor: textFields.riskFactor.val(),
-              managementDisc: textFields.managementDis.val(),
-              finStateSuppData: textFields.finanState.val()
+              riskFactor: textFields.riskFactor.val() //,
+              // managementDisc: textFields.managementDis.val(),
+              // finStateSuppData: textFields.finanState.val()
             }
 
             //this result contains updated mTurker info
@@ -471,12 +471,12 @@ var app = (function($, glo, animate) {
             var result = sendOutTextArea(data);
 
             //decide if the count is already up to 10
-            if ($.cookie("countTask") >= 9) {
+            if ($.cookie("countTask") >= 4) {
               //if the cookie indicates it's the 9th one
               //then retrieve identity again
 
               result.then(function(data) {
-                if (data.countTask == 10) {
+                if (data.countTask == 5) {
                   allComplete("You have completed ten tasks.", data.commToken);
                 }
               });

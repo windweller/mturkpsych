@@ -3,6 +3,7 @@ package com.mturk.models.pgdb
 import java.sql.Timestamp
 import com.github.nscala_time.time.Imports._
 import scala.slick.driver.PostgresDriver.simple._
+import scala.util.Try
 
 object Company {
   case class Company(id: Option[Int], txtURL: Option[String], htmlURL: Option[String], localFileLoc: Option[String],
@@ -76,6 +77,18 @@ object Company {
       company.copy(id = companyId)
     }else{
       throw new Exception("a file sharing the same localFileLoc value already exists")
+    }
+  }
+
+  def updateFromWebCompanyRiskF(riskFactor: String, companyId: Int)(implicit s: Session): Try[Company] = {
+    val q = for (c <- companies if c.id === companyId) yield c
+    q.list() match {
+      case Nil => throw new Exception("CompanyId is wrong, the company is empty")
+      case company::listTail =>
+        Try {
+          q.update(company.copy(riskFactor = Some(riskFactor)))
+          company.copy(riskFactor = Some(riskFactor))
+        }
     }
   }
 

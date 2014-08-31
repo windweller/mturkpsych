@@ -1,6 +1,6 @@
 package com.mturk
 
-import akka.actor.{ActorSystem, Props}
+import akka.actor.{Props, ActorSystem}
 import akka.io.{IO, Tcp}
 import spray.can.Http
 import com.mturk.api._
@@ -13,6 +13,12 @@ object Boot extends App with MainActors with RootApi {
   implicit lazy val system = ActorSystem("mturk-survey")
 
   DAL.databaseInit()
+
+  private val ws = new WsServer(Config.portWs)
+  ws.forResource("/ws/script", Some(processActor))
+  ws.start()
+
+  sys.addShutdownHook({system.shutdown(); ws.stop()})
 
   IO(Http) ! Http.Bind(rootService, interface = Config.host, port = Config.portHTTP)
 }

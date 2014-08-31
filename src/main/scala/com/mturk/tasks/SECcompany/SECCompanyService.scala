@@ -28,6 +28,16 @@ trait customRoutes {
 
   implicit val timeout = Timeout(5 seconds)
 
+  /**
+   * @deprecated
+   * This method is depreciated due to the
+   * philosophical difference it poses
+   * use the doTryPost instead
+   * @param messageConstructor
+   * @param authInfo
+   * @param secCompanyActor
+   * @return
+   */
   def doPost(messageConstructor: (JObject, AuthInfo) => AnyRef,
              authInfo: AuthInfo, secCompanyActor: ActorRef): Route = {
     entity(as[JObject]) { jObject =>
@@ -38,6 +48,31 @@ trait customRoutes {
           case true => (OK, "transaction successful")
           case false => (BadRequest, result.errorMessage)
         }).recover { case _ => (BadRequest, "An error has occurred! We will fix this")}
+        complete(response)
+      } else {
+        complete(Unauthorized, "Please use HTTP header to authorize this command.")
+      }
+    }
+  }
+
+  /**
+   * New Post method to parse the response as "Try[E]"
+   * @param messageConstructor
+   * @param authInfo
+   * @param secCompanyActor
+   * @return
+   */
+  def doTryPost(messageConstructor: (JObject, AuthInfo) => AnyRef,
+                authInfo: AuthInfo, secCompanyActor: ActorRef): Route = {
+    import scala.util.{Success,Failure}
+    entity(as[JObject]) { jObject =>
+      if (authInfo.accepted) {
+        val response = (secCompanyActor ? messageConstructor(jObject, authInfo)) //this constructs message
+          .mapTo[TryCompany]
+          .map(r => r.company match {
+          case Success(re) => (OK, "transaction successful")
+          case Failure(e) => (BadRequest, e.getMessage)
+        })
         complete(response)
       } else {
         complete(Unauthorized, "Please use HTTP header to authorize this command.")

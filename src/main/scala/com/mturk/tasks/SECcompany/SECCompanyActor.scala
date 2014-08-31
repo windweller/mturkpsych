@@ -5,6 +5,8 @@ import com.mturk.tasks.Util.AuthInfo
 import org.json4s.JsonAST.JObject
 import com.mturk.models.pgdb._
 
+import scala.util.{Try, Success}
+
 
 class SECCompanyActor extends Actor with ActorLogging {
   import com.mturk.tasks.SECcompany.SECCompanyProtocol._
@@ -24,19 +26,20 @@ class SECCompanyActor extends Actor with ActorLogging {
         sender ! TransOk(None, succeedOrNot= false, Some("Can't find casperFileLoc value in JSON"))
       }
 
+    //&& jObject.isDefined("managementDisc") && jObject.isDefined("finStateSuppData")
     case JObjectFromWeb(jObject, authInfo) =>
-      if (jObject.isDefined("riskFactor") && jObject.isDefined("managementDisc")
-        && jObject.isDefined("finStateSuppData") && jObject.isDefined("companyId")) {
+      if (jObject.isDefined("riskFactor")  && jObject.isDefined("companyId")) {
 
         jObject.getValueInt("companyId") match {
           case None => sender ! TransOk(None, succeedOrNot = false, Some("companyId is not a valid number"))
           case Some(companyId) =>
             val result = DAL.db.withSession { implicit session =>
-              Company.updateFromWeb(jObject.getValue("riskFactor"),
-                jObject.getValue("managementDisc"), jObject.getValue("finStateSuppData"),
+              Company.updateFromWebCompanyRiskF(jObject.getValue("riskFactor"),
+//                jObject.getValue("managementDisc"), jObject.getValue("finStateSuppData"),
                 jObject.getValue("companyId").toInt)
             }
-            sender ! TransOk(result._1, result._2, result._3)
+          sender ! TryCompany(result)
+//            sender ! TransOk(result._1, result._2, result._3)
         }
       }else{
         sender ! TransOk(None, succeedOrNot = false, Some("At least one of four " +
@@ -76,6 +79,7 @@ object SECCompanyProtocol {
   case class JObjectFromCasper(jObject: JObject, authInfo: AuthInfo)
   case class JObjectFromWeb(jObject: JObject, authInfo: AuthInfo)
   case class JObjectFromWebPUT(jObject: JObject, authInfo: AuthInfo)
+  case class TryCompany(company: Try[Company.Company])
   case class TransOk(company: Option[Company.Company], succeedOrNot: Boolean, errorMessage: Option[String])
   case class TransAllOk(companies: Option[List[Company.Company]], succeedOrNot: Boolean, errorMessage: Option[String])
 
