@@ -6,7 +6,6 @@ target/
 lib_managed/
 src_managed/
 test-output/
-*.jar
 *.iml
 *.txt
 *.key
