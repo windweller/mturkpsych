@@ -103,7 +103,7 @@ var delayedTurk = (function($, win, glo, alertify) {
   * Main logic
   **/
   //run program
-   TriadExperiment(10, "practice");
+   TriadExperiment(5, "practice");
 
    if (!win.location.origin)
    win.location.origin = win.location.protocol+"//"+win.location.host;
