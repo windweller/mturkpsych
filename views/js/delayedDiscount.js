@@ -222,7 +222,7 @@ var delayedTurk = (function($, win, glo, alertify) {
 
         sendOutData({
         	commToken:$.cookie("commToken"), 
-        	"version": 1, //this is preparing for future change
+        	"version": 1, //this for future change
         	"chosenTodayOrNot": chosenTodayOrNot,
         	"phase":phase,
         	"response":response,
