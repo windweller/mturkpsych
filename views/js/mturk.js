@@ -33,6 +33,8 @@ mturk.global_access = (function($, window, loc, alertify) {
 
   var triadURIPromise = triadURIretrieve();
 
+  var delayedDiscountURIPromise = delayedDiscountURI();
+
   //contains progress counter in data.countTask
   var mTurkIdentity = _establishIdentity();
 
@@ -205,6 +207,32 @@ mturk.global_access = (function($, window, loc, alertify) {
     });
   }
 
+  /**
+  *
+  * @returns a Promise object
+  * the data looks like
+  * {
+    "delayedResultUpload": {
+        "_1": "POST",
+        "_2": "http://127.0.0.1:8080/delayed/result"
+    }
+  }
+  *
+  **/
+  function delayedDiscountURI() {
+    return Q($.ajax({
+      url: baseHostName + '/delayed/help',
+      type: 'GET',
+      dataType: 'JSON'
+    }))
+    .then(function(data) {
+      return data;
+    })
+    .fail(function(jqXHR) {
+      ajaxFailureHandle(jqXHR, baseHostName+'/delayed/help');
+    });
+  }
+
   //jQuery will not JSON.stringify() the data
   //it has to be done manually. So stupid.
   function savemTurkID(id) {
@@ -264,6 +292,7 @@ mturk.global_access = (function($, window, loc, alertify) {
     mTurkURIPromise: mTurkURIPromise,
     companyURIPromise: companyURIPromise,
     triadURIPromise: triadURIPromise,
+    delayedDiscountURIPromise: delayedDiscountURIPromise,
     savemTurkID: savemTurkID,
     ajaxFailureHandle: ajaxFailureHandle,
     customAjaxFailureHandle: customAjaxFailureHandle,

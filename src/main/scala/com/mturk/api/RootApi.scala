@@ -2,6 +2,7 @@ package com.mturk.api
 
 import akka.actor.{Props, ActorSystem}
 import akka.event.Logging.InfoLevel
+import com.mturk.tasks.delayedDiscounting.DelayedDiscountService
 import com.mturk.tasks.mTurkerProgress.MTurkerProgressService
 import com.mturk.tasks.triadTest.TriadTestService
 import spray.http.HttpRequest
@@ -29,6 +30,7 @@ trait RootApi extends RouteConcatenation with StaticRoute with AbstractSystem {
     new SECCompanyService(companyActor).route ~
     new MTurkerProgressService(mTurkerActor).route ~
     new TriadTestService(triadActor).route ~
+    new DelayedDiscountService(delayedDiscountActor).route ~
     staticRoute
   }
 
@@ -53,6 +55,18 @@ trait StaticRoute extends Directives {
     } ~
     path("triadturk") {
       getFromFile(new File("views/triadturk.html"), `text/html`)
+    } ~
+    path("delayeddiscountv1") {
+      getFromFile(new File("views/delayedDiscountv1.html"), `text/html`)
+    } ~
+    path("delayeddiscountturkv1") {
+      getFromFile(new File("views/delayedDiscountTurkv1.html"), `text/html`)
+    } ~
+    path("delayeddiscountv2") {
+      getFromFile(new File("views/delayedDiscountv2.html"), `text/html`)
+    } ~
+    path("delayeddiscountturkv2") {
+      getFromFile(new File("views/delayedDiscountTurkv2.html"), `text/html`)
     } ~
     path("css" / Segment) {fileName =>
       compressResponse(Gzip) {

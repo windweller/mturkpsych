@@ -48,6 +48,10 @@ object DAL {
         Triad.triads.ddl.create
       }
 
+      if (MTable.getTables("DelayedDiscount").list().isEmpty) {
+        DelayedDiscount.delayDiscounts.ddl.create
+      }
+
     }
   }
 
