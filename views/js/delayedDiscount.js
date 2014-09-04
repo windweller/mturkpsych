@@ -148,25 +148,36 @@ var delayedTurk = (function($, win, glo, alertify) {
   function TriadExperiment(numTrials, phase) {
     var num = 0;
     var wordon, listening = false;
-    var todayDollarValue = ["$9.90", "$9.75", "$9.50", "$9.25", "$9.00", "$8.50", "$8.00", 
+    var todayDollarValues = ["$9.90", "$9.75", "$9.50", "$9.25", "$9.00", "$8.50", "$8.00", 
   	"$7.50", "$7.00", "$6.50", "$6.00", "$5.50", "$5.00", "$4.50", "$4.00", "$3.50", "$3.00", 
   	"$2.50", "$2.00", "$1.50", "$1.00", "$0.75", "$0.50", "$0.25", "$0.10"];
 
   	var intervals = ["in 1 day", "in 2 days", "in 1 week", "in 2 weeks", "in 1 month", "in 6 months", "in 2 years"];
   
-    todayDollarValues = _.shuffle(todayDollarValue);
-    intervals = _.shuffle(intervals);
+  	var stims = [];
 
-    var todayDollarValue = "";
-    var interval = "";
+  	generateStims(todayDollarValues, intervals);
+
+  	//generate all the combinations
+  	//after this stims are ready!
+  	function generateStims(todayValues, intervals) {
+  		for (var i = todayDollarValues.length - 1; i >= 0; i--) {
+  			for (var j = intervals.length - 1; j >= 0; j--) {
+  				stims.push(todayDollarValues[i] + "+" + intervals[j]);
+  			}
+  		}
+  	}
+
+    stims = _.shuffle(stims);
 
     function next() {
       if (num === numTrials) {
         finish();
       } else {
         num = num + 1;
-        todayDollarValue = todayDollarValues.shift();
-        interval = intervals.shift();
+        var stim = stims.shift();
+        var todayDollarValue = stim.split("+")[0];
+        var interval = stim.split("+")[1];
         
         show_word(todayDollarValue, interval);
         
@@ -198,13 +209,23 @@ var delayedTurk = (function($, win, glo, alertify) {
         listening = false;
         var rt = String((new Date).getTime() - wordon);
 
-        // val fields = List("commToken","version", "phase", "response", "todayLeftOrRight", "timeIntervalForDelay",
-        // "dollarToday", "reactionTime")
+        var chosenTodayOrNot = "";
+        if (todayLeftOrRight == "TodayLeft" && response == "L") {
+        	chosenTodayOrNot = true;
+        }
+        else if (todayLeftOrRight == "TodayRight" && response == "R"){
+        	chosenTodayOrNot = true;
+        }
+        else{
+        	chosenTodayOrNot = false;
+        }
+
         sendOutData({
         	commToken:$.cookie("commToken"), 
         	"version": 1, //this is preparing for future change
+        	"chosenTodayOrNot": chosenTodayOrNot,
         	"phase":phase,
-        	"response":response, 
+        	"response":response,
         	"todayLeftOrRight":todayLeftOrRight, 
         	"timeIntervalForDelay":$('#delayedTime').text(), 
         	"dollarToday":$('#todayDollar').text().substr(1), 
@@ -213,14 +234,6 @@ var delayedTurk = (function($, win, glo, alertify) {
         remove_word();
         next();
       }
-    }
-
-    /**
-    * call function sendOutData()
-    * supposed to be called after each key click
-    **/
-    function sendResponse(response) {
-
     }
 
     function finish() {

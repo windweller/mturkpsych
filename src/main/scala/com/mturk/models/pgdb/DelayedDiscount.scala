@@ -6,13 +6,14 @@ import scala.util.Try
 object DelayedDiscount {
 
   //todayLeftOrRight is either left or right
-  case class DelayedDiscount(id: Option[Int], commToken: String, version: String, phase: String, response: String, todayLeftOrRight: String,
+  case class DelayedDiscount(id: Option[Int], commToken: String, version: String, chosenTodayOrNot: String, phase: String, response: String, todayLeftOrRight: String,
                              timeIntervalForDelay: String, dollarToday: String, reactionTime: String)
 
   class DelayedTable(tag: Tag) extends Table[DelayedDiscount](tag, "DelayedDiscount") {
     def id = column[Option[Int]]("DELAYED_ID", O.PrimaryKey, O.AutoInc)
     def commToken = column[String]("DELAYED_COMM_TOKEN")
     def version = column[String]("DELAYED_VERSION")
+    def chosenTodayOrNot = column[String]("DELAYED_TODAY_OR_NOT")
     def phase = column[String]("DELAYED_PHASE")
     def response = column[String]("DELAYED_RESPONSE")
     def todayLeftOrRight = column[String]("DELAYED_TODAY_LEFT_OR_RIGHT")
@@ -20,7 +21,7 @@ object DelayedDiscount {
     def dollarToday = column[String]("DELAYED_DOLLAR_TODAY")
     def reactionTime = column[String]("DELAYED_REACTION_TIME")
 
-    def * = (id, version, commToken, phase, response, todayLeftOrRight, timeIntervalForDelay, dollarToday,
+    def * = (id, commToken, version, chosenTodayOrNot, phase, response, todayLeftOrRight, timeIntervalForDelay, dollarToday,
        reactionTime) <> (DelayedDiscount.tupled, DelayedDiscount.unapply)
   }
 
