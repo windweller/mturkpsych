@@ -8,6 +8,7 @@ import com.mturk.tasks.triadTest.TriadTestService
 import spray.http.HttpRequest
 import spray.http.StatusCodes.{MovedPermanently, NotFound }
 import spray.httpx.encoding.Gzip
+import spray.routing.PathMatchers.Rest
 import spray.routing.{Directives, RouteConcatenation}
 import spray.routing.directives.LogEntry
 import java.io.File
@@ -68,27 +69,17 @@ trait StaticRoute extends Directives {
     path("delayeddiscountturkv2") {
       getFromFile(new File("views/delayedDiscountTurkv2.html"), `text/html`)
     } ~
-    path("css" / Segment) {fileName =>
+    path("css" / Rest) {fileName =>
       compressResponse(Gzip) {
         getFromFile(new File("views/css/"+fileName), `text/css`)
       }
     } ~
-    path("css" / Segment / Segment) {(subFolder, fileName) =>
-      compressResponse(Gzip) {
-        getFromFile(new File("views/css/" + subFolder + "/" + fileName), `text/css`)
-      }
-    } ~
-    path("js" / Segment) {fileName =>
+    path("js" / Rest) {fileName =>
       compressResponse(Gzip) {
         getFromFile(new File("views/js/" + fileName), `application/javascript`)
       }
     } ~
-    path("js" / Segment / Segment) { (subFolder, fileName) =>
-      compressResponse(Gzip) {
-        getFromFile(new File("views/js/" + subFolder + "/" + fileName), `application/javascript`)
-      }
-    } ~
-    path("img" / Segment) {fileName =>
+    path("img" / Rest) {fileName =>
       getFromFile(new File("views/img/"+fileName))
     } ~ complete(NotFound)
 }

@@ -105,10 +105,7 @@ var delayedTurk = (function($, win, glo, alertify) {
   //run program
    TriadExperiment(5, "practice");
 
-   if (!win.location.origin)
-   win.location.origin = win.location.protocol+"//"+win.location.host;
-
-  var baseHostName = win.location.origin;
+  var baseHostName = win.location.pathname;
 
   var todayLeftOrRight = "";
 
