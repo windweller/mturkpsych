@@ -14,6 +14,7 @@ object Boot extends App with MainActors with RootApi {
 
   DAL.databaseInit()
 
+  //wss is not working for some reason
   private val ws = new WsServer(Config.portWs)
   ws.forResource("/ws/script", Some(processActor))
   ws.start()
