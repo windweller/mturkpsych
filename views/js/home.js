@@ -341,9 +341,7 @@ var app = (function($, glo, animate) {
   };
 
   var textFields = {
-    riskFactor: $('#riskFactor'),
-    managementDis: $('#managementDis'),
-    finanState: $('#finanState')
+    riskFactor: $('#riskFactor')
   };
 
   /*
@@ -418,28 +416,14 @@ var app = (function($, glo, animate) {
       else {
 
       //passing through the first check
-      if (textFields.riskFactor.val() != ""
-        && textFields.managementDis.val() != ""
-        && textFields.finanState.val() != "") {
+      if (textFields.riskFactor.val() != "") {
         //now they are filled up, but are they authentic?
         //let's check the length of each section
         var lengthOfFirst = textFields.riskFactor.val().length;
-        var lengthOfSecond = textFields.managementDis.val().length;
-        var lengthOfThird = textFields.finanState.val().length;
-
         var passedCheck = true;
 
-        if (lengthOfFirst <= 30 || lengthOfSecond <= 30 || lengthOfThird <= 30) {
+        if (lengthOfFirst <= 30) {
           alertify.alert("The input of those text fields appear to be very short. " +
-            "We can't let this pass our check system. Sorry. If it is the real "+
-            "extraction from the document and we are blocking you, please click "+
-            "<span class='red'>Unable to Complete</span> button.");
-          passedCheck = false;
-        }
-        else if (textFields.riskFactor.val() == textFields.managementDis.val() ||
-          textFields.managementDis.val() == textFields.finanState.val() ||
-          textFields.riskFactor.val() == textFields.finanState.val()) {
-          alertify.alert("The input of those text fields appear to be exactly the same. " +
             "We can't let this pass our check system. Sorry. If it is the real "+
             "extraction from the document and we are blocking you, please click "+
             "<span class='red'>Unable to Complete</span> button.");
@@ -460,9 +444,7 @@ var app = (function($, glo, animate) {
           fileURIPromise.then(function(file) {
             var data = {
               companyId: file.id,
-              riskFactor: textFields.riskFactor.val() //,
-              // managementDisc: textFields.managementDis.val(),
-              // finStateSuppData: textFields.finanState.val()
+              riskFactor: textFields.riskFactor.val()
             }
 
             //this result contains updated mTurker info
@@ -471,16 +453,21 @@ var app = (function($, glo, animate) {
             var result = sendOutTextArea(data);
 
             //decide if the count is already up to 10
-            if ($.cookie("countTask") >= 4) {
+            if ($.cookie("countTask") >= 9) {
               //if the cookie indicates it's the 9th one
               //then retrieve identity again
 
               result.then(function(data) {
-                if (data.countTask == 5) {
+                if (data.countTask == 10) {
                   allComplete("You have completed ten tasks.", data.commToken);
                 }
               });
+            } 
+            else {
+              //
+              
             }
+
           });
         }
 
@@ -703,10 +690,9 @@ var app = (function($, glo, animate) {
           //Object {id: 1, mturkId: "asdfasdfwere", countTask: 1, commToken: "ff52be2a-ee2c-4a58-b4f6-7ee2b4aaa9fb"}
           //update COOKIE
           $.cookie('countTask', data.countTask);
+
           animate.taskComplete(data.countTask);
           textFields.riskFactor.val("");
-          textFields.managementDis.val("");
-          textFields.finanState.val("");
 
           return data;
         })

@@ -37,7 +37,13 @@ object Company {
     company.copy(id = companyId)
   }
 
-  /* Not in actual use */
+  /**
+   * Not actually in use
+   * @deprecated
+   * @param casperFileLoc
+   * @param s
+   * @return
+   */
   def insertCasper(casperFileLoc: String)(implicit s: Session): (Option[Company], Boolean, Option[String]) = {
     val companyQuery = for (c <- companies if c.localFileLoc === casperFileLoc) yield c
 
@@ -137,8 +143,7 @@ object Company {
     if (firstBatchCompanies.isEmpty) {
       //second query: null ones and unable to complete <= 2
       //first step, mark those qualifying companies' "isRetrieved" = False
-      val companySecondQuery = for (c <- companies if c.riskFactor.isNull
-        && c.managementDisc.isNull && c.finStateSuppData.isNull && c.unableToCompleteCount <= 2) yield c
+      val companySecondQuery = for (c <- companies if c.riskFactor.isNull && c.unableToCompleteCount <= 2) yield c
 
       val secondBatchCompanies = companySecondQuery.sortBy(_.retrievedTime.asc).list()  //start from earliest record
       if (secondBatchCompanies.isEmpty) {

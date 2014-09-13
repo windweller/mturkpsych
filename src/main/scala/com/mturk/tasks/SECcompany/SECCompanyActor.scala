@@ -35,11 +35,10 @@ class SECCompanyActor extends Actor with ActorLogging {
           case Some(companyId) =>
             val result = DAL.db.withSession { implicit session =>
               Company.updateFromWebCompanyRiskF(jObject.getValue("riskFactor"),
-//                jObject.getValue("managementDisc"), jObject.getValue("finStateSuppData"),
                 jObject.getValue("companyId").toInt)
             }
-          sender ! TryCompany(result)
-//            sender ! TransOk(result._1, result._2, result._3)
+//            result.map(r => sender ! TransOk(Some(r), true, None))
+            sender ! TryCompany(result)
         }
       }else{
         sender ! TransOk(None, succeedOrNot = false, Some("At least one of four " +
@@ -85,4 +84,9 @@ object SECCompanyProtocol {
 
   case object WebGetOneCompany
   case object CasperGetAllCompanies
+
+  case class Trial(name: String)
+  val test = Trial("hello!")
+  test.hashCode()
+
 }

@@ -47,7 +47,7 @@ trait customRoutes {
           .map(result => result.succeedOrNot match {
           case true => (OK, "transaction successful")
           case false => (BadRequest, result.errorMessage)
-        }).recover { case _ => (BadRequest, "An error has occurred! We will fix this")}
+        }).recover { case e => (BadRequest, e.getMessage)}
         complete(response)
       } else {
         complete(Unauthorized, "Please use HTTP header to authorize this command.")
@@ -125,7 +125,7 @@ class SECCompanyService(secCompanyActor: ActorRef)(implicit system: ActorSystem)
                       complete(Unauthorized, "Please retrieve and add your communication token as cookie.")
                     case Some(commToken) =>
                       val authInfo = getUser(commToken.content)
-                      doPost(JObjectFromWeb.apply, authInfo, secCompanyActor)
+                      doTryPost(JObjectFromWeb.apply, authInfo, secCompanyActor)
                   }
                 }
               } ~

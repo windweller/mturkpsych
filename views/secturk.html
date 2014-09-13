@@ -38,7 +38,7 @@
           </div>
           
           <div id="panel-instruction-content">
-            <p>The documents you will be working with are called 10-K reports, which are filed annually by specific companies to the SEC (Stock Exchange Committee). Each document has a fixed structure but differs in content. Your task is to extract three sections out of each of these documents, and then copy and paste the content of these sections to this webpage. Only once all three sections have been posted will you be allowed continue on to the next document. </p>
+            <p>The documents you will be working with are called 10-K reports, which are filed annually by specific companies to the SEC (Stock Exchange Committee). Each document has a fixed structure but differs in content. Your task is to extract one section out of each of these documents, and then copy and paste the content of these sections to this webpage. Only once the section has been posted will you be allowed continue on to the next document. </p>
             <p>You will click the link below, which will open a new webpage that contains the file. Downloading will be slow because some files are very large (20mb - 30mb). We encourage you to use the <a href="http://www.mozilla.org/en-US/firefox/new/" target="_blank"><b>Firefox</b></a> browser <a href="http://www.mozilla.org/en-US/firefox/new/" target="_blank"><img class="img-link" width="32px" src="img/firefox_icon.png"></a>.
             </p>
 
@@ -80,10 +80,6 @@
             <li>Double click the file you downloaded. It will open in your default browser. Or you can <b>right click</b> the file, choose "Open With", and find "Firefox" browser in the list if you have installed it. </li>
           </ul>
 
-<!--      <div class="row text-center">
-            <p>When you are done with the task, <br> you can close the document page because there will be a new document for your next task.</p>            
-          </div> -->
-
         </div>
 
         <div class="explaination-panel">
@@ -95,12 +91,6 @@
           <p>Task 1: <br> Find Item 1A. Risk Factor</p>
           <p class="hint"><kbd>Hint:</kbd> Sometimes one section spans through a few pages.</p>
           <textarea class="yello-textarea" name="risk_factor" id="riskFactor" rows="8"></textarea>
-          <p>Task 2: <br> Find Item 7. Management's Discussion and Analysis of Financial Condition and Results of Operations</p>
-          <p class="hint"><kbd>Hint:</kbd> This section can be very very very long. Do not copy and paste the tables or anything inside them, only text is needed. </p>
-          <textarea class="yello-textarea" name="management_dis" id="managementDis" rows="8"></textarea>
-          <p>Task 3: <br> Find Item 8. Financial Statements and Supplementary Data</p>
-          <p class="hint"><kbd>Hint:</kbd> You should look for "reporting" or "report" as section head. Again, do not copy and paste the tables or anything inside them, only text is needed.</p>
-          <textarea class="yello-textarea" name="finan_state" id="finanState" rows="8"></textarea>
         </div>
 
         <div class="explaination-panel text-center">
@@ -122,7 +112,7 @@
     <script src="js/vendor/jquery.cookie.js"></script>
     <script src="js/vendor/alertify.min.js"></script>
     <script src="js/vendor/q.min.js"></script>
-    <script src="js/home.min.js"></script>
+    <script src="js/home.js"></script>
     <script>
       $(document).foundation();
     </script>
