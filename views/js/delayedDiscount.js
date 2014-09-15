@@ -109,7 +109,7 @@ var delayedTurk = (function($, win, glo, alertify) {
 
   var todayLeftOrRight = "";
 
-  if (baseHostName.indexOf("delayedDiscountTurkv1")!= -1) {
+  if (baseHostName.indexOf("delayeddiscountturkv1") != -1) {
   	todayLeftOrRight = "TodayLeft";
   }else{
   	todayLeftOrRight = "TodayRight";
