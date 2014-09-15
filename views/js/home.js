@@ -462,10 +462,12 @@ var app = (function($, glo, animate) {
                   allComplete("You have completed ten tasks.", data.commToken);
                 }
               });
-            } 
+            }
             else {
-              //
-              
+              //if not full done, we retrieve and update the document link
+              //this should fix the issue
+              fileURIPromise = loadNewDocURL();
+              updateDocLinks(fileURIPromise);
             }
 
           });
