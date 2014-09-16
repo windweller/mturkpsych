@@ -9,7 +9,7 @@ object Company {
   case class Company(id: Option[Int], txtURL: Option[String], htmlURL: Option[String], localFileLoc: Option[String],
                      riskFactor: Option[String], managementDisc: Option[String],
                      finStateSuppData: Option[String], unableToCompleteCount: Option[Int],
-                     isRetrieved: Boolean, retrievedTime: Option[Timestamp])
+                     isRetrieved: Boolean, retrievedTime: Option[Timestamp], mturkID: Option[String])
 
   class CompanyTable(tag: Tag) extends Table[Company](tag, "Company") {
 
@@ -23,9 +23,10 @@ object Company {
     def unableToCompleteCount = column[Option[Int]]("COMP_UNABLE_TO_COMPLETE")
     def isRetrieved = column[Boolean]("COMP_IS_RETTIEVED")
     def retrievedTime = column[Option[Timestamp]]("COMP_RETRIEVED_TIME")
+    def mturkID = column[Option[String]]("COMP_MTURK_ID")
 
     def * = (id, txtURL, htmlURL, localFileLoc, riskFactor, managementDisc,
-      finStateSuppData, unableToCompleteCount, isRetrieved, retrievedTime) <> (Company.tupled, Company.unapply _)
+      finStateSuppData, unableToCompleteCount, isRetrieved, retrievedTime, mturkID) <> (Company.tupled, Company.unapply _)
   }
 
   val companies = TableQuery[CompanyTable]
@@ -60,7 +61,7 @@ object Company {
       s3Loc.isEmpty match {
         case true => (None, false, Some("casperFileLoc value doesn't fit format and the server can't extract certain value"))
         case false =>
-          val company = Company(None, Some(s3Loc.get), None, Some(casperFileLoc), None, None, None, Some(0), isRetrieved = false, None)
+          val company = Company(None, Some(s3Loc.get), None, Some(casperFileLoc), None, None, None, Some(0), isRetrieved = false, None, None)
           val companyId = companies returning companies.map(_.id) += company
           (Some(company.copy(id = companyId)), true, None)
       }
@@ -78,7 +79,7 @@ object Company {
     if (companyQuery.list().isEmpty) {
 
       val company = Company(None, Some("/sec/company/file/txt/"+fileURL.get), Some("/sec/company/file/html/"+fileURL.get),
-        Some(localFileLoc), None, None, None, Some(0), isRetrieved = false, None)
+        Some(localFileLoc), None, None, None, Some(0), isRetrieved = false, None, None)
       val companyId = companies returning companies.map(_.id) += company
       company.copy(id = companyId)
     }else{
@@ -86,14 +87,14 @@ object Company {
     }
   }
 
-  def updateFromWebCompanyRiskF(riskFactor: String, companyId: Int)(implicit s: Session): Try[Company] = {
+  def updateFromWebCompanyRiskF(riskFactor: String, companyId: Int, mturkID: String)(implicit s: Session): Try[Company] = {
     val q = for (c <- companies if c.id === companyId) yield c
     q.list() match {
       case Nil => throw new Exception("CompanyId is wrong, the company is empty")
       case company::listTail =>
         Try {
-          q.update(company.copy(riskFactor = Some(riskFactor)))
-          company.copy(riskFactor = Some(riskFactor))
+          q.update(company.copy(riskFactor = Some(riskFactor), mturkID = Some(mturkID)))
+          company.copy(riskFactor = Some(riskFactor), mturkID = Some(mturkID))
         }
     }
   }

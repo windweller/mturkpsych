@@ -28,21 +28,21 @@ class SECCompanyActor extends Actor with ActorLogging {
 
     //&& jObject.isDefined("managementDisc") && jObject.isDefined("finStateSuppData")
     case JObjectFromWeb(jObject, authInfo) =>
-      if (jObject.isDefined("riskFactor")  && jObject.isDefined("companyId")) {
+      if (jObject.isDefined("riskFactor")  && jObject.isDefined("companyId") && jObject.isDefined("mturkID")) {
 
         jObject.getValueInt("companyId") match {
           case None => sender ! TransOk(None, succeedOrNot = false, Some("companyId is not a valid number"))
           case Some(companyId) =>
             val result = DAL.db.withSession { implicit session =>
               Company.updateFromWebCompanyRiskF(jObject.getValue("riskFactor"),
-                jObject.getValue("companyId").toInt)
+                jObject.getValue("companyId").toInt, jObject.getValue("mturkID"))
             }
 //            result.map(r => sender ! TransOk(Some(r), true, None))
             sender ! TryCompany(result)
         }
       }else{
         sender ! TransOk(None, succeedOrNot = false, Some("At least one of four " +
-          "fields: riskFactor, managementDisc, finStateSuppData, or companyId was not defined in JSON"))
+          "fields: riskFactor, companyId, mturkID was not defined in JSON"))
       }
 
     case JObjectFromWebPUT(jObject, authInfo) =>

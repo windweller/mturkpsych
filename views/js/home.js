@@ -333,6 +333,8 @@ var app = (function($, glo, animate) {
 
   var fileURIPromise = loadNewDocURL();
 
+  var previousSubmitText = null;
+
   var baseHostName = window.location.origin;
 
   var stateOfDocButtons = {
@@ -436,6 +438,13 @@ var app = (function($, glo, animate) {
             "anie@emory.edu");
           passedCheck = false;
         }
+        else if (previousSubmitText == textFields.riskFactor.val()) {
+          //checking if the user just copies and paste the same text
+          alertify.alert("Please don't copy and paste the same exact text for two documents." +
+            "If two documents happen to have the same exact text, please email" +
+            " anie@emory.edu");
+          passedCheck = false;
+        }
 
         //add more tests/checks here if needed
 
@@ -444,8 +453,11 @@ var app = (function($, glo, animate) {
           fileURIPromise.then(function(file) {
             var data = {
               companyId: file.id,
-              riskFactor: textFields.riskFactor.val()
+              riskFactor: textFields.riskFactor.val(),
+              mturkID: $.cookie('mturkId')
             }
+
+            previousSubmitText = data.riskFactor;
 
             //this result contains updated mTurker info
             //Do not refresh() because that won't be accurate!
