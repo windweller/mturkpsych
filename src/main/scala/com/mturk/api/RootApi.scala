@@ -58,16 +58,28 @@ trait StaticRoute extends Directives {
       getFromFile(new File("views/triadturk.html"), `text/html`)
     } ~
     path("delayeddiscountv1") {
-      getFromFile(new File("views/delayedDiscountv1.html"), `text/html`)
+      getFromFile(new File("views/delayedDiscounting/delayedDiscountv1.html"), `text/html`)
     } ~
     path("delayeddiscountturkv1") {
-      getFromFile(new File("views/delayedDiscountTurkv1.html"), `text/html`)
+      getFromFile(new File("views/delayedDiscounting/delayedDiscountTurkv1.html"), `text/html`)
     } ~
     path("delayeddiscountv2") {
-      getFromFile(new File("views/delayedDiscountv2.html"), `text/html`)
+      getFromFile(new File("views/delayedDiscounting/delayedDiscountv2.html"), `text/html`)
     } ~
     path("delayeddiscountturkv2") {
-      getFromFile(new File("views/delayedDiscountTurkv2.html"), `text/html`)
+      getFromFile(new File("views/delayedDiscounting/delayedDiscountTurkv2.html"), `text/html`)
+    } ~
+    path("delayeddiscountv3") {
+      getFromFile(new File("views/delayedDiscounting/delayedDiscountv3.html"), `text/html`)
+    } ~
+    path("delayeddiscountturkv3") {
+      getFromFile(new File("views/delayedDiscounting/delayedDiscountTurkv3.html"), `text/html`)
+    } ~
+    path("delayeddiscountv4") {
+      getFromFile(new File("views/delayedDiscounting/delayedDiscountv4.html"), `text/html`)
+    } ~
+    path("delayeddiscountturkv4") {
+      getFromFile(new File("views/delayedDiscounting/delayedDiscountTurkv4.html"), `text/html`)
     } ~
     path("css" / Rest) {fileName =>
       compressResponse(Gzip) {

@@ -12,7 +12,6 @@ class SECCompanyActor extends Actor with ActorLogging {
   import com.mturk.tasks.SECcompany.SECCompanyProtocol._
   import com.mturk.tasks.Util._
 
-
   def receive = {
 
     case JObjectFromCasper(jObject, authInfo) =>
