@@ -23,7 +23,11 @@ class SpotifyTokenSwapActor extends Actor with ActorLogging {
         "redirect_uri"-> k_client_callback_url,
         "code" -> code
       )
-      val request: Http.Request = Http.post("https://ws.spotify.com/oauth/token").params(parameters)
+
+      val content = "grant_type=authorization_code&client_id="+
+                    k_client_id+"&client_secret="+k_client_secret+"&redirect_uri="+k_client_callback_url+
+                    "&code=" + code
+      val request: Http.Request = Http.postData("https://ws.spotify.com/oauth/token", content).header("content-type", "text/plain")
       val result = request.responseCode
       val text = request.asString
 
@@ -35,4 +39,4 @@ class SpotifyTokenSwapActor extends Actor with ActorLogging {
 object SpotifyTokenSwapActorMsg {
   case class Authenticate(code: String)
   case class TransOk(statusCode: Int, text: String)
-}
+}                               f
