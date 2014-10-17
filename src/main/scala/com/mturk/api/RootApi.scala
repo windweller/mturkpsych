@@ -4,6 +4,7 @@ import akka.actor.{Props, ActorSystem}
 import akka.event.Logging.InfoLevel
 import com.mturk.tasks.delayedDiscounting.DelayedDiscountService
 import com.mturk.tasks.mTurkerProgress.MTurkerProgressService
+import com.mturk.tasks.oAuthRelay.SpotifyTokenSwapService
 import com.mturk.tasks.triadTest.TriadTestService
 import spray.http.HttpRequest
 import spray.http.StatusCodes.{MovedPermanently, NotFound }
@@ -32,6 +33,7 @@ trait RootApi extends RouteConcatenation with StaticRoute with AbstractSystem {
     new MTurkerProgressService(mTurkerActor).route ~
     new TriadTestService(triadActor).route ~
     new DelayedDiscountService(delayedDiscountActor).route ~
+    new SpotifyTokenSwapService(spotifyTokenSwapActor).route ~
     staticRoute
   }
 

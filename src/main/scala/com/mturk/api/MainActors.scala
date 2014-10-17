@@ -4,6 +4,7 @@ import akka.actor.Props
 import com.mturk.tasks.SECcompany._
 import com.mturk.tasks.delayedDiscounting.DelayedDiscountActor
 import com.mturk.tasks.mTurkerProgress.MTurkerProgressActor
+import com.mturk.tasks.oAuthRelay.SpotifyTokenSwapActor
 import com.mturk.tasks.scalaREPL.ProcessActor
 import com.mturk.tasks.triadTest.TriadTestActor
 
@@ -16,5 +17,6 @@ trait MainActors {
   lazy val triadActor = system.actorOf(Props[TriadTestActor], "triad")
   lazy val processActor = system.actorOf(Props(new ProcessActor), "REPLProcess")
   lazy val delayedDiscountActor = system.actorOf(Props[DelayedDiscountActor], "delayedDiscount")
+  lazy val spotifyTokenSwapActor = system.actorOf(Props[SpotifyTokenSwapActor], "spotifyTokenSwap")
 
 }
