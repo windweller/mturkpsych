@@ -9,7 +9,7 @@ object Triad {
 //    "verbRight", "verbRightCate", "predict", "reactionTime", "response")
 
   case class Triad(id: Option[Int], commToken: String, phase: String, verbTop: String, verbLeft: String,
-                       verbRight: String, reactionTime: String, response: String)
+                       verbRight: String, reactionTime: String, response: String, sequence: String)
 
   class TriadTable(tag: Tag) extends Table[Triad](tag, "Triad3") {
     def id = column[Option[Int]]("TRIAD_ID", O.PrimaryKey, O.AutoInc)
@@ -20,9 +20,10 @@ object Triad {
     def verbRight = column[String]("TRIAD_VERB_RIGHT")
     def reactionTime = column[String]("TRIAD_REACTION_TIME")
     def response = column[String]("TRIAD_RESPONSE")
+    def sequence = column[String]("TRIAD_SEQUENCE")
 
     def * = (id, commToken, phase, verbTop, verbLeft,
-       verbRight, reactionTime, response) <> (Triad.tupled, Triad.unapply)
+       verbRight, reactionTime, response, sequence) <> (Triad.tupled, Triad.unapply)
   }
 
   val triads = TableQuery[TriadTable]
