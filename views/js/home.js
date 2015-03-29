@@ -81,8 +81,8 @@ var global_access = (function($, window, loc, alertify) {
 
         if (!data.mturkId && $.cookie('mturkId')) {
           var html = "<div class='row'><div class='large-12 columns'>"+
-          "<p>We detect that you have already typed in a mTurk ID: <kbd>" + $.cookie('mturkId') + "</kbd></p>"
-          + "<p>If you are the owner of this mTurk ID, click <kbd>Cancel</kbd>. You won't have to type it in again."
+          "<p>We detect that you have already typed in a mTurk ID: <kbd>" + $.cookie('mturkId') + "</kbd></p>" +
+           "<p>If you are the owner of this mTurk ID, click <kbd>Cancel</kbd>. You won't have to type it in again."
           + " However, if you are not, or if you are using a public computer, click <kbd>OK</kbd> so we can successfully proceed." 
           + " Bare in mind if you click <kbd>OK</kbd>, your progress will be completely lost.</p>"
           + "<p> You might also be seeing this message if you are here for the second time. If so, you are welcome! Please click <kbd>Cancel</kbd>. </p>"

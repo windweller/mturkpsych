@@ -178,7 +178,7 @@ var delayedTurk = (function($, win, glo, alertify) {
         
         show_word(todayDollarValue, interval);
         
-        wordon = (new Date).getTime();
+        wordon = (new Date()).getTime();
         listening = true;
       }
     }
@@ -204,7 +204,7 @@ var delayedTurk = (function($, win, glo, alertify) {
       }
       if (response.length > 0) {
         listening = false;
-        var rt = String((new Date).getTime() - wordon);
+        var rt = String((new Date()).getTime() - wordon);
 
         var chosenTodayOrNot = "";
         if (todayLeftOrRight == "TodayLeft" && response == "L") {

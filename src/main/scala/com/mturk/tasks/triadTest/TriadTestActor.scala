@@ -13,15 +13,14 @@ class TriadTestActor extends Actor with ActorLogging {
 
   def receive = {
     case JObjectTriadResult(jObject) =>
-      val fields = List("phase", "commToken", "verbTop", "verbTopCate", "verbLeft", "verbLeftCate",
-        "verbRight", "verbRightCate", "predict", "reactionTime", "response")
+      val fields = List("commToken", "phase", "verbTop", "verbLeft",
+        "verbRight", "reactionTime", "response")
 
       extractJObjectEntity(fields, jObject) match {
         case Right(fieldsValue) =>
           DAL.db.withSession { implicit session =>
-            val result = Triad.insert(Triad.Triad(None, fieldsValue(0), fieldsValue(1),
-              fieldsValue(2), fieldsValue(3), fieldsValue(4), fieldsValue(5), fieldsValue(6),
-              fieldsValue(7), fieldsValue(8), fieldsValue(9), fieldsValue(10)))
+            val result = Triad.insert(Triad.Triad(None, fieldsValue.head, fieldsValue(1),
+              fieldsValue(2), fieldsValue(3), fieldsValue(4), fieldsValue(5), fieldsValue(6)))
             result match {
               case Success(t) => sender ! TransOk(Some(t), None)
               case Failure(ex) => sender ! TransOk(None, Some(ex.getMessage))
