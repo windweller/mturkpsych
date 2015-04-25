@@ -2,44 +2,65 @@ var triadTurk = (function($, glo, alertify) {
   /**
   * Main logic
   **/
-    if ($('#trial').length !== 0) {
-    
+  if ($('#trial').length !== 0) {
+    TriadExperiment(10, "practice");
+  }
 
-        TriadExperiment(10, "practice");
-    }
+  /**
+  * Functions used to send out Ajax
+  * testing: triadTurk.sendOutData(
+  * {commToken:$.cookie("commToken"), "phase":phase, "verbTop":A, "verbLeft":B, 
+  *  "verbRight":C, "reactionTime":rt, "response":response};
+  **/
+  var triadURIPromise = glo.triadURIPromise;
+
+  function sendOutData(data) {
+       return triadURIPromise.then(function(uris) {
+         return Q($.ajax({
+            url: uris.triadResultUpload._2,
+            type: uris.triadResultUpload._1,
+            dataType: "json",
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify(data)
+          }))
+          .fail(function(jqXHR) {
+            glo.ajaxFailureHandle(jqXHR, uris.triadResultUpload._2);
+          });
+      });
+   }
 
   
 
     function TriadExperiment(numTrials, phase){
-    var num = 0;
-    var wordon, listening = false;
-    var random = Math.floor((Math.random() * 30) + 1);
-    var stim = getstim(random);
+        var num = 0;
+        var wordon, listening = false;
+        var random = Math.floor((Math.random() * 30) + 1);
+        var stim = getstim(random);
 
-    var A = "";
-    var B = "";
-    var C = "";
+        var A = "";
+        var B = "";
+        var C = "";
 
-    function next() {
-        if (num === numTrials) {
-            finish();
-        } else {
-            A = stim[num][0];
-            B = stim[num][1];
-            C = stim[num][2];
-        
+        function next() {
+            if (num === numTrials) {
+                finish();
+            } else {
+                A = stim[num][0];
+                B = stim[num][1];
+                C = stim[num][2];
+            
 
-            var v = setTimeout(function() {
-                show_word1(A);
-            }, 1000);
-            var t = setTimeout(function() {
-                show_word2(B, C);
-            }, 1800);
-            wordon = (new Date()).getTime();
-            listening = true;
+                var v = setTimeout(function() {
+                    show_word1(A);
+                }, 1000);
+                var t = setTimeout(function() {
+                    show_word2(B, C);
+                }, 1800);
+                wordon = (new Date()).getTime();
+                listening = true;
 
 
-            num = num + 1;
+                num = num + 1;
         }
 
     }
@@ -54,7 +75,7 @@ var triadTurk = (function($, glo, alertify) {
             case 3:
                 return [["bug", "lap", "vet"],["dye", "pry", "gun"],["nod", "pin", "sum"],["own", "hit", "cut"],["bowl", "tint", "pelt"],["nest", "iron", "damn"],["raze", "hack", "pool"],["mire", "sift", "sack"],["hurl", "rack", "tone"],["mock", "pace", "bump"],["ally", "kiss", "stun"],["hunt", "deem", "cope"],["stem", "lend", "quit"],["lack", "cast", "wish"],["cost", "earn", "pick"],["grow", "move", "lose"],["verse", "quilt", "taper"],["chain", "trash", "prime"],["extol", "stoke", "awake"],["exact", "piece", "swoop"],["dodge", "stray", "whisk"],["spoil", "brown", "eject"],["slump", "brief", "cling"],["crowd", "stock", "sport"],["title", "shock", "color"],["split", "renew", "guide"],["check", "pitch", "match"],["cover", "force", "watch"],["forage", "detest", "tattoo"],["behold", "tender", "extort"],["distil", "beckon", "shroud"],["incite", "ascend", "stitch"],["sketch", "fumble", "lessen"],["attain", "bruise", "subdue"],["harass", "cruise", "rattle"],["regret", "aspire", "foster"],["wander", "devise", "battle"],["resume", "switch", "exceed"],["obtain", "invest", "spread"],["decide", "report", "return"],["glorify", "recline", "detract"],["burgeon", "consent", "rejoice"],["enliven", "glimpse", "restart"],["sharpen", "delight", "profess"],["reclaim", "dispose", "package"],["confine", "rebound", "descend"],["recruit", "qualify", "educate"],["destroy", "achieve", "predict"],["christen", "satirize", "vanquish"],["reassess", "dissuade", "catapult"],["nickname", "overflow", "reassign"],["dispatch", "evacuate", "suppress"],["complain", "organize", "discover"],["liquidate", "slaughter", "enlighten"],["supervise", "interpret", "construct"],["reorganize", "contradict", "overshadow"],["eke", "hew", "sap"],["rig", "fan", "mar"],["pop", "fry", "bet"],["dope", "slit", "thaw"],["damp", "ooze", "size"],["tire", "hawk", "weed"],["cull", "rake", "skim"],["coax", "poll", "dial"],["raid", "undo", "suck"],["plug", "span", "roam"],["rape", "bill", "curb"],["dump", "ring", "wash"],["soar", "kick", "rate"],["warn", "cite", "rule"],["hear", "rise", "send"],["freak", "braid", "vomit"],["pilot", "clock", "slate"],["scold", "repel", "quiet"],["decay", "spurn", "glaze"],["scorn", "fling", "quell"],["scoff", "curse", "toast"],["churn", "embed", "alarm"],["grasp", "bleed", "model"],["click", "grind", "upset"],["strip", "doubt", "crash"],["price", "yield", "reply"],["claim", "marry", "enjoy"],["intern", "revolt", "heckle"],["orphan", "decode", "mutate"],["humble", "recast", "uproot"],["bottle", "remedy", "adjoin"],["garner", "dispel", "soothe"],["unload", "stream", "elicit"],["rattle", "verify", "master"],["spring", "allege", "induce"],["render", "credit", "punish"],["matter", "supply", "instal"],["invest", "gather", "wonder"],["accord", "create", "expect"],["despair", "refocus", "quarrel"],["founder", "impeach", "console"],["subside", "implant", "concoct"],["emulate", "worship", "dissent"],["rewrite", "abolish", "clarify"]];
             case 4:
-                return [["lap", "vet", "oil"],["pry", "gun", "bog"],["pin", "sum", "bow"],["let", "die", "buy"],["even", "abut", "hype"],["damn", "rust", "redo"],["hack", "pool", "slug"],["sack", "buzz", "muse"],["rack", "tone", "prop"],["pace", "bump", "slap"],["kiss", "stun", "sort"],["deem", "cope", "boil"],["lend", "quit", "flow"],["cast", "wish", "rely"],["earn", "pick", "vote"],["lose", "feel", "turn"],["taper", "slant", "reset"],["trash", "prime", "ready"],["grate", "charm", "crank"],["piece", "swoop", "bench"],["stray", "whisk", "hedge"],["brown", "eject", "empty"],["brief", "cling", "ensue"],["sport", "repay", "brush"],["shock", "color", "abuse"],["renew", "guide", "print"],["match", "favor", "press"],["watch", "close", "break"],["detest", "tattoo", "purify"],["tender", "extort", "paddle"],["shroud", "beware", "branch"],["ascend", "stitch", "nestle"],["lessen", "tangle", "attest"],["relish", "police", "stifle"],["rattle", "lament", "verify"],["aspire", "foster", "propel"],["render", "single", "credit"],["switch", "exceed", "matter"],["invest", "spread", "gather"],["return", "change", "accord"],["cascade", "pertain", "shutter"],["consent", "rejoice", "overrun"],["glimpse", "restart", "smother"],["delight", "profess", "emulate"],["recycle", "fashion", "inhabit"],["descend", "shatter", "neglect"],["qualify", "educate", "proceed"],["achieve", "predict", "dismiss"],["satirize", "vanquish", "bankrupt"],["catapult", "inundate", "decipher"],["subpoena", "renounce", "legalize"],["suppress", "diagnose", "activate"],["discover", "indicate", "threaten"],["slaughter", "enlighten", "downgrade"],["encounter", "undermine", "cooperate"],["overshadow", "complement", "supplement"],["mop", "bed", "row"],["fan", "mar", "air"],["aid", "dry", "vow"],["slit", "thaw", "moor"],["skew", "boot", "pipe"],["hawk", "weed", "cave"],["word", "rail", "code"],["fret", "lash", "surf"],["undo", "suck", "tilt"],["knit", "time", "hook"],["bill", "curb", "fine"],["fuel", "trim", "wave"],["rate", "pack", "land"],["tend", "sing", "form"],["like", "seek", "talk"],["braid", "vomit", "crest"],["flick", "brave", "array"],["fence", "strut", "cramp"],["spurn", "glaze", "tinge"],["pinch", "yearn", "merit"],["pluck", "revel", "usher"],["perch", "scrap", "reign"],["stain", "unite", "alert"],["grind", "upset", "defer"],["enact", "dream", "trace"],["sweep", "knock", "wound"],["occur", "apply", "treat"],["revolt", "heckle", "menace"],["recess", "stripe", "thrash"],["crouch", "accent", "thread"],["remedy", "adjoin", "square"],["delete", "flower", "assail"],["reason", "dangle", "impair"],["lament", "starve", "triple"],["insert", "screen", "plague"],["object", "locate", "thrive"],["adjust", "insure", "enable"],["wonder", "reveal", "record"],["appear", "remain", "become"],["placate", "reprint", "blanket"],["harness", "coexist", "reissue"],["forfeit", "trickle", "confide"],["worship", "dissent", "deplete"],["curtail", "assault", "trouble"]];
+                return ["lap", "vet", "oil"],["pry", "gun", "bog"],["pin", "sum", "bow"],["let", "die", "buy"],["even", "abut", "hype"],["damn", "rust", "redo"],["hack", "pool", "slug"],["sack", "buzz", "muse"],["rack", "tone", "prop"],["pace", "bump", "slap"],["kiss", "stun", "sort"],["deem", "cope", "boil"],["lend", "quit", "flow"],["cast", "wish", "rely"],["earn", "pick", "vote"],["lose", "feel", "turn"],["taper", "slant", "reset"],["trash", "prime", "ready"],["grate", "charm", "crank"],["piece", "swoop", "bench"],["stray", "whisk", "hedge"],["brown", "eject", "empty"],["brief", "cling", "ensue"],["sport", "repay", "brush"],["shock", "color", "abuse"],["renew", "guide", "print"],["match", "favor", "press"],["watch", "close", "break"],["detest", "tattoo", "purify"],["tender", "extort", "paddle"],["shroud", "beware", "branch"],["ascend", "stitch", "nestle"],["lessen", "tangle", "attest"],["relish", "police", "stifle"],["rattle", "lament", "verify"],["aspire", "foster", "propel"],["render", "single", "credit"],["switch", "exceed", "matter"],["invest", "spread", "gather"],["return", "change", "accord"],["cascade", "pertain", "shutter"],["consent", "rejoice", "overrun"],["glimpse", "restart", "smother"],["delight", "profess", "emulate"],["recycle", "fashion", "inhabit"],["descend", "shatter", "neglect"],["qualify", "educate", "proceed"],["achieve", "predict", "dismiss"],["satirize", "vanquish", "bankrupt"],["catapult", "inundate", "decipher"],["subpoena", "renounce", "legalize"],["suppress", "diagnose", "activate"],["discover", "indicate", "threaten"],["slaughter", "enlighten", "downgrade"],["encounter", "undermine", "cooperate"],["overshadow", "complement", "supplement"],["mop", "bed", "row"],["fan", "mar", "air"],["aid", "dry", "vow"],["slit", "thaw", "moor"],["skew", "boot", "pipe"],["hawk", "weed", "cave"],["word", "rail", "code"],["fret", "lash", "surf"],["undo", "suck", "tilt"],["knit", "time", "hook"],["bill", "curb", "fine"],["fuel", "trim", "wave"],["rate", "pack", "land"],["tend", "sing", "form"],["like", "seek", "talk"],["braid", "vomit", "crest"],["flick", "brave", "array"],["fence", "strut", "cramp"],["spurn", "glaze", "tinge"],["pinch", "yearn", "merit"],["pluck", "revel", "usher"],["perch", "scrap", "reign"],["stain", "unite", "alert"],["grind", "upset", "defer"],["enact", "dream", "trace"],["sweep", "knock", "wound"],["occur", "apply", "treat"],["revolt", "heckle", "menace"],["recess", "stripe", "thrash"],["crouch", "accent", "thread"],["remedy", "adjoin", "square"],["delete", "flower", "assail"],["reason", "dangle", "impair"],["lament", "starve", "triple"],["insert", "screen", "plague"],["object", "locate", "thrive"],["adjust", "insure", "enable"],["wonder", "reveal", "record"],["appear", "remain", "become"],["placate", "reprint", "blanket"],["harness", "coexist", "reissue"],["forfeit", "trickle", "confide"],["worship", "dissent", "deplete"],["curtail", "assault", "trouble"]];
             case 5:
                 return [["vet", "oil", "saw"],["gun", "bog", "hum"],["sum", "bow", "lag"],["die", "buy", "set"],["abut", "hype", "trek"],["redo", "dawn", "mash"],["pool", "slug", "dock"],["buzz", "muse", "cede"],["prop", "dive", "tick"],["slap", "boom", "foul"],["cash", "wage", "whip"],["cope", "boil", "fold"],["quit", "flow", "race"],["wish", "rely", "link"],["pick", "vote", "beat"],["turn", "sell", "live"],["radio", "wager", "hitch"],["ready", "wedge", "stomp"],["crank", "bulge", "wrest"],["swoop", "bench", "patch"],["whisk", "hedge", "chart"],["empty", "shore", "water"],["cling", "ensue", "spawn"],["repay", "brush", "erase"],["color", "abuse", "stare"],["guide", "print", "await"],["found", "paint", "train"],["break", "drive", "learn"],["tattoo", "purify", "letter"],["better", "renege", "divest"],["branch", "induct", "pardon"],["peddle", "splash", "shower"],["attest", "remake", "recede"],["sadden", "redeem", "insult"],["lament", "verify", "starve"],["foster", "propel", "sample"],["single", "credit", "object"],["exceed", "matter", "adjust"],["spread", "gather", "invite"],["change", "accord", "appear"],["pertain", "shutter", "remarry"],["rejoice", "overrun", "exclaim"],["restart", "smother", "flatter"],["profess", "emulate", "exhaust"],["fashion", "inhabit", "unleash"],["shatter", "neglect", "impress"],["educate", "proceed", "justify"],["predict", "dismiss", "contend"],["vanquish", "bankrupt", "disprove"],["decipher", "traverse", "submerge"],["frighten", "energize", "backfire"],["research", "sprinkle", "dissolve"],["indicate", "threaten", "maintain"],["enlighten", "downgrade", "overpower"],["broadcast", "translate", "influence"],["discipline", "reconsider", "experiment"],["hew", "sap", "jut"],["can", "sag", "vie"],["fry", "bet", "dig"],["room", "knot", "best"],["boot", "pipe", "mass"],["hole", "mesh", "wall"],["rake", "skim", "teem"],["lash", "surf", "brag"],["part", "lurk", "rear"],["time", "hook", "fund"],["pile", "harm", "melt"],["wash", "risk", "snap"],["pack", "land", "stir"],["sing", "form", "deny"],["rise", "send", "fall"],["ditch", "reuse", "faint"],["clock", "slate", "rhyme"],["repel", "quiet", "glean"],["poach", "stave", "ferry"],["fling", "quell", "clone"],["revel", "usher", "phone"],["embed", "alarm", "storm"],["bleed", "model", "hover"],["upset", "defer", "spark"],["doubt", "crash", "taste"],["yield", "reply", "mount"],["exist", "sound", "study"],["menace", "accost", "scroll"],["thrash", "script", "bottom"],["accent", "thread", "stroke"],["thrill", "pepper", "depose"],["dispel", "soothe", "hinder"],["stream", "elicit", "infuse"],["verify", "master", "hamper"],["screen", "plague", "narrow"],["indict", "plunge", "freeze"],["supply", "instal", "inform"],["regard", "assume", "forget"],["realign", "impound", "idolize"],["refocus", "quarrel", "outrage"],["impeach", "console", "corrupt"],["augment", "cluster", "sweeten"],["flatten", "empower", "revisit"],["abolish", "clarify", "inflict"]];
             case 6:
@@ -128,7 +149,7 @@ var triadTurk = (function($, glo, alertify) {
             listening = false;
             var hit = response == stim[1];
             var rt = String((new Date()).getTime() - wordon);
-            sendOutData({commToken:$.cookie("commToken"), "phase":phase, "verbTop":A, "verbLeft":B, "verbRight":C, "reactionTime":rt, "response":response,"expid":random});
+            sendOutData({commToken:$.cookie("commToken"), "phase":phase, "verbTop":A, "verbLeft":B, "verbRight":C, "reactionTime":rt, "response":response,"expid":random)};
             remove_word();
             next();
         }
@@ -154,38 +175,21 @@ var triadTurk = (function($, glo, alertify) {
 
 
 
-    var triadURIPromise = glo.triadURIPromise;
-
-
-
-
-    function sendOutData(data) {
-       return triadURIPromise.then(function(uris) {
-            return Q($.ajax({
-                url: uris.triadResultUpload._2,
-                type: uris.triadResultUpload._1,
-                dataType: "json",
-                contentType: 'application/json; charset=UTF-8',
-                data: JSON.stringify(data)
-            })).fail(function(jqXHR) {
-                glo.ajaxFailureHandle(jqXHR, uris.triadResultUpload._2);
-            });
-        });
-    }
 
     function finish() {
-        if (phase == "exp") {
-            $("body").unbind("keydown", response_handler);
-            var endingHtml = "<div class='row'><div class='large-12 columns'>" + "<h4>Congratulations!</h4>" + "<br><br><p>You have completed the first two tasks. Before you close this window, " + "be sure to copy and paste this Authentication Code back to your Qualtrics page: </div></div><br>" + "<div class='row text-center'><div class='large-12 columns'><kbd>" + $.cookie("commToken") + "</kbd></div></div><br><br>";
-            alertify.alert(endingHtml);
-        }else if (phase == "practice") {
-            var phaseChangeHtml = "<div class='row'><div class='large-12 columns'>" + "<h4>Next Phase Ahead</h4>" + "<br><br><p>Great! You've finished the practice trials. Please continue on to the experimental trials.</p>" + "</div></div><br>";
-            alertify.confirm(phaseChangeHtml, function(e) {
-                TriadExperiment(100, "exp");
-            });
-        }
+      if (phase == "exp") {
+        $("body").unbind("keydown", response_handler);
+        var endingHtml = "<div class='row'><div class='large-12 columns'>" + "<h4>Congratulations!</h4>" + "<br><br><p>You have completed the first two tasks. Before you close this window, " + "be sure to copy and paste this Authentication Code back to your Qualtrics page: </div></div><br>" + "<div class='row text-center'><div class='large-12 columns'><kbd>" + $.cookie("commToken") + "</kbd></div></div><br><br>";
+        alertify.alert(endingHtml);
+      }
+      else if (phase == "practice") {
+        var phaseChangeHtml = "<div class='row'><div class='large-12 columns'>" + "<h4>Next Phase Ahead</h4>" + "<br><br><p>Great! You've finished the practice trials. Please continue on to the experimental trials.</p>" + "</div></div><br>";
+        alertify.confirm(phaseChangeHtml, function(e) {
+          TriadExperiment(96, "exp");
+        });
+        
+      }
     }
-
 
     return {
         sendOutData: sendOutData,
