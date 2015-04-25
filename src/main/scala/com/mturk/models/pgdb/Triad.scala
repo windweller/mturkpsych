@@ -11,7 +11,7 @@ object Triad {
   case class Triad(id: Option[Int], commToken: String, phase: String, verbTop: String, verbLeft: String,
                        verbRight: String, reactionTime: String, response: String)
 
-  class TriadTable(tag: Tag) extends Table[Triad](tag, "Triad3") {
+  class TriadTable(tag: Tag) extends Table[Triad](tag, "Triad4") {
     def id = column[Option[Int]]("TRIAD_ID", O.PrimaryKey, O.AutoInc)
     def commToken = column[String]("TRIAD_COMM_TOKEN")
     def phase = column[String]("TRIAD_PHASE")

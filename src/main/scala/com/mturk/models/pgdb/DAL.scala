@@ -44,7 +44,7 @@ object DAL {
         MTurker.mTurkers.ddl.create
       }
 
-      if (MTable.getTables("Triad3").list().isEmpty) {
+      if (MTable.getTables("Triad4").list().isEmpty) {
         Triad.triads.ddl.create
       }
 
