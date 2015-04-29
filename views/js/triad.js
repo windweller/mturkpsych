@@ -35,9 +35,13 @@ var triadTurk = (function($, glo, alertify) {
         var num = 0;
         var wordon, listening = false;
         var random = Math.floor((Math.random() * 30) + 1);
-        if (random == 1 || random == 9 || random == 10 || random == 12 || random == 13 || random == 16 ) {random = 4;
-        }
-        if (random == 18 || random == 21 || random == 22 || random == 23 || random == 24 || random == 30 ){random = 11;}
+        
+
+        if (phase == "exp"){
+          while (random == 9 || random == 4 || random == 10 || random == 16 || random == 18 || random == 22 || random == 12 || random == 13 || random == 24 || random == 2 || random == 6 || random == 7 || random == 8 || random == 29 || random == 21 || random == 26 || random == 28 || random == 29){
+            random = Math.floor((Math.random() * 30) + 1);
+          }
+        } 
         
         var stim = getstim(random);
 
