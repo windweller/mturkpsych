@@ -2,6 +2,7 @@
 alertify.set({ buttonFocus: "none" });
 alertify.set({ delay: 10000 }); //for logging messages
 
+
 var global_access = (function($, window, loc, alertify) {
   'use strict';
 
@@ -67,7 +68,7 @@ var global_access = (function($, window, loc, alertify) {
   */
   function _establishIdentity() {
     return mTurkURIPromise.then(function(mTurkUris){
-      return Q($.ajax({
+      return new Q($.ajax({
         url: mTurkUris.mTurkerGet._2,
         type: mTurkUris.mTurkerGet._1,
         dataType: 'JSON'
@@ -179,7 +180,7 @@ var global_access = (function($, window, loc, alertify) {
   function savemTurkID(id) {
     var data = {"mturkid": id};
     mTurkURIPromise.then(function(uris) {
-      Q($.ajax({
+      new Q($.ajax({
         url: uris.updateMTurkId._2,
         type: uris.updateMTurkId._1,
         datatype: "json",
@@ -541,7 +542,7 @@ var app = (function($, glo, animate) {
       glo.savemTurkID($('#MturkId').val());
       $("input").prop('disabled', true);
       $.cookie('mturkId', $('#MturkId').val());
-    };
+    }
   }
 
   function allComplete(customMessage, commToken) {
