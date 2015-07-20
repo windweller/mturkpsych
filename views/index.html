@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="">
+<head>
+  <title>WOLFF LAB</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="css/vendor/bootstrap/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="css/mystyle.css">
+  <script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <script src="http://code.jquery.com/jquery-1.4.min.js" type="text/javascript"></script>
+
+</head>
+<body>
+
+<div class="container">
+
+    <!-- START OF NAVIGATION BAR -->
+    <div ng-include="'menuTemplate.html'"></div>
+    <!--END OF NAVIGATION BAR -->
+
+<!-- START TOP LAYER-->
+<div id = "top-layer" class="container-fluid">
+<br><br><br>
+<h1 style = "display: inline;" >Wolff Lab NLP Demo</h1>
+<img style = "display: inline;" class = "pull-right" src="img/university.gif" alt="Emory" height="80" width="80" >
+</div>
+<br>
+<!-- END TOP LAYER-->
+
+<!-- START OF CONTENT-->
+<div id = "content" class="container-fluid">
+<br>
+<img src="img/emoryLogo1.jpg" alt="Emory" height="100%" width="100%" >
+<h4 class = "text-center">
+    This is a demo site that shows Future Analysis and various charts
+</h4>
+
+</div>
+
+<!-- END OF CONTENT-->
+
+<!-- JAVASCRIPT START -->
+<script type="text/javascript">
+$(document).ready(function(){
+    $("#result").load("menuTemplate.html")
+});
+</script>
+
+<script type="text/javascript">
+
+function myFunction() {
+    var theText = document.getElementById("futureInput").value
+
+    if(theText.includes("future")) {
+        document.getElementById("rules").innerHTML = "future"
+    } else {
+        document.getElementById("rules").innerHTML = "not future"
+    }
+
+
+}
+</script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+
+</body>
+</html>

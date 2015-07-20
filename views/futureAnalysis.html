@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html ng-app="" lang="en">
+<style>
+#demo span {
+    line-height: 250%;
+}
+
+body > #canvas {
+      position: fixed;
+      visibility: hidden;
+ }
+
+</style>
+<head>
+  <title>WOLFF LAB</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="css/vendor/bootstrap/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="css/mystyle.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+  <!-- Custom Table -->
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.8.1/bootstrap-table.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.8.1/bootstrap-table.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.8.1/locale/bootstrap-table-zh-CN.min.js"></script>
+  <!-- tooltip -->
+  <script type="text/javascript" src="data1.json"></script>
+  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <script src="js/vendor/Chart.js"></script> <!-- TOOLTIP CHART -->
+  <!-- Loading Button -->
+  <link rel="stylesheet" href="js/vendor/dist/ladda-themeless.min.css">
+  <script src="js/vendor/dist/spin.min.js"></script>
+  <script src="js/vendor/dist/ladda.min.js"></script>
+
+</head>
+<body>
+
+<div class="container">
+<!-- START OF NAVIGATION BAR -->
+    <div ng-include="'menuTemplate.html'"></div>
+<!--END OF NAVIGATION BAR -->
+
+<!-- START TOP LAYER-->
+    <div id = "top-layer" class="container-fluid">
+    <br><br><br>
+    <h1 style = "display: inline;" >Future Analysis</h1>
+    <img style = "display: inline;" class = "pull-right" src="img/university.gif" alt="Emory" height="80" width="80" >
+    </div>
+    <br>
+<!-- END TOP LAYER-->
+
+<!-- TEXT AREA -->
+    <div class="container-fluid">
+        <form>
+            <textarea class="form-control" id = "futureInput" placeholder="Enter your text" rows="4" cols="100%" required></textarea><br>
+            <a href="#" id="form-submit" class="btn btn-primary btn-lg ladda-button" data-style="zoom-in" data-size="l"><span class="ladda-label">Run Analysis</span></a>
+        </form>
+    </div>
+<!-- END TEXT AREA -->
+
+
+
+<!-- ToolTip HTML STARTS-->
+<div class = "container-fluid" >
+    <br><br>
+    <h1 style = "display: inline;" >Rules
+        <h4 style = "display: inline;" class = "pull-right" >
+            <button id="download" class = "btn btn-primary">Download CSV</button>
+        </h4>
+    </h1>
+
+    <br><br><br>
+    <div id = "demo" class = "container-fluid"></div>
+</div>
+<!-- ToolTip HTML ENDS-->
+
+<!-- ToolTip Script Start -->
+<script>
+$.getJSON('data1.json', callBackFunc);
+
+//attemping to get JSON file
+function callBackFunc(arr) {
+    var list = document.getElementById('demo');
+    var theBigArray = []; //THIS CONTAINS THE ACTUAL DATA
+    for(var i=0;i<arr.length;i++){
+        var obj = arr[i];
+        var myArray = [];
+            for(var key in obj){
+                    myArray.push(obj[key]);
+            }
+            theBigArray.push(myArray);
+            var tenseState = myArray[0];
+            var fontColor;
+            if(tenseState == "future") {
+                fontColor = "bg-info";
+            }
+            else if(tenseState == "present") {
+                fontColor = "bg-success";
+            }
+            else{
+                fontColor = "bg-warning";
+            }
+            list.innerHTML = list.innerHTML + '<span class = "' + fontColor + '" style="font-size:17px" title = "'+i+'">'+ myArray[1] + '</span>';
+            list.innerHTML = list.innerHTML + "&nbsp;&nbsp;"
+    }
+
+
+    //tooltip
+    $(function() {
+       $( document ).tooltip({
+         track: true,
+         open: function (event, ui) {
+            $('.ui-tooltip-content > div').append($("#canvas"));
+            if (typeof(event.originalEvent) === 'undefined')
+                {
+                    return false;
+                }
+
+                var $id = $(ui.tooltip).attr('id');
+
+            // close any lingering tooltips
+            $('div.ui-tooltip').not('#' + $id).remove();
+         },
+
+         content:function () {
+                var temp = $(this).prop('title');
+                temp = theBigArray[temp] //THIS IS THE JSON DATA CONTAINER FOR EACH SENTENCE
+
+                var barChartData = {
+                    labels : ["Future","Past"],
+                    datasets : [
+                        {
+                            fillColor : "rgba(151,187,205,0.5)",
+                            strokeColor : "rgba(151,187,205,0.8)",
+                            highlightFill : "rgba(151,187,205,0.75)",
+                            highlightStroke : "rgba(151,187,205,1)",
+                            data : [temp[2], temp[3]]
+                        }
+                    ]
+
+                }
+                $('body').append($("<canvas id='canvas' width='250' height='170'></canvas>"))
+
+                var ctx = document.getElementById("canvas").getContext("2d");
+                var myTable = new Chart(ctx).Bar(barChartData, {
+        			responsive : false,
+                    animation: false,
+                    showTooltips : false,
+                    showInlineValues : true,
+                    centeredInllineValues : true,
+                    tooltipCaretSize : 0,
+                    tooltipTemplate : "<%= value %>"
+        		});
+                return '<div></div>';
+        }
+      });
+    });
+}
+ </script>
+ <!-- ToolTip Script Ends -->
+
+<!-- CSV Download Javascript -->
+<script type="text/javascript">
+$.getJSON('data1.json', callBackDownload);
+
+function callBackDownload(arr) {
+    $("#download").click(function() {
+        var csv = JSON2CSV(arr);
+        window.open("data:text/csv;charset=utf-8," + escape(csv))
+    });
+
+}
+
+function JSON2CSV(objArray) {
+    var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+
+    var str = '';
+    var line = '';
+
+    var head = array[0];
+    if ($("#quote").is(':checked')) {
+        for (var index in array[0]) {
+            var value = index + "";
+            line += '"' + value.replace(/"/g, '""') + '",';
+        }
+    } else {
+        for (var index in array[0]) {
+            line += index + ',';
+        }
+    }
+
+    line = line.slice(0, -1);
+    str += line + '\r\n';
+
+    for (var i = 0; i < array.length; i++) {
+       var line = '';
+           for (var index in array[i]) {
+               line += array[i][index] + ',';
+           }
+       line = line.slice(0, -1);
+       str += line + '\r\n';
+   }
+   return str;
+}
+</script>
+<!-- CSV Download Ends -->
+
+<!-- JAVASCRIPT START -->
+<script type="text/javascript">
+//BUTTON animation JAVASCRIPT
+$(function() {
+	$('#form-submit').click(function(e){
+	 	e.preventDefault();
+	 	var l = Ladda.create(this);
+	 	l.start();
+        setTimeout(function(){l.stop()},2000);
+	 	/*$.post("your-url",
+	 	    { data : data },
+	 	  function(response){
+	 	    console.log(response);
+	 	  }, "json")
+	 	.always(function() { l.stop(); });*/
+	 	return false;
+	});
+});
+</script>
+<!-- JAVASCRIPT END -->
+
+</body>
+</html>
