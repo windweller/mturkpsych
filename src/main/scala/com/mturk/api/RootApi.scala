@@ -1,19 +1,20 @@
 package com.mturk.api
 
-import akka.actor.{Props, ActorSystem}
+import java.io.File
+
+import akka.actor.{ActorSystem, Props}
 import akka.event.Logging.InfoLevel
+import com.mturk.tasks.SECcompany._
 import com.mturk.tasks.delayedDiscounting.DelayedDiscountService
 import com.mturk.tasks.mTurkerProgress.MTurkerProgressService
 import com.mturk.tasks.triadTest.TriadTestService
+import com.mturk.tasks.futureDemo.FutureDemoService
 import spray.http.HttpRequest
-import spray.http.StatusCodes.{MovedPermanently, NotFound }
-import spray.httpx.encoding.Gzip
-import spray.routing.PathMatchers.Rest
-import spray.routing.{Directives, RouteConcatenation}
-import spray.routing.directives.LogEntry
-import java.io.File
 import spray.http.MediaTypes._
-import com.mturk.tasks.SECcompany._
+import spray.http.StatusCodes.NotFound
+import spray.httpx.encoding.Gzip
+import spray.routing.directives.LogEntry
+import spray.routing.{Directives, RouteConcatenation}
 
 trait AbstractSystem {
   implicit def system: ActorSystem
@@ -32,6 +33,7 @@ trait RootApi extends RouteConcatenation with StaticRoute with AbstractSystem {
     new MTurkerProgressService(mTurkerActor).route ~
     new TriadTestService(triadActor).route ~
     new DelayedDiscountService(delayedDiscountActor).route ~
+    new FutureDemoService(futureDemoActor).route ~
     staticRoute
   }
 
@@ -56,6 +58,18 @@ trait StaticRoute extends Directives {
     } ~
     path("triadturk") {
       getFromFile(new File("views/triadturk.html"), `text/html`)
+    } ~
+    path("future") {
+      getFromFile(new File("views/future.html"), `text/html`)
+    } ~
+    path("menuTemplate") {
+      getFromFile(new File("views/menuTemplate.html"), `text/html`)
+    } ~
+    path("futureAnalysis") {
+      getFromFile(new File("views/futureAnalysis.html"), `text/html`)
+    } ~
+    path("realTimeGraph") {
+      getFromFile(new File("views/realTimeGraph.html"), `text/html`)
     } ~
     path("delayeddiscountv1") {
       getFromFile(new File("views/delayedDiscounting/delayedDiscountv1.html"), `text/html`)

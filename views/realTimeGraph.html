@@ -15,7 +15,7 @@
   <!-- REAL TIME -->
   <script src="js/vendor/d3.min.js"></script>
   <script src="js/vendor/epoch.min.js"></script>
-  <script src="data.js"></script>
+  <script src="js/data.js"></script>
 
 
 </head>
@@ -24,7 +24,7 @@
 <div class="container">
 
     <!-- START OF NAVIGATION BAR -->
-    <div ng-include="'menuTemplate.html'"></div>
+    <div ng-include="'menuTemplate'"></div>
     <!--END OF NAVIGATION BAR -->
 
 <!-- START TOP LAYER-->
@@ -54,6 +54,7 @@
 <br>
 </div>
 
+</div>
 <!-- Epoch Javascript -->
 <script>
 $(function($) {
@@ -69,7 +70,7 @@ $(function($) {
     chart.push(data.next());
 });
 </script>
-</script>
+
 <script>
 
 var data = [
@@ -87,7 +88,7 @@ var pieData = [
   { label: 'Slice 2', value: 20 },
   { label: 'Slice 3', value: 40 },
   { label: 'Slice 4', value: 30 }
-]
+];
 
 var pieInstance = $('#pie').epoch({
   type: 'pie',
@@ -98,14 +99,14 @@ var pieInstance = $('#pie').epoch({
 <!-- JAVASCRIPT START -->
 <script type="text/javascript">
 $(document).ready(function(){
-    $("#result").load("menuTemplate.html")
+    $("#result").load("menuTemplate")
 });
 </script>
 
 <script type="text/javascript">
 
 function myFunction() {
-    var theText = document.getElementById("futureInput").value
+    var theText = document.getElementById("futureInput").value;
 
     if(theText.includes("future")) {
         document.getElementById("rules").innerHTML = "future"

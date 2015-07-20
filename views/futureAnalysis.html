@@ -25,7 +25,7 @@ body > #canvas {
   <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.8.1/bootstrap-table.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.8.1/locale/bootstrap-table-zh-CN.min.js"></script>
   <!-- tooltip -->
-  <script type="text/javascript" src="data1.json"></script>
+  <script type="text/javascript" src="future/data"></script>
   <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
   <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
   <script src="js/vendor/Chart.js"></script> <!-- TOOLTIP CHART -->
@@ -39,7 +39,7 @@ body > #canvas {
 
 <div class="container">
 <!-- START OF NAVIGATION BAR -->
-    <div ng-include="'menuTemplate.html'"></div>
+    <div ng-include="'menuTemplate'"></div>
 <!--END OF NAVIGATION BAR -->
 
 <!-- START TOP LAYER-->
@@ -78,7 +78,7 @@ body > #canvas {
 
 <!-- ToolTip Script Start -->
 <script>
-$.getJSON('data1.json', callBackFunc);
+$.getJSON('future/data', callBackFunc);
 
 //attemping to get JSON file
 function callBackFunc(arr) {
@@ -163,7 +163,7 @@ function callBackFunc(arr) {
 
 <!-- CSV Download Javascript -->
 <script type="text/javascript">
-$.getJSON('data1.json', callBackDownload);
+$.getJSON('future/data', callBackDownload);
 
 function callBackDownload(arr) {
     $("#download").click(function() {
