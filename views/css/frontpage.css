@@ -7,6 +7,7 @@
 	width: 150px;
 	height: 150px;
 	margin-left: 0.6em;
+	margin-bottom: 0.6em;
 	line-height: 120px;
 	transition: background-color 300ms ease-out;
 }
@@ -21,9 +22,23 @@
 	color: #8a6d3b;
 	display: inline-block;
   	vertical-align: middle;
-  	line-height: normal;     
+  	line-height: normal;
 }
 
 .task-ad-block li:hover a {
 	color: #fff;
+}
+
+.task-ad-blockplus li {
+	border-style: solid;
+	border-width: 2px;
+	border-color: #776B57;
+	border-radius: 5px;
+	padding: 0.5em;
+	width: 470px;
+	height: 150px;
+	margin-left: 0.6em;
+	margin-bottom: 0.6em;
+	line-height: 120px;
+	transition: background-color 300ms ease-out;
 }
