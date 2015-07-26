@@ -30,6 +30,9 @@ libraryDependencies ++= {
     "com.github.nscala-time" %% "nscala-time" % "1.2.0",
     "org.scalaj" %% "scalaj-http" % "0.3.16",
     "org.apache.httpcomponents" % "httpclient" % "4.3.5",
+    //NLP components
+    "edu.stanford.nlp" % "stanford-corenlp" % "3.5.1",
+    "edu.stanford.nlp" % "stanford-corenlp" % "3.5.1" classifier "models",
     //database
     "com.typesafe.slick" %%  "slick"         % "2.0.2",
     "mysql"               %  "mysql-connector-java" % "5.1.12",

@@ -4,27 +4,26 @@ package com.mturk.tasks.SECcompany
 import java.io.File
 
 import akka.actor._
+import com.mturk.tasks.Util._
 import org.json4s.JsonAST.JObject
-import org.json4s.{DefaultFormats, Formats}
 import spray.http.MediaTypes._
-import spray.httpx.Json4sSupport
 import spray.httpx.encoding.Gzip
 import spray.routing.Directives
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import com.mturk.tasks.Util._
 
 
-trait customRoutes {
-  import org.json4s.JsonAST.JObject
-  import spray.routing.Route
+trait CustomRoutes {
   import Directives._
-  import com.mturk.tasks.SECcompany.SECCompanyProtocol._
-  import akka.pattern.ask
-  import spray.http.StatusCodes._
-  import akka.util.Timeout
-  import scala.concurrent.duration._
   import JsonImplicits._
+  import akka.pattern.ask
+  import akka.util.Timeout
+  import com.mturk.tasks.SECcompany.SECCompanyProtocol._
+  import org.json4s.JsonAST.JObject
+  import spray.http.StatusCodes._
+  import spray.routing.Route
+
+  import scala.concurrent.duration._
 
   implicit val timeout = Timeout(5 seconds)
 
@@ -64,7 +63,7 @@ trait customRoutes {
    */
   def doTryPost(messageConstructor: (JObject, AuthInfo) => AnyRef,
                 authInfo: AuthInfo, secCompanyActor: ActorRef): Route = {
-    import scala.util.{Success,Failure}
+    import scala.util.{Failure, Success}
     entity(as[JObject]) { jObject =>
       if (authInfo.accepted) {
         val response = (secCompanyActor ? messageConstructor(jObject, authInfo)) //this constructs message
@@ -82,13 +81,13 @@ trait customRoutes {
 }
 
 class SECCompanyService(secCompanyActor: ActorRef)(implicit system: ActorSystem)
-  extends Directives with Authenticator with customRoutes {
+  extends Directives with Authenticator with CustomRoutes {
 
+  import JsonImplicits._
   import akka.pattern.ask
+  import com.mturk.Config._
   import com.mturk.tasks.SECcompany.SECCompanyProtocol._
   import spray.http.StatusCodes._
-  import JsonImplicits._
-  import com.mturk.Config._
 
   lazy val route =
     pathPrefix("sec") {
