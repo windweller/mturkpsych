@@ -80,8 +80,15 @@ body > #canvas {
 <script>
 function initiate(sentence) {
     console.log(sentence);
-    $.post( "https://www.mindandlanguagelab.com/future/sentence", { sentences: "my name is tim lee and i want to eat dinner"})
-       .done(callBackFunc);
+    $.ajax({
+       url: "https://www.mindandlanguagelab.com/future/sentence",
+        type: "POST",
+        datatype: "json",
+        contentType: 'application/json; charset=UTF-8',
+        data: {
+          "sentences": sentence
+        } //JSON.stringify(data)
+      }).done(callBackFunc);
 }
 
 //attemping to get JSON file
