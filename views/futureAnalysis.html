@@ -104,11 +104,11 @@ function callBackFunc(arr) {
         object.sentence = arr[i].sen;
         object.numberFuture = arr[i].result.future;
         object.numberPast = arr[i].result.past;
-        for(i = 0; i < arr[i].result.futureResult.length; i++) {
-            object.["ruleF"+i] = arr[i].result.futureResult[i];
+        for(j = 0; j < arr[i].result.futureResult.length; j++) {
+            object["ruleFuture_"+j] = arr[i].result.futureResult[j];
         }
-        for(i = 0; i < arr[i].result.pastResult.length; i++) {
-            object.["ruleF"+i] = arr[i].result.pastResult[i];
+        for(j = 0; j < arr[i].result.pastResult.length; j++) {
+            object["rulePast_"+j] = arr[i].result.pastResult[j];
         }
 
         theBigArray.push(object);
@@ -160,7 +160,7 @@ function callBackFunc(arr) {
                             strokeColor : "rgba(151,187,205,0.8)",
                             highlightFill : "rgba(151,187,205,0.75)",
                             highlightStroke : "rgba(151,187,205,1)",
-                            data : [temp.result.future, temp.result.past]
+                            data : [temp.numberFuture, temp.numberPast]
                         }
                     ]
 
