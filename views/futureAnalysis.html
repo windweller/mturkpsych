@@ -55,7 +55,7 @@ body > #canvas {
     <div class="container-fluid">
         <form>
             <textarea class="form-control" id = "futureInput" placeholder="Enter your text" rows="4" cols="100%" required></textarea><br>
-            <a href="#" id="form-submit" class="btn btn-primary btn-lg ladda-button" data-style="zoom-in" data-size="l" onclick="initiate(document.getElementById('futureInput').value)"><span class="ladda-label">Run Analysis</span></a>
+            <button type= "button" id = "submit" data-loading-text="Loading..." class="btn btn-primary" onclick="initiate(document.getElementById('futureInput').value)">Run Analysis</button>
         </form>
     </div>
 <!-- END TEXT AREA -->
@@ -229,7 +229,7 @@ function JSON2CSV(objArray) {
 <script type="text/javascript">
 //BUTTON animation JAVASCRIPT
 $(function() {
-	$('#form-submit').click(function(e){
+	$('#submit').click(function(e){
         var $btn = $(this);
         $btn.button('loading');
         setTimeout(function () {
