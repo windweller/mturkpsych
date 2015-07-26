@@ -98,20 +98,27 @@ function initiate(sentence) {
 function callBackFunc(arr) {
     var list = document.getElementById('demo');
     list.innerHTML = "";
-    theBigArray = arr; //THIS CONTAINS THE ACTUAL DATA
+    theBigArray = []; //THIS CONTAINS THE ACTUAL DATA
     for(var i=0;i<arr.length;i++){
-        var obj = arr[i];
+        var object = {};
+        object.sentence = arr[i].sen;
+        object.numberFuture = arr[i].result.future;
+        object.numberPast = arr[i].result.past;
+        for(i = 0; i < arr[i].result.futureResult.length) {
+            object.["ruleF"+i] = arr[i].result.futureResult[i];
+        }
+        for(i = 0; i < arr[i].result.pastResult.length) {
+            object.["ruleF"+i] = arr[i].result.pastResult[i];
+        }
 
-        //FONT STATE AND CHANGE COLOR
-        var numberFuture = arr[i].result.future;
-        var numberPast = arr[i].result.past;
+        theBigArray.push(object);
 
         //ASSIGN FONT COLOR
         var fontColor;
-        if(numberPast < numberFuture) { //future
+        if(object.numberPast < object.numberFuture) { //future
             fontColor = "bg-info";
         }
-        else if((numberPast == numberFuture) || (numberPast == 0 && numberFuture == 0)) { //present
+        else if((object.numberPast == object.numberFuture) || (object.numberPast == 0 && object.numberFuture == 0)) { //present
             fontColor = "bg-success";
         }
         else{ //past
@@ -119,7 +126,7 @@ function callBackFunc(arr) {
         }
 
         //DISPLAY
-        list.innerHTML = list.innerHTML + '<span class = "' + fontColor + '" style="font-size:17px" title = "'+i+'">'+ arr[i].sen + '</span>';
+        list.innerHTML = list.innerHTML + '<span class = "' + fontColor + '" style="font-size:17px" title = "'+i+'">'+ object.sentence + '</span>';
         list.innerHTML = list.innerHTML + "&nbsp;&nbsp;"
     }
 
@@ -184,6 +191,11 @@ $("#download").click(function() {
     if(theBigArray.length == 0){
         alert("Textarea is Empty! ");
     } else {
+        //Json Conversion for Download Starts
+
+        var downloadable = theBigArray;
+
+        //Json Conversion Ends
         var csv = JSON2CSV(theBigArray);
         console.log(theBigArray);
         window.open("data:text/csv;charset=utf-8," + escape(csv))
