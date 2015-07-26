@@ -104,10 +104,10 @@ function callBackFunc(arr) {
         object.sentence = arr[i].sen;
         object.numberFuture = arr[i].result.future;
         object.numberPast = arr[i].result.past;
-        for(i = 0; i < arr[i].result.futureResult.length) {
+        for(i = 0; i < arr[i].result.futureResult.length; i++) {
             object.["ruleF"+i] = arr[i].result.futureResult[i];
         }
-        for(i = 0; i < arr[i].result.pastResult.length) {
+        for(i = 0; i < arr[i].result.pastResult.length; i++) {
             object.["ruleF"+i] = arr[i].result.pastResult[i];
         }
 
