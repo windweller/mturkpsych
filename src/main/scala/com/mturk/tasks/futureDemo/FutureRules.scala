@@ -102,7 +102,7 @@ object FutureRules {
     "(PP  < (IN < from) < (NP|ADVP < (RB < now)))",
     "NP < (RBR|RB|JJ < later) < (DT < this)",
     "S <+ (!S) (PP < (IN < at) < (NP < CD)) !<< VBD !<< (VP [ < (VB < have) | < (VBP [ < have | < 've ] ) | < (VBZ [ < has | < 's ] ) ] < (VP < VBN))",
-    "S <+ (!S) (RB < later) !<< VBD !<< (VP [ < (VB < have) | < (VBP [ < have | < 've ] ) | < (VBZ [ < has | < 's ] ) ] < (VP < VBN))",
+    "S <+ (!S) (RB < later) !<< VBD !<< (VP [ < (VB < have) | < (VBP [ < have | < 've ] ) | < (VBZ [ < has | < 's ] ) ] < (VP < VBN))"
   )
 
   val patternsPast = List(
