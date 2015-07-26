@@ -23,7 +23,7 @@ class FutureDemoService(futureDemoActor: ActorRef)(implicit system: ActorSystem)
   import akka.pattern.ask
   import JsonImplicits._
 
-  implicit val timeout = Timeout(45 seconds)
+  implicit val timeout = Timeout(10 minutes)
 
   lazy val route = pathPrefix("future") {
     path("data") {
