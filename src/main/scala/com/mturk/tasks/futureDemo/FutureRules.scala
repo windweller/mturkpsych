@@ -105,7 +105,7 @@ object FutureRules {
     "S <+ (!S) (RB < later) !<< VBD !<< (VP [ < (VB < have) | < (VBP [ < have | < 've ] ) | < (VBZ [ < has | < 's ] ) ] < (VP < VBN))"
   )
 
-  val patternsPast = List(
+  val patternPast = List(
     "VBD",
     "VP [ < ( VB < have ) | < ( VBP [ < have | < 've ] ) | < ( VBZ [ < has | < 's ] ) ] < ( VP < VBN )",
     "S < (when < VBD) <<  MD < would",

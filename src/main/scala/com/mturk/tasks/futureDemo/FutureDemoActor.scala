@@ -22,7 +22,9 @@ class FutureDemoActor extends Actor with ActorLogging {
   import com.mturk.tasks.Util._
 
   val lp = LexicalizedParser.loadModel("edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz", "-MAX_ITEMS","50000")
-  val patterns = (patternFuture2_2_2 ++ patternsPast).map(e => TregexPattern.compile(e))
+
+  val patternsFuture = patternFuture2_2_2.map(e => TregexPattern.compile(e))
+  val patternsPast = patternPast.map(e => TregexPattern.compile(e))
 
   override def receive = {
     case JObjectSentences(jObject) =>
@@ -44,15 +46,14 @@ class FutureDemoActor extends Actor with ActorLogging {
       }
   }
 
-  private[this] def search(tree: Tree): Array[Int] = {
-    val stats =  Array.fill[Int](patterns.size)(0)
+  private[this] def search(tree: Tree): ResultArray = {
+    val futureStats =  Array.fill[Int](patternsFuture.size)(0)
 
-    patterns.indices.foreach { i =>
-
+    patternsFuture.indices.foreach { i =>
       try {
-        val matcher = patterns(i).matcher(tree)
+        val matcher = patternsFuture(i).matcher(tree)
         if (matcher.find()) {
-          stats(i) = stats(i) + 1
+          futureStats(i) = futureStats(i) + 1
         }
       } catch {
         case e: NullPointerException =>
@@ -61,7 +62,24 @@ class FutureDemoActor extends Actor with ActorLogging {
           println("NULL Pointer with " + tree.toString)
       }
     }
-    stats
+
+    val pastStats =  Array.fill[Int](patternsPast.size)(0)
+
+    patternsPast.indices.foreach { i =>
+      try {
+        val matcher = patternsPast(i).matcher(tree)
+        if (matcher.find()) {
+          pastStats(i) = pastStats(i) + 1
+        }
+      } catch {
+        case e: NullPointerException =>
+          //this happens when a tree is malformed
+          //we will not add any number to stats, just return it as is
+          println("NULL Pointer with " + tree.toString)
+      }
+    }
+
+    ResultArray(futureStats.sum, futureStats, pastStats.sum, pastStats)
   }
 
 
@@ -93,6 +111,7 @@ class FutureDemoActor extends Actor with ActorLogging {
 object FutureDemoProtocol {
   import scala.collection.mutable
   case class JObjectSentences(jObject: JObject)
-  case class MatchedResult(sen: String, result: Array[Int])
+  case class MatchedResult(sen: String, result: ResultArray)
+  case class ResultArray(future: Int, futureResult: Array[Int], past: Int, pastResult: Array[Int])
   case class TransOk(sentencesResult: Option[mutable.Queue[MatchedResult]], succeedOrNot: Boolean, errorMessage: Option[String])
 }
