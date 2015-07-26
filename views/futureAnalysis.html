@@ -79,9 +79,17 @@ body > #canvas {
 <!-- ToolTip Script Start -->
 <script>
 function initiate(sentence) {
-    console.log(sentence);
-    $.post( "https://www.mindandlanguagelab.com/future/sentence", { sentences: sentence})
-       .done(callBackFunc);
+    console.log(sentence);       
+
+    $.ajax({
+       url: "https://www.mindandlanguagelab.com/future/sentence",
+        type: "POST",
+        datatype: "json",
+        contentType: 'application/json; charset=UTF-8',
+        data: {
+          "sentences": sentence
+        } //JSON.stringify(data)
+      }).done(callBackFunc);
 }
 
 //attemping to get JSON file
