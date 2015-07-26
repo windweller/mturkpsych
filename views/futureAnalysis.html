@@ -96,8 +96,8 @@ function initiate(sentence) {
 
 //attemping to get JSON file
 function callBackFunc(arr) {
-    list.innerHTML = "";
     var list = document.getElementById('demo');
+    list.innerHTML = "";
     theBigArray = arr; //THIS CONTAINS THE ACTUAL DATA
     for(var i=0;i<arr.length;i++){
         var obj = arr[i];
