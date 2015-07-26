@@ -181,6 +181,11 @@ function callBackFunc(arr) {
 
 
 $("#download").click(function() {
+    if(theBigArray.length < 0){
+        alert("Textarea is Empty! ")
+        continue;
+    }
+
     var csv = JSON2CSV(theBigArray);
     console.log(theBigArray);
     window.open("data:text/csv;charset=utf-8," + escape(csv))
