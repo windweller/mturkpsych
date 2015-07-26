@@ -55,7 +55,7 @@ body > #canvas {
     <div class="container-fluid">
         <form>
             <textarea class="form-control" id = "futureInput" placeholder="Enter your text" rows="4" cols="100%" required></textarea><br>
-            <a href="#" id="form-submit" class="btn btn-primary btn-lg ladda-button" data-style="zoom-in" data-size="l"><span class="ladda-label">Run Analysis</span></a>
+            <a href="#" id="form-submit" class="btn btn-primary btn-lg ladda-button" data-style="zoom-in" data-size="l" onclick="initiate(document.getElementById('futureInput').value)"><span class="ladda-label">Run Analysis</span></a>
         </form>
     </div>
 <!-- END TEXT AREA -->
@@ -78,32 +78,40 @@ body > #canvas {
 
 <!-- ToolTip Script Start -->
 <script>
+function initiate(sentence) {
+    console.log(sentence);
+    $.post( "https://www.mindandlanguagelab.com/future/sentence", { sentences: sentence})
+       .done(callBackFunc);
+}
+
 $.getJSON('future/data', callBackFunc);
 
 //attemping to get JSON file
 function callBackFunc(arr) {
     var list = document.getElementById('demo');
-    var theBigArray = []; //THIS CONTAINS THE ACTUAL DATA
+    var theBigArray = arr; //THIS CONTAINS THE ACTUAL DATA
     for(var i=0;i<arr.length;i++){
         var obj = arr[i];
-        var myArray = [];
-            for(var key in obj){
-                    myArray.push(obj[key]);
-            }
-            theBigArray.push(myArray);
-            var tenseState = myArray[0];
-            var fontColor;
-            if(tenseState == "future") {
-                fontColor = "bg-info";
-            }
-            else if(tenseState == "present") {
-                fontColor = "bg-success";
-            }
-            else{
-                fontColor = "bg-warning";
-            }
-            list.innerHTML = list.innerHTML + '<span class = "' + fontColor + '" style="font-size:17px" title = "'+i+'">'+ myArray[1] + '</span>';
-            list.innerHTML = list.innerHTML + "&nbsp;&nbsp;"
+
+        //FONT STATE AND CHANGE COLOR
+        var numberFuture = arr[i].result.future;
+        var numberPast = arr[i].result.past;
+
+        //ASSIGN FONT COLOR
+        var fontColor;
+        if(numberPast < numberFuture) { //future
+            fontColor = "bg-info";
+        }
+        else if((numberPast == numberFuture) || (numberPast == 0 && numberFuture == 0)) { //present
+            fontColor = "bg-success";
+        }
+        else{ //past
+            fontColor = "bg-warning";
+        }
+
+        //DISPLAY
+        list.innerHTML = list.innerHTML + '<span class = "' + fontColor + '" style="font-size:17px" title = "'+i+'">'+ arr[i].sen + '</span>';
+        list.innerHTML = list.innerHTML + "&nbsp;&nbsp;"
     }
 
 
@@ -136,7 +144,7 @@ function callBackFunc(arr) {
                             strokeColor : "rgba(151,187,205,0.8)",
                             highlightFill : "rgba(151,187,205,0.75)",
                             highlightStroke : "rgba(151,187,205,1)",
-                            data : [temp[2], temp[3]]
+                            data : [temp.result.future, temp.result.past]
                         }
                     ]
 
