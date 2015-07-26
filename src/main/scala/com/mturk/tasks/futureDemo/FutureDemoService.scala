@@ -4,12 +4,13 @@ import java.io.File
 
 import akka.actor._
 import akka.util.Timeout
+import com.mturk.tasks.Util.JsonImplicits
 import com.mturk.tasks.futureDemo.FutureDemoProtocol.{TransOk, JObjectSentences}
 import org.json4s.JsonAST.JObject
 import spray.http.MediaTypes._
 import spray.http.StatusCodes._
 import spray.routing.Directives
-
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.language.postfixOps
 
 /**
@@ -20,6 +21,7 @@ class FutureDemoService(futureDemoActor: ActorRef)(implicit system: ActorSystem)
 
   import scala.concurrent.duration._
   import akka.pattern.ask
+  import JsonImplicits._
 
   implicit val timeout = Timeout(45 seconds)
 
