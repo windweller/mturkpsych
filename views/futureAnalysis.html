@@ -86,9 +86,9 @@ function initiate(sentence) {
         type: "POST",
         datatype: "json",
         contentType: 'application/json; charset=UTF-8',
-        data: {
+        data: JSON.stringify({
           "sentences": sentence
-        } //JSON.stringify(data)
+        }) //JSON.stringify(data)
       }).done(callBackFunc);
 }
 
