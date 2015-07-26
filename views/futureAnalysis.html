@@ -78,6 +78,9 @@ body > #canvas {
 
 <!-- ToolTip Script Start -->
 <script>
+
+var theBigArray = [];
+
 function initiate(sentence) {
     console.log(sentence);
     $.ajax({
@@ -95,7 +98,7 @@ function initiate(sentence) {
 function callBackFunc(arr) {
     list.innerHTML = "";
     var list = document.getElementById('demo');
-    var theBigArray = arr; //THIS CONTAINS THE ACTUAL DATA
+    theBigArray = arr; //THIS CONTAINS THE ACTUAL DATA
     for(var i=0;i<arr.length;i++){
         var obj = arr[i];
 
@@ -172,20 +175,17 @@ function callBackFunc(arr) {
       });
     });
 }
- </script>
  <!-- ToolTip Script Ends -->
 
 <!-- CSV Download Javascript -->
-<script type="text/javascript">
-$.getJSON('future/data', callBackDownload);
 
-function callBackDownload(arr) {
-    $("#download").click(function() {
-        var csv = JSON2CSV(arr);
-        window.open("data:text/csv;charset=utf-8," + escape(csv))
-    });
 
-}
+$("#download").click(function() {
+    var csv = JSON2CSV(theBigArray);
+    console.log(theBigArray);
+    window.open("data:text/csv;charset=utf-8," + escape(csv))
+});
+
 
 function JSON2CSV(objArray) {
     var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
