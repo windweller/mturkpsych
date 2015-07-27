@@ -124,7 +124,7 @@ function initializePost(array, arraySize) {
     });
 }
 //attemping to get JSON file
-function callBackFunc(arr, sentencesArray, count, pos) {
+function callBackFunc(arr, array, arraySize, pos) {
     var list = document.getElementById('demo');
 
 
@@ -203,14 +203,14 @@ function callBackFunc(arr, sentencesArray, count, pos) {
     });
 
 
-    if (pos < count) {
+    if (pos < arraySize) {
         $.ajax({
            url: "https://www.mindandlanguagelab.com/future/sentence",
             type: "POST",
             datatype: "json",
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify({
-              "sentences": sentencesArray[pos]
+              "sentences": array[pos]
             }) //JSON.stringify(data)
         }).done(function (data, textStatus, jqXHR) {
             callBackFunc(data, array, arraySize, pos+1)
