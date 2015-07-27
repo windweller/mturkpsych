@@ -81,6 +81,7 @@ var counter;
 $("#submit").click(function() {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     var sentence = document.getElementById('futureInput').value; //Get sentence from Textarea
     var list = document.getElementById('demo');
     list.innerHTML = "";
@@ -120,8 +121,6 @@ function ajaxFunc() {
               "sentences": sentence
             }) //JSON.stringify(data)
           }).done(callBackFunc);
-    }
-}
 =======
 
 
@@ -129,8 +128,21 @@ function ajaxFunc() {
     if(sentence.length <= 0) {
         alert("Textarea is Empty!")
         break;
+>>>>>>> parent of 4a3f61e... update
+    }
+}
+=======
+
+<<<<<<< HEAD
+
+    var sentence = document.getElementById('futureInput').value;
+    if(sentence.length <= 0) {
+        alert("Textarea is Empty!")
+        break;
     }
 
+=======
+>>>>>>> parent of 4a3f61e... update
     //LOADING BUTTON (DUMB WAY)
     $button1 = $(this);
     $(this).prop("disabled",true);
