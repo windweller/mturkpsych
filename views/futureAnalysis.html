@@ -210,7 +210,7 @@ function callBackFunc(arr, sentencesArray, count, pos) {
             datatype: "json",
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify({
-              "sentences": array[pos]
+              "sentences": sentencesArray[pos]
             }) //JSON.stringify(data)
         }).done(function (data, textStatus, jqXHR) {
             callBackFunc(data, array, arraySize, pos+1)
