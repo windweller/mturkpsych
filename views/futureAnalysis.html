@@ -200,9 +200,7 @@ function callBackFunc(arr, sentencesArray, count, pos) {
         }
       });
     });
-    //LOADING BUTTON ENDS
-    $button1.prop("disabled",false);
-    $button1.text("Run Analysis");
+
 
     if (pos < count) {
         $.ajax({
@@ -216,7 +214,13 @@ function callBackFunc(arr, sentencesArray, count, pos) {
         }).done(function (data, textStatus, jqXHR) {
             callBackFunc(data, array, arraySize, pos+1)
         });
-    } else return;
+    } else {
+        //LOADING BUTTON ENDS
+        $button1.prop("disabled",false);
+        $button1.text("Run Analysis");
+        return;
+    }
+
 
 }
  <!-- ToolTip Script Ends -->
