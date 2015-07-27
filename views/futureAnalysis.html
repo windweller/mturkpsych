@@ -83,6 +83,8 @@ var splitedSentence;
 
 $("#submit").click(function() {
     var sentence = document.getElementById('futureInput').value;
+    var list = document.getElementById('demo');
+    list.innerHTML = "";
     if(sentence.length <= 0) {
         alert("Textarea is Empty!")
     } else {
@@ -124,8 +126,7 @@ function initializePost(array, arraySize) {
 //attemping to get JSON file
 function callBackFunc(arr, sentencesArray, count, pos) {
 
-    var list = document.getElementById('demo');
-    list.innerHTML = "";
+
     theBigArray = []; //THIS CONTAINS THE ACTUAL DATA
     for(var i=0;i<arr.length;i++){
         var object = {};
@@ -154,6 +155,7 @@ function callBackFunc(arr, sentencesArray, count, pos) {
         list.innerHTML = list.innerHTML + '<span class = "' + fontColor + '" style="font-size:17px" title = "'+i+'">'+ object.sentence + '</span>';
         list.innerHTML = list.innerHTML + "&nbsp;&nbsp;"
     }
+    list.innerHTML = list.innerHTML + "<br><br>";
     //tooltip
     $(function() {
        $( document ).tooltip({
