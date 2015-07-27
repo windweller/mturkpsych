@@ -74,6 +74,9 @@ body > #canvas {
 
 var theBigArray = [];
 var $button1;
+var input;
+var size;
+var counter;
 
 $("#submit").click(function() {
 
@@ -92,27 +95,31 @@ $("#submit").click(function() {
         sentence = sentence.split("\n");
         console.log(sentence);
         for (var i = 0; i < sentence.length; i++) {
-            var input = sentence[i]
-            if(input == ""){
-                continue;
+            if(sentence[i] != ""){
+                input.push(sentence[i]);
             }
-            ajaxFunc(input);
         }
+        size = input.size;
+        counter = 0;
+        ajaxFunc(counter);
     }
 });
 
 //AJAX Function
-function ajaxFunc(sentence) {
-    console.log("called");
-    $.ajax({
-       url: "https://www.mindandlanguagelab.com/future/sentence",
-        type: "POST",
-        datatype: "json",
-        contentType: 'application/json; charset=UTF-8',
-        data: JSON.stringify({
-          "sentences": sentence
-        }) //JSON.stringify(data)
-      }).done(callBackFunc);
+function ajaxFunc() {
+    var sentence = input[counter];
+    if(counter < size) {
+        console.log("called");
+        $.ajax({
+           url: "https://www.mindandlanguagelab.com/future/sentence",
+            type: "POST",
+            datatype: "json",
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify({
+              "sentences": sentence
+            }) //JSON.stringify(data)
+          }).done(callBackFunc);
+    }
 }
 
 //attemping to get JSON file
@@ -206,6 +213,8 @@ function callBackFunc(arr) {
     //LOADING BUTTON ENDS
     $button1.prop("disabled",false);
     $button1.text("Run Analysis");
+    counter = counter +1;
+    ajaxFunc();
 
 }
  <!-- ToolTip Script Ends -->
