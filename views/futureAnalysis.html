@@ -83,11 +83,20 @@ var theBigArray = [];
 var $button1;
 
 $("#submit").click(function() {
+
+
+
+    var sentence = document.getElementById('futureInput').value;
+    if(sentence.length <= 0) {
+        alert("Textarea is Empty!")
+        break;
+    }
+
+    //LOADING BUTTON (DUMB WAY)
     $button1 = $(this);
     $(this).prop("disabled",true);
     $(this).text("Loading...");
 
-    var sentence = document.getElementById('futureInput').value;
     $.ajax({
        url: "https://www.mindandlanguagelab.com/future/sentence",
         type: "POST",
@@ -189,6 +198,7 @@ function callBackFunc(arr) {
       });
     });
 
+    //LOADING BUTTON ENDS (DUMB WAY)
     $button1.prop("disabled",false);
     $button1.text("Run Analysis");
 
