@@ -80,6 +80,7 @@ var counter;
 
 $("#submit").click(function() {
 
+<<<<<<< HEAD
     var sentence = document.getElementById('futureInput').value; //Get sentence from Textarea
     var list = document.getElementById('demo');
     list.innerHTML = "";
@@ -121,6 +122,34 @@ function ajaxFunc() {
           }).done(callBackFunc);
     }
 }
+=======
+
+
+    var sentence = document.getElementById('futureInput').value;
+    if(sentence.length <= 0) {
+        alert("Textarea is Empty!")
+        break;
+    }
+
+    //LOADING BUTTON (DUMB WAY)
+    $button1 = $(this);
+    $(this).prop("disabled",true);
+    $(this).text("Loading...");
+
+    $.ajax({
+       url: "https://www.mindandlanguagelab.com/future/sentence",
+        type: "POST",
+        datatype: "json",
+        contentType: 'application/json; charset=UTF-8',
+        data: JSON.stringify({
+          "sentences": sentence
+        }) //JSON.stringify(data)
+      }).done(callBackFunc);
+
+    //$(this).prop("disabled",false);
+    //$(this).text("Run Analysis");
+});
+>>>>>>> parent of 4a3f61e... update
 
 //attemping to get JSON file
 function callBackFunc(arr) {
@@ -210,7 +239,7 @@ function callBackFunc(arr) {
       });
     });
 
-    //LOADING BUTTON ENDS
+    //LOADING BUTTON ENDS (DUMB WAY)
     $button1.prop("disabled",false);
     $button1.text("Run Analysis");
     counter = counter +1;
