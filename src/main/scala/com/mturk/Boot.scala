@@ -6,7 +6,7 @@ import com.mturk.api._
 import com.mturk.models.pgdb.DAL
 import spray.can.Http
 
-import scala.util.Try
+import scala.util.{Failure, Success, Try}
 
 //import scala.slick.driver.MySQLDriver.simple._
 
@@ -15,7 +15,12 @@ object Boot extends App with MainActors with RootApi {
   //construct database tables; it needs improvement
   implicit lazy val system = ActorSystem("mturk-survey")
 
-  Try(DAL.databaseInit())
+  val dbconn = Try(DAL.databaseInit())
+
+  dbconn match {
+    case Success() => println("successfully connected to database")
+    case Failure(ex) => println("failed to connect with database")
+  }
 
   //wss is not working for some reason
   private val ws = new WsServer(Config.portWs)
