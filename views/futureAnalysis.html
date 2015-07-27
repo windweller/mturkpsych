@@ -108,10 +108,10 @@ function split(input) {
 
 function ajaxFunc(input) {
 
+    show_overlay();
     $.ajax({
        url: "https://www.mindandlanguagelab.com/future/sentence",
         type: "POST",
-        async: false,
         datatype: "json",
         contentType: 'application/json; charset=UTF-8',
         data: JSON.stringify({
@@ -199,6 +199,7 @@ function callBackFunc(arr) {
     //LOADING BUTTON ENDS
     $button1.prop("disabled",false);
     $button1.text("Run Analysis");
+    remove_overlay();
 }
  <!-- ToolTip Script Ends -->
 <!-- CSV Download Javascript -->
