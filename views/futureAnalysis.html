@@ -4,12 +4,10 @@
 #demo span {
     line-height: 250%;
 }
-
 body > #canvas {
       position: fixed;
       visibility: hidden;
  }
-
 </style>
 <head>
   <title>WOLFF LAB</title>
@@ -20,12 +18,19 @@ body > #canvas {
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
   <script src= "https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+  <!-- Custom Table -->
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.8.1/bootstrap-table.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.8.1/bootstrap-table.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.8.1/locale/bootstrap-table-zh-CN.min.js"></script>
   <!-- tooltip -->
   <script type="text/javascript" src="future/data"></script>
   <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
   <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
   <script src="js/vendor/Chart.js"></script> <!-- TOOLTIP CHART -->
-
+  <!-- Loading Button -->
+  <link rel="stylesheet" href="js/vendor/dist/ladda-themeless.min.css">
+  <script src="js/vendor/dist/spin.min.js"></script>
+  <script src="js/vendor/dist/ladda.min.js"></script>
 
 </head>
 <body>
@@ -71,20 +76,10 @@ body > #canvas {
 
 <!-- ToolTip Script Start -->
 <script>
-
 var theBigArray = [];
 var $button1;
-var input = [];
-var size;
-var counter;
-
 $("#submit").click(function() {
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-    var sentence = document.getElementById('futureInput').value; //Get sentence from Textarea
-    var list = document.getElementById('demo');
-    list.innerHTML = "";
+    var sentence = document.getElementById('futureInput').value;
     if(sentence.length <= 0) {
         alert("Textarea is Empty!")
     } else {
@@ -92,26 +87,6 @@ $("#submit").click(function() {
         $button1 = $(this);
         $(this).prop("disabled",true);
         $(this).text("Loading...");
-
-        //SPLITTING SENTENCE FOR LINE BREAK
-        sentence = sentence.split("\n");
-        console.log(sentence);
-        for (var i = 0; i < sentence.length; i++) {
-            if(sentence[i] != ""){
-                input.push(sentence[i]);
-            }
-        }
-        size = input.size;
-        counter = 0;
-        ajaxFunc();
-    }
-});
-
-//AJAX Function
-function ajaxFunc() {
-    if(counter < size) {
-        var sentence = input[counter];
-        console.log("called");
         $.ajax({
            url: "https://www.mindandlanguagelab.com/future/sentence",
             type: "POST",
@@ -121,52 +96,12 @@ function ajaxFunc() {
               "sentences": sentence
             }) //JSON.stringify(data)
           }).done(callBackFunc);
-=======
-
-
-    var sentence = document.getElementById('futureInput').value;
-    if(sentence.length <= 0) {
-        alert("Textarea is Empty!")
-        break;
->>>>>>> parent of 4a3f61e... update
     }
-}
-=======
-
-<<<<<<< HEAD
-
-    var sentence = document.getElementById('futureInput').value;
-    if(sentence.length <= 0) {
-        alert("Textarea is Empty!")
-        break;
-    }
-
-=======
->>>>>>> parent of 4a3f61e... update
-    //LOADING BUTTON (DUMB WAY)
-    $button1 = $(this);
-    $(this).prop("disabled",true);
-    $(this).text("Loading...");
-
-    $.ajax({
-       url: "https://www.mindandlanguagelab.com/future/sentence",
-        type: "POST",
-        datatype: "json",
-        contentType: 'application/json; charset=UTF-8',
-        data: JSON.stringify({
-          "sentences": sentence
-        }) //JSON.stringify(data)
-      }).done(callBackFunc);
-
-    //$(this).prop("disabled",false);
-    //$(this).text("Run Analysis");
 });
->>>>>>> parent of 4a3f61e... update
-
 //attemping to get JSON file
 function callBackFunc(arr) {
-    console.log("call back called with" + arr[0].sen);
     var list = document.getElementById('demo');
+    list.innerHTML = "";
     theBigArray = []; //THIS CONTAINS THE ACTUAL DATA
     for(var i=0;i<arr.length;i++){
         var object = {};
@@ -179,9 +114,7 @@ function callBackFunc(arr) {
         for(j = 0; j < arr[i].result.pastResult.length; j++) {
             object["rulePast_"+j] = arr[i].result.pastResult[j];
         }
-
         theBigArray.push(object);
-
         //ASSIGN FONT COLOR
         var fontColor;
         if(object.numberPast < object.numberFuture) { //future
@@ -193,13 +126,10 @@ function callBackFunc(arr) {
         else{ //past
             fontColor = "bg-warning";
         }
-
         //DISPLAY
         list.innerHTML = list.innerHTML + '<span class = "' + fontColor + '" style="font-size:17px" title = "'+i+'">'+ object.sentence + '</span>';
-        list.innerHTML = list.innerHTML + "&nbsp;&nbsp;";
+        list.innerHTML = list.innerHTML + "&nbsp;&nbsp;"
     }
-    list.innerHTML = list.innerHTML + "<br>";
-
     //tooltip
     $(function() {
        $( document ).tooltip({
@@ -210,17 +140,13 @@ function callBackFunc(arr) {
                 {
                     return false;
                 }
-
                 var $id = $(ui.tooltip).attr('id');
-
             // close any lingering tooltips
             $('div.ui-tooltip').not('#' + $id).remove();
          },
-
          content:function () {
                 var temp = $(this).prop('title');
                 temp = theBigArray[temp] //THIS IS THE JSON DATA CONTAINER FOR EACH SENTENCE
-
                 var barChartData = {
                     labels : ["Future","Past"],
                     datasets : [
@@ -232,10 +158,8 @@ function callBackFunc(arr) {
                             data : [temp.numberFuture, temp.numberPast]
                         }
                     ]
-
                 }
                 $('body').append($("<canvas id='canvas' width='250' height='170'></canvas>"))
-
                 var ctx = document.getElementById("canvas").getContext("2d");
                 var myTable = new Chart(ctx).Bar(barChartData, {
         			responsive : false,
@@ -250,53 +174,35 @@ function callBackFunc(arr) {
         }
       });
     });
-
-    //LOADING BUTTON ENDS (DUMB WAY)
+    //LOADING BUTTON ENDS
     $button1.prop("disabled",false);
     $button1.text("Run Analysis");
-    counter = counter +1;
-    ajaxFunc();
-
 }
  <!-- ToolTip Script Ends -->
-
 <!-- CSV Download Javascript -->
-
-
 $("#download").click(function() {
     if(theBigArray.length == 0){
         alert("Textarea is Empty! ");
     } else {
         //Json Conversion for Download Starts
-
         var downloadable = theBigArray;
-
         //Json Conversion Ends
         var csv = JSON2CSV(theBigArray);
         console.log(theBigArray);
         window.open("data:text/csv;charset=utf-8," + escape(csv))
     }
 });
-
-
 function JSON2CSV(objArray) {
     var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
-
     var str = '';
     var line = '';
-
     var head = array[0];
-
     for (var index in array[0]) {
         var value = index + "";
         line += '"' + value.replace(/"/g, '""') + '",';
     }
-
-
-
     line = line.slice(0, -1);
     str += line + '\r\n';
-
     for (var i = 0; i < array.length; i++) {
        var line = '';
        for (var index in array[i]) {
@@ -314,9 +220,6 @@ function JSON2CSV(objArray) {
 <!-- JAVASCRIPT START -->
 <script type="text/javascript">
 //BUTTON animation JAVASCRIPT
-
-
-
 </script>
 <!-- JAVASCRIPT END -->
 
