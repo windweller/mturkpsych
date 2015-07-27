@@ -82,6 +82,7 @@ body > #canvas {
 var theBigArray = [];
 
 $("#submit").click(function() {
+    console.log("button should be disabled");
     $(this).prop("disabled",true);
     $(this).text("Loading...");
 
@@ -96,8 +97,8 @@ $("#submit").click(function() {
         }) //JSON.stringify(data)
       }).done(callBackFunc);
 
-    $(this).prop("disabled",false);
-    $(this).text("Run Analysis");
+    //$(this).prop("disabled",false);
+    //$(this).text("Run Analysis");
 });
 
 //attemping to get JSON file
