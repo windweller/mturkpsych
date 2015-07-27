@@ -83,7 +83,6 @@ var theBigArray = [];
 var $button1;
 
 $("#submit").click(function() {
-    console.log("button should be disabled");
     $button1 = $(this);
     $(this).prop("disabled",true);
     $(this).text("Loading...");
@@ -139,9 +138,6 @@ function callBackFunc(arr) {
         list.innerHTML = list.innerHTML + "&nbsp;&nbsp;"
     }
 
-    console.log("button reenabled");
-    $button1.prop("disabled",false);
-    $button1.text("Run Analysis");
     //tooltip
     $(function() {
        $( document ).tooltip({
@@ -192,6 +188,10 @@ function callBackFunc(arr) {
         }
       });
     });
+
+    $button1.prop("disabled",false);
+    $button1.text("Run Analysis");
+
 }
  <!-- ToolTip Script Ends -->
 
@@ -221,16 +221,12 @@ function JSON2CSV(objArray) {
     var line = '';
 
     var head = array[0];
-    if ($("#quote").is(':checked')) {
-        for (var index in array[0]) {
-            var value = index + "";
-            line += '"' + value.replace(/"/g, '""') + '",';
-        }
-    } else {
-        for (var index in array[0]) {
-            line += index + ',';
-        }
+
+    for (var index in array[0]) {
+        var value = index + "";
+        line += '"' + value.replace(/"/g, '""') + '",';
     }
+
 
     line = line.slice(0, -1);
     str += line + '\r\n';
