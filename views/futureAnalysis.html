@@ -107,8 +107,8 @@ $("#submit").click(function() {
 
 //AJAX Function
 function ajaxFunc() {
-    var sentence = input[counter];
     if(counter < size) {
+        var sentence = input[counter];
         console.log("called");
         $.ajax({
            url: "https://www.mindandlanguagelab.com/future/sentence",
