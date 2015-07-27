@@ -78,7 +78,8 @@ var $button1;
 $("#submit").click(function() {
 
     var sentence = document.getElementById('futureInput').value; //Get sentence from Textarea
-
+    var list = document.getElementById('demo');
+    list.innerHTML = "";
     if(sentence.length <= 0) {
         alert("Textarea is Empty!")
     } else {
@@ -118,7 +119,6 @@ function ajaxFunc(sentence) {
 function callBackFunc(arr) {
     console.log("call back called with" + arr[0].sen);
     var list = document.getElementById('demo');
-    list.innerHTML = "";
     theBigArray = []; //THIS CONTAINS THE ACTUAL DATA
     for(var i=0;i<arr.length;i++){
         var object = {};
