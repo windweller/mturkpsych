@@ -84,31 +84,27 @@ var $button1;
 
 $("#submit").click(function() {
 
-
-
     var sentence = document.getElementById('futureInput').value;
     if(sentence.length <= 0) {
         alert("Textarea is Empty!")
-        break;
+    } else {
+        //LOADING BUTTON
+        $button1 = $(this);
+        $(this).prop("disabled",true);
+        $(this).text("Loading...");
+
+        $.ajax({
+           url: "https://www.mindandlanguagelab.com/future/sentence",
+            type: "POST",
+            datatype: "json",
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify({
+              "sentences": sentence
+            }) //JSON.stringify(data)
+          }).done(callBackFunc);
     }
 
-    //LOADING BUTTON (DUMB WAY)
-    $button1 = $(this);
-    $(this).prop("disabled",true);
-    $(this).text("Loading...");
 
-    $.ajax({
-       url: "https://www.mindandlanguagelab.com/future/sentence",
-        type: "POST",
-        datatype: "json",
-        contentType: 'application/json; charset=UTF-8',
-        data: JSON.stringify({
-          "sentences": sentence
-        }) //JSON.stringify(data)
-      }).done(callBackFunc);
-
-    //$(this).prop("disabled",false);
-    //$(this).text("Run Analysis");
 });
 
 //attemping to get JSON file
@@ -198,7 +194,7 @@ function callBackFunc(arr) {
       });
     });
 
-    //LOADING BUTTON ENDS (DUMB WAY)
+    //LOADING BUTTON ENDS
     $button1.prop("disabled",false);
     $button1.text("Run Analysis");
 
