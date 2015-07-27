@@ -90,6 +90,7 @@ $("#submit").click(function() {
         $.ajax({
            url: "https://www.mindandlanguagelab.com/future/sentence",
             type: "POST",
+            async: false,
             datatype: "json",
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify({
