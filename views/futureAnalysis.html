@@ -55,7 +55,7 @@ body > #canvas {
     <div class="container-fluid">
         <form>
             <textarea class="form-control" id = "futureInput" placeholder="Enter your text" rows="4" cols="100%" required></textarea><br>
-            <button type= "button" id = "submit" data-loading-text="Loading..." class="btn btn-primary">Run Analysis</button>
+            <button type= "button" id = "submit" class="btn btn-primary">Run Analysis</button>
         </form>
     </div>
 <!-- END TEXT AREA -->
@@ -85,7 +85,7 @@ $("#submit").click(function() {
     $(this).prop("disabled",true);
     $(this).text("Loading...");
 
-    var sentence = $(#futureInput).val();
+    var sentence = document.getElementById('futureInput').value;
     $.ajax({
        url: "https://www.mindandlanguagelab.com/future/sentence",
         type: "POST",
