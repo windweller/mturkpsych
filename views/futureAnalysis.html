@@ -55,7 +55,7 @@ body > #canvas {
     <div class="container-fluid">
         <form>
             <textarea class="form-control" id = "futureInput" placeholder="Enter your text" rows="4" cols="100%" required></textarea><br>
-            <button type= "button" id = "submit" data-loading-text="Loading..." class="btn btn-primary" onclick="initiate(document.getElementById('futureInput').value)">Run Analysis</button>
+            <button type= "button" id = "submit" data-loading-text="Loading..." class="btn btn-primary">Run Analysis</button>
         </form>
     </div>
 <!-- END TEXT AREA -->
@@ -81,8 +81,11 @@ body > #canvas {
 
 var theBigArray = [];
 
-function initiate(sentence) {
-    console.log(sentence);
+$("#submit").click(function() {
+    $(this).prop("disabled",true);
+    $(this).text("Loading...");
+
+    var sentence = $(#futureInput).val();
     $.ajax({
        url: "https://www.mindandlanguagelab.com/future/sentence",
         type: "POST",
@@ -92,7 +95,10 @@ function initiate(sentence) {
           "sentences": sentence
         }) //JSON.stringify(data)
       }).done(callBackFunc);
-}
+
+    $(this).prop("disabled",false);
+    $(this).text("Run Analysis");
+});
 
 //attemping to get JSON file
 function callBackFunc(arr) {
