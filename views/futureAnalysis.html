@@ -204,9 +204,6 @@ function callBackFunc(arr, sentencesArray, count, pos) {
     $button1.prop("disabled",false);
     $button1.text("Run Analysis");
 
-    count++;
-    console.log(count);
-
     if (pos < count) {
         $.ajax({
            url: "https://www.mindandlanguagelab.com/future/sentence",
