@@ -82,7 +82,6 @@ var count;
 var splitedSentence;
 
 $("#submit").click(function() {
-    count = 0;
     var sentence = document.getElementById('futureInput').value;
     if(sentence.length <= 0) {
         alert("Textarea is Empty!")
@@ -93,10 +92,9 @@ $("#submit").click(function() {
         $(this).text("Loading...");
 
         //SPLITTING
-        splitedSentence = split(sentence)
-        console.log(splitedSentence);
-        ajaxFunc(splitedSentence[count]);
-
+        splitedSentences = split(sentence)
+        console.log(splitedSentences);
+        initializePost(splitedSentences, splitedSentences.length);
     }
 });
 
@@ -110,26 +108,22 @@ function split(input) {
     return splitInput;
 }
 
-function ajaxFunc(input) {
-
-    if(count < splitedSentence.length) {
-        $.ajax({
-           url: "https://www.mindandlanguagelab.com/future/sentence",
-            type: "POST",
-            datatype: "json",
-            contentType: 'application/json; charset=UTF-8',
-            data: JSON.stringify({
-              "sentences": input
-            }) //JSON.stringify(data)
-          }).done(callBackFunc);
-    } else {
-        console.log("DONE");
-    }
-
-
+function initializePost(array, arraySize) {
+    $.ajax({
+       url: "https://www.mindandlanguagelab.com/future/sentence",
+        type: "POST",
+        datatype: "json",
+        contentType: 'application/json; charset=UTF-8',
+        data: JSON.stringify({
+          "sentences": array[0]
+        }) //JSON.stringify(data)
+    }).done(function (data, textStatus, jqXHR) {
+        callBackFunc(data, array, arraySize, 1)
+    });
 }
 //attemping to get JSON file
-function callBackFunc(arr) {
+function callBackFunc(arr, sentencesArray, count, pos) {
+
     var list = document.getElementById('demo');
     list.innerHTML = "";
     theBigArray = []; //THIS CONTAINS THE ACTUAL DATA
@@ -210,7 +204,21 @@ function callBackFunc(arr) {
 
     count++;
     console.log(count);
-    ajaxFunc(splitedSentence[count]);
+
+    if (pos < count) {
+        $.ajax({
+           url: "https://www.mindandlanguagelab.com/future/sentence",
+            type: "POST",
+            datatype: "json",
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify({
+              "sentences": array[pos]
+            }) //JSON.stringify(data)
+        }).done(function (data, textStatus, jqXHR) {
+            callBackFunc(data, array, arraySize, pos+1)
+        });
+    } else return;
+
 }
  <!-- ToolTip Script Ends -->
 <!-- CSV Download Javascript -->
