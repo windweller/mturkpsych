@@ -80,9 +80,11 @@ body > #canvas {
 <script>
 
 var theBigArray = [];
+var $button1;
 
 $("#submit").click(function() {
     console.log("button should be disabled");
+    $button1 = $(this);
     $(this).prop("disabled",true);
     $(this).text("Loading...");
 
@@ -137,7 +139,9 @@ function callBackFunc(arr) {
         list.innerHTML = list.innerHTML + "&nbsp;&nbsp;"
     }
 
-
+    console.log("button reenabled");
+    $button1.prop("disabled",true);
+    $button1.text("Loading...");
     //tooltip
     $(function() {
        $( document ).tooltip({
