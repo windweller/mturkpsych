@@ -1,10 +1,13 @@
 package com.mturk
 
-import akka.actor.{Props, ActorSystem}
-import akka.io.{IO, Tcp}
-import spray.can.Http
+import akka.actor.ActorSystem
+import akka.io.IO
 import com.mturk.api._
 import com.mturk.models.pgdb.DAL
+import spray.can.Http
+
+import scala.util.Try
+
 //import scala.slick.driver.MySQLDriver.simple._
 
 object Boot extends App with MainActors with RootApi {
@@ -12,7 +15,7 @@ object Boot extends App with MainActors with RootApi {
   //construct database tables; it needs improvement
   implicit lazy val system = ActorSystem("mturk-survey")
 
-  DAL.databaseInit()
+  Try(DAL.databaseInit())
 
   //wss is not working for some reason
   private val ws = new WsServer(Config.portWs)
