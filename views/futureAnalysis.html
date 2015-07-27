@@ -87,18 +87,39 @@ $("#submit").click(function() {
         $button1 = $(this);
         $(this).prop("disabled",true);
         $(this).text("Loading...");
-        $.ajax({
-           url: "https://www.mindandlanguagelab.com/future/sentence",
-            type: "POST",
-            async: false,
-            datatype: "json",
-            contentType: 'application/json; charset=UTF-8',
-            data: JSON.stringify({
-              "sentences": sentence
-            }) //JSON.stringify(data)
-          }).done(callBackFunc);
+
+        //SPLITTING
+        sentence = split(sentence)
+        for (var i = 0; i < sentence.length; i++) {
+            ajaxFunc(sentence[i]);
+        }
     }
 });
+
+function split(input) {
+    var splitInput = {};
+    var temp = input.split("\n");
+    for (var i = 0; i < temp.length; i++) {
+        if (temp[i] != "")
+            splitInput.push(temp[i]);
+    }
+    return splitInput;
+}
+
+function ajaxFunc(input) {
+
+    $.ajax({
+       url: "https://www.mindandlanguagelab.com/future/sentence",
+        type: "POST",
+        async: false,
+        datatype: "json",
+        contentType: 'application/json; charset=UTF-8',
+        data: JSON.stringify({
+          "sentences": input
+        }) //JSON.stringify(data)
+      }).done(callBackFunc);
+
+}
 //attemping to get JSON file
 function callBackFunc(arr) {
     var list = document.getElementById('demo');
