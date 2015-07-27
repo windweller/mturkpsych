@@ -18,7 +18,7 @@ object Boot extends App with MainActors with RootApi {
   val dbconn = Try(DAL.databaseInit())
 
   dbconn match {
-    case Success() => println("successfully connected to database")
+    case Success(nothing) => println("successfully connected to database")
     case Failure(ex) => println("failed to connect with database")
   }
 
