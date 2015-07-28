@@ -80,6 +80,17 @@ var theBigArray = [];
 var $button1;
 var count;
 var splitedSentence;
+var url1 = "http://127.0.0.1:8080/future/sentence";
+var url2 = "https://www.mindandlanguagelab.com/future/sentence";
+var theURL;
+var localhost = true;
+
+if (localhost) {
+    theURL = url1;
+} else {
+    theURL = url2;
+}
+
 
 $("#submit").click(function() {
     var sentence = document.getElementById('futureInput').value;
@@ -112,7 +123,7 @@ function split(input) {
 
 function initializePost(array, arraySize) {
     $.ajax({
-       url: "https://www.mindandlanguagelab.com/future/sentence",
+       url: theURL,
         type: "POST",
         datatype: "json",
         contentType: 'application/json; charset=UTF-8',
@@ -156,7 +167,7 @@ function callBackFunc(arr, array, arraySize, pos) {
         list.innerHTML = list.innerHTML + '<span class = "' + fontColor + '" style="font-size:17px" title = "'+i+'">'+ object.sentence + '</span>';
         list.innerHTML = list.innerHTML + "&nbsp;&nbsp;"
     }
-    list.innerHTML = list.innerHTML + "<br><br>";
+    list.innerHTML = list.innerHTML + "<br><br><br>";
     //tooltip
     $(function() {
        $( document ).tooltip({
@@ -205,7 +216,7 @@ function callBackFunc(arr, array, arraySize, pos) {
 
     if (pos < arraySize) {
         $.ajax({
-           url: "https://www.mindandlanguagelab.com/future/sentence",
+           url: theURL,
             type: "POST",
             datatype: "json",
             contentType: 'application/json; charset=UTF-8',
