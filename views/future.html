@@ -13,59 +13,71 @@
 
 </head>
 <body>
+ <div class="ok">
+    
+    <div class="container">
 
-<div class="container">
-
-    <!-- START OF NAVIGATION BAR -->
-    <div ng-include="'menuTemplate'"></div>
-    <!--END OF NAVIGATION BAR -->
-
-<!-- START TOP LAYER-->
-<div id = "top-layer" class="container-fluid">
-<br><br><br>
-<h1 style = "display: inline;" >Wolff Lab NLP Demo</h1>
-<img style = "display: inline;" class = "pull-right" src="img/university.gif" alt="Emory" height="80" width="80" >
-</div>
-<br>
-<!-- END TOP LAYER-->
-
-<!-- START OF CONTENT-->
-<div id = "content" class="container-fluid">
-<br>
-<img src="img/emoryLogo1.jpg" alt="Emory" height="100%" width="100%" >
-<h4 class = "text-center">
-    This is a demo site that shows Future Analysis and various charts
-</h4>
-
-</div>
-
-<!-- END OF CONTENT-->
-
-<!-- JAVASCRIPT START -->
-<script type="text/javascript">
-$(document).ready(function(){
-    $("#result").load("menuTemplate")
-});
-</script>
-
-<script type="text/javascript">
-
-function myFunction() {
-    var theText = document.getElementById("futureInput").value
-
-    if(theText.includes("future")) {
-        document.getElementById("rules").innerHTML = "future"
-    } else {
-        document.getElementById("rules").innerHTML = "not future"
-    }
-
-
-}
-</script>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-
+      <div class="menu">
+              <ul class="nav navbar-nav">
+                <li><a href="future.html">Home</a></li>
+                <li><a href="futureAnalysis.html">Demo</a></li>
+                <li><a href="realTimeGraph.html">Statistical graph</a></li>
+                <li><a href="trainingCorpus.html">Training Corpus</a></li>   
+                <li><a href="sourceCode.html">Source Code</a></li>
+              </ul>
+      </div>
+      <div id = "top-layer" class="container-fluid">
+        <br/><br/>
+        <hr/>
+        <br/>
+        <h1 style = "display: inline;" >Wolff Lab NLP Demo</h1>
+      </div>
+            <br/> <br/> 
+      
+      <div class="jumbotron col-md-12 center">
+        <div class="container">
+          <h4 class = "text-center">
+            This is a demo site that shows Future Analysis and various charts.
+            <br/><br/>
+            [Description the purpose of the website and the project]  
+          </h4>
+        </div>
+      </div>
+      
+  
+  <div id="footer">
+        <div class="container">
+    <hr/>
+    <a href="http://www.emory.edu"><img src="img/university2.png" alt="Emory" width="60"/></a>
+    <a href="http://www.sfl.cnrs.fr"><img src="img/sfl.jpg" alt="SFL" width="130"/></a>
+    <a href="http://www.cnrs.fr"><img src="img/cnrs.jpg" alt="CNRS" /></a>
+    <a href="http://www.univ-paris8.fr "><img src="img/P8.jpg" alt="Paris 8 University" width="120" /></a>
+  </div></div>
+  
+  <!-- JAVASCRIPT START -->
+  <script type="text/javascript">
+  $(document).ready(function(){
+      $("#result").load("menuTemplate")
+  });
+  </script>
+  
+  <script type="text/javascript">
+  
+  function myFunction() {
+      var theText = document.getElementById("futureInput").value
+  
+      if(theText.includes("future")) {
+          document.getElementById("rules").innerHTML = "future"
+      } else {
+          document.getElementById("rules").innerHTML = "not future"
+      }
+  
+  
+  }
+  </script>
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
 </body>
 </html>

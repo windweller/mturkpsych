@@ -34,251 +34,266 @@ body > #canvas {
 
 </head>
 <body>
+<div class="ok">
+    
+    <div class="container">
 
-<div class="container">
-<!-- START OF NAVIGATION BAR -->
-    <div ng-include="'menuTemplate'"></div>
-<!--END OF NAVIGATION BAR -->
+   
+         <div class="menu">
+              <ul class="nav navbar-nav">
+                <li><a href="future.html">Home</a></li>
+                <li><a href="futureAnalysis.html">Demo</a></li>
+                <li><a href="realTimeGraph.html">Statistical graph</a></li>
+                <li><a href="trainingCorpus.html">Training Corpus</a></li>   
+                <li><a href="sourceCode.html">Source Code</a></li>
+              </ul>
+            </div>
+            
+            <div id = "top-layer" class="container-fluid">
+                <br/><br/>
+                <hr/>
+                <br/>
+                <h1 style = "display: inline;" >Future Analysis</h1>
+            </div>
+            <br/> <br/>          
+            
+            
+            <div class="jumbotron col-md-12 center">
+                <div class="container">
+              <h4 class = "text-center">
+                [Describe the principle of the demonstration and give examples]
+              </h4>
+                </div>
+            </div>
+            
+            <div class="col-md-12 center">
+                <form>
+                    <textarea class="form-control" id = "futureInput" placeholder="Enter your text" rows="4" cols="100%" required></textarea><br>
+                    <button type= "button" id = "submit" class="btn btn-primary">Run Analysis</button>
+                </form>
+            </div>
+            
+            <div class="col-md-12 center" >
+                <br/><br/>
+                <h1 style = "display: inline;" >Rules
+                    <h4 style = "display: inline;" class = "pull-right" >
+                        <button id="download" class = "btn btn-primary">Download CSV</button>
+                    </h4>
+                </h1>
+                <br/><br/>
+                <img src="img/legend.png" alt="Legend" width="500" class="container-fluid"/>
+                <br/><br/>
+            </div>    
+            <div id="demo" class="container-fluid result">
+                <span class="bg-info">Tomorrow I will work on my website.</span>
+                <br/><br/>
+                <span class="bg-warning">I have seen an amazing thing int he sky.</span>
+                <br/><br/>
+                <span class="bg-success">Great, let's do that!</span>
+               </ul>
+            </div>
+        </div>
 
-<!-- START TOP LAYER-->
-    <div id = "top-layer" class="container-fluid">
-    <br><br><br>
-    <h1 style = "display: inline;" >Future Analysis</h1>
-    <img style = "display: inline;" class = "pull-right" src="img/university.gif" alt="Emory" height="80" width="80" >
+    <div id="footer">
+        <hr/>
+        <a href="http://www.emory.edu"><img src="img/university2.png" alt="Emory" width="60"/></a>
+        <a href="http://www.sfl.cnrs.fr"><img src="img/sfl.jpg" alt="SFL" width="130"/></a>
+        <a href="http://www.cnrs.fr"><img src="img/cnrs.jpg" alt="CNRS" /></a>
+        <a href="http://www.univ-paris8.fr "><img src="img/P8.jpg" alt="Paris 8 University" width="120" /></a>
     </div>
-    <br>
-<!-- END TOP LAYER-->
-
-<!-- TEXT AREA -->
-    <div class="container-fluid">
-        <form>
-            <textarea class="form-control" id = "futureInput" placeholder="Enter your text" rows="4" cols="100%" required></textarea><br>
-            <button type= "button" id = "submit" class="btn btn-primary">Run Analysis</button>
-        </form>
     </div>
-<!-- END TEXT AREA -->
-
-
-
-<!-- ToolTip HTML STARTS-->
-<div class = "container-fluid" >
-    <br><br>
-    <h1 style = "display: inline;" >Rules
-        <h4 style = "display: inline;" class = "pull-right" >
-            <button id="download" class = "btn btn-primary">Download CSV</button>
-        </h4>
-    </h1>
-
-    <br><br><br>
-    <div id = "demo" class = "container-fluid"></div>
-</div>
-<!-- ToolTip HTML ENDS-->
-
-<!-- ToolTip Script Start -->
-<script>
-var theBigArray = [];
-var $button1;
-var count;
-var splitedSentence;
-var url1 = "http://127.0.0.1:8080/future/sentence";
-var url2 = "https://www.mindandlanguagelab.com/future/sentence";
-var theURL;
-var localhost = false;
-
-if (localhost) {
-    theURL = url1;
-} else {
-    theURL = url2;
-}
-
-
-$("#submit").click(function() {
-    var sentence = document.getElementById('futureInput').value;
-    var list = document.getElementById('demo');
-    list.innerHTML = "";
-    if(sentence.length <= 0) {
-        alert("Textarea is Empty!")
-    } else {
-        //LOADING BUTTON
-        $button1 = $(this);
-        $(this).prop("disabled",true);
-        $(this).text("Loading...");
-
-        //SPLITTING
-        splitedSentences = split(sentence)
-        console.log(splitedSentences);
-        initializePost(splitedSentences, splitedSentences.length);
-    }
-});
-
-function split(input) {
-    var splitInput = [];
-    var temp = input.split("\n");
-    for (var i = 0; i < temp.length; i++) {
-        if (temp[i] != "")
-            splitInput.push(temp[i]);
-    }
-    return splitInput;
-}
-
-function initializePost(array, arraySize) {
-    $.ajax({
-       url: theURL,
-        type: "POST",
-        datatype: "json",
-        contentType: 'application/json; charset=UTF-8',
-        data: JSON.stringify({
-          "sentences": array[0]
-        }) //JSON.stringify(data)
-    }).done(function (data, textStatus, jqXHR) {
-        callBackFunc(data, array, arraySize, 1)
+    <script>
+    var theBigArray = [];
+    var $button1;
+    var count;
+    var splitedSentence;
+    
+    $("#submit").click(function() {
+        var sentence = document.getElementById('futureInput').value;
+        var list = document.getElementById('demo');
+        list.innerHTML = "";
+        if(sentence.length <= 0) {
+            alert("Textarea is Empty!")
+        } else {
+            //LOADING BUTTON
+            $button1 = $(this);
+            $(this).prop("disabled",true);
+            $(this).text("Loading...");
+           
+            //SPLITTING
+            splitedSentences = split(sentence)
+            console.log(splitedSentences);
+            initializePost(splitedSentences, splitedSentences.length);
+        }
     });
-}
-//attemping to get JSON file
-function callBackFunc(arr, array, arraySize, pos) {
-    var list = document.getElementById('demo');
-
-
-    theBigArray = []; //THIS CONTAINS THE ACTUAL DATA
-    for(var i=0;i<arr.length;i++){
-        var object = {};
-        object.sentence = arr[i].sen;
-        object.numberFuture = arr[i].result.future;
-        object.numberPast = arr[i].result.past;
-        for(j = 0; j < arr[i].result.futureResult.length; j++) {
-            object["ruleFuture_"+j] = arr[i].result.futureResult[j];
+    
+    function split(input) {
+        var splitInput = [];
+        var temp = input.split("\n");
+        for (var i = 0; i < temp.length; i++) {
+            if (temp[i] != "")
+                splitInput.push(temp[i]);
         }
-        for(j = 0; j < arr[i].result.pastResult.length; j++) {
-            object["rulePast_"+j] = arr[i].result.pastResult[j];
-        }
-        theBigArray.push(object);
-        //ASSIGN FONT COLOR
-        var fontColor;
-        if(object.numberPast < object.numberFuture) { //future
-            fontColor = "bg-info";
-        }
-        else if((object.numberPast == object.numberFuture) || (object.numberPast == 0 && object.numberFuture == 0)) { //present
-            fontColor = "bg-success";
-        }
-        else{ //past
-            fontColor = "bg-warning";
-        }
-        //DISPLAY
-        list.innerHTML = list.innerHTML + '<span class = "' + fontColor + '" style="font-size:17px" title = "'+i+'">'+ object.sentence + '</span>';
-        list.innerHTML = list.innerHTML + "&nbsp;&nbsp;"
+        return splitInput;
     }
-    list.innerHTML = list.innerHTML + "<br><br><br>";
-    //tooltip
-    $(function() {
-       $( document ).tooltip({
-         track: true,
-         open: function (event, ui) {
-            $('.ui-tooltip-content > div').append($("#canvas"));
-            if (typeof(event.originalEvent) === 'undefined')
-                {
-                    return false;
-                }
-                var $id = $(ui.tooltip).attr('id');
-            // close any lingering tooltips
-            $('div.ui-tooltip').not('#' + $id).remove();
-         },
-         content:function () {
-                var temp = $(this).prop('title');
-                temp = theBigArray[temp] //THIS IS THE JSON DATA CONTAINER FOR EACH SENTENCE
-                var barChartData = {
-                    labels : ["Future","Past"],
-                    datasets : [
-                        {
-                            fillColor : "rgba(151,187,205,0.5)",
-                            strokeColor : "rgba(151,187,205,0.8)",
-                            highlightFill : "rgba(151,187,205,0.75)",
-                            highlightStroke : "rgba(151,187,205,1)",
-                            data : [temp.numberFuture, temp.numberPast]
-                        }
-                    ]
-                }
-                $('body').append($("<canvas id='canvas' width='250' height='170'></canvas>"))
-                var ctx = document.getElementById("canvas").getContext("2d");
-                var myTable = new Chart(ctx).Bar(barChartData, {
-        			responsive : false,
-                    animation: false,
-                    showTooltips : false,
-                    showInlineValues : true,
-                    centeredInllineValues : true,
-                    tooltipCaretSize : 0,
-                    tooltipTemplate : "<%= value %>"
-        		});
-                return '<div></div>';
-        }
-      });
-    });
-
-
-    if (pos < arraySize) {
+    
+    function initializePost(array, arraySize) {
         $.ajax({
-           url: theURL,
+           url: "https://www.mindandlanguagelab.com/future/sentence",
             type: "POST",
             datatype: "json",
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify({
-              "sentences": array[pos]
+              "sentences": array[0]
             }) //JSON.stringify(data)
         }).done(function (data, textStatus, jqXHR) {
-            callBackFunc(data, array, arraySize, pos+1)
+            callBackFunc(data, array, arraySize, 1)
         });
-    } else {
-        //LOADING BUTTON ENDS
-        $button1.prop("disabled",false);
-        $button1.text("Run Analysis");
-        return;
     }
-
-
-}
- <!-- ToolTip Script Ends -->
-<!-- CSV Download Javascript -->
-$("#download").click(function() {
-    if(theBigArray.length == 0){
-        alert("Textarea is Empty! ");
-    } else {
-        //Json Conversion for Download Starts
-        var downloadable = theBigArray;
-        //Json Conversion Ends
-        var csv = JSON2CSV(theBigArray);
-        console.log(theBigArray);
-        window.open("data:text/csv;charset=utf-8," + escape(csv))
+    //attemping to get JSON file
+    function callBackFunc(arr, array, arraySize, pos) {
+        var list = document.getElementById('demo');
+    
+    
+        theBigArray = []; //THIS CONTAINS THE ACTUAL DATA
+        for(var i=0;i<arr.length;i++){
+            var object = {};
+            object.sentence = arr[i].sen;
+            object.numberFuture = arr[i].result.future;
+            object.numberPast = arr[i].result.past;
+            for(j = 0; j < arr[i].result.futureResult.length; j++) {
+                object["ruleFuture_"+j] = arr[i].result.futureResult[j];
+            }
+            for(j = 0; j < arr[i].result.pastResult.length; j++) {
+                object["rulePast_"+j] = arr[i].result.pastResult[j];
+            }
+            theBigArray.push(object);
+            //ASSIGN FONT COLOR
+            var fontColor;
+            if(object.numberPast < object.numberFuture) { //future
+                fontColor = "bg-info";
+            }
+            else if((object.numberPast == object.numberFuture) || (object.numberPast == 0 && object.numberFuture == 0)) { //present
+                fontColor = "bg-success";
+            }
+            else{ //past
+                fontColor = "bg-warning";
+            }
+            //DISPLAY
+            list.innerHTML = list.innerHTML + '<span class = "' + fontColor + '" style="font-size:17px" title = "'+i+'">'+ object.sentence + '</span>';
+            list.innerHTML = list.innerHTML + "&nbsp;&nbsp;"
+        }
+        list.innerHTML = list.innerHTML + "<br><br>";
+        //tooltip
+        $(function() {
+           $( document ).tooltip({
+             track: true,
+             open: function (event, ui) {
+                $('.ui-tooltip-content > div').append($("#canvas"));
+                if (typeof(event.originalEvent) === 'undefined')
+                    {
+                        return false;
+                    }
+                    var $id = $(ui.tooltip).attr('id');
+                // close any lingering tooltips
+                $('div.ui-tooltip').not('#' + $id).remove();
+             },
+             content:function () {
+                    var temp = $(this).prop('title');
+                    temp = theBigArray[temp] //THIS IS THE JSON DATA CONTAINER FOR EACH SENTENCE
+                    var barChartData = {
+                        labels : ["Future","Past"],
+                        datasets : [
+                            {
+                                fillColor : "rgba(151,187,205,0.5)",
+                                strokeColor : "rgba(151,187,205,0.8)",
+                                highlightFill : "rgba(151,187,205,0.75)",
+                                highlightStroke : "rgba(151,187,205,1)",
+                                data : [temp.numberFuture, temp.numberPast]
+                            }
+                        ]
+                    }
+                    $('body').append($("<canvas id='canvas' width='250' height='170'></canvas>"))
+                    var ctx = document.getElementById("canvas").getContext("2d");
+                    var myTable = new Chart(ctx).Bar(barChartData, {
+                                    responsive : false,
+                        animation: false,
+                        showTooltips : false,
+                        showInlineValues : true,
+                        centeredInllineValues : true,
+                        tooltipCaretSize : 0,
+                        tooltipTemplate : "<%= value %>"
+                            });
+                    return '<div></div>';
+            }
+          });
+        });
+    
+    
+        if (pos < arraySize) {
+            $.ajax({
+               url: "https://www.mindandlanguagelab.com/future/sentence",
+                type: "POST",
+                datatype: "json",
+                contentType: 'application/json; charset=UTF-8',
+                data: JSON.stringify({
+                  "sentences": array[pos]
+                }) //JSON.stringify(data)
+            }).done(function (data, textStatus, jqXHR) {
+                callBackFunc(data, array, arraySize, pos+1)
+            });
+        } else {
+            //LOADING BUTTON ENDS
+            $button1.prop("disabled",false);
+            $button1.text("Run Analysis");
+            return;
+        }
+    
+    
     }
-});
-function JSON2CSV(objArray) {
-    var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
-    var str = '';
-    var line = '';
-    var head = array[0];
-    for (var index in array[0]) {
-        var value = index + "";
-        line += '"' + value.replace(/"/g, '""') + '",';
-    }
-    line = line.slice(0, -1);
-    str += line + '\r\n';
-    for (var i = 0; i < array.length; i++) {
-       var line = '';
-       for (var index in array[i]) {
-            var value = array[i][index] + "";
+     <!-- ToolTip Script Ends -->
+    <!-- CSV Download Javascript -->
+    $("#download").click(function() {
+        if(theBigArray.length == 0){
+            alert("Textarea is Empty! ");
+        } else {
+            //Json Conversion for Download Starts
+            var downloadable = theBigArray;
+            //Json Conversion Ends
+            var csv = JSON2CSV(theBigArray);
+            console.log(theBigArray);
+            window.open("data:text/csv;charset=utf-8," + escape(csv))
+        }
+    });
+    function JSON2CSV(objArray) {
+        var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+        var str = '';
+        var line = '';
+        var head = array[0];
+        for (var index in array[0]) {
+            var value = index + "";
             line += '"' + value.replace(/"/g, '""') + '",';
         }
-       line = line.slice(0, -1);
-       str += line + '\r\n';
-   }
-   return str;
-}
-</script>
-<!-- CSV Download Ends -->
-
-<!-- JAVASCRIPT START -->
-<script type="text/javascript">
-//BUTTON animation JAVASCRIPT
-</script>
-<!-- JAVASCRIPT END -->
-
+        line = line.slice(0, -1);
+        str += line + '\r\n';
+        for (var i = 0; i < array.length; i++) {
+           var line = '';
+           for (var index in array[i]) {
+                var value = array[i][index] + "";
+                line += '"' + value.replace(/"/g, '""') + '",';
+            }
+           line = line.slice(0, -1);
+           str += line + '\r\n';
+       }
+       return str;
+    }
+    </script>
+    <!-- CSV Download Ends -->
+    
+    <!-- JAVASCRIPT START -->
+    <script type="text/javascript">
+    //BUTTON animation JAVASCRIPT
+    </script>
+    <!-- JAVASCRIPT END -->
 </body>
 </html>

@@ -21,88 +21,110 @@
 </head>
 <body>
 
-<div class="container">
+ <div class="ok">
+    
+    <div class="container">
+      
+      <div class="menu">
+        <ul class="nav navbar-nav">
+              <ul class="nav navbar-nav">
+                <li><a href="future.html">Home</a></li>
+                <li><a href="futureAnalysis.html">Demo</a></li>
+                <li><a href="realTimeGraph.html">Statistical graph</a></li>
+                <li><a href="trainingCorpus.html">Training Corpus</a></li>   
+                <li><a href="sourceCode.html">Source Code</a></li>
+              </ul>
+        </ul>
+      </div>
 
-    <!-- START OF NAVIGATION BAR -->
-    <div ng-include="'menuTemplate'"></div>
-    <!--END OF NAVIGATION BAR -->
+      <!-- START TOP LAYER-->
+      <div id = "top-layer" class="container-fluid">
+        <br/><br/>
+        <hr/>
+        <br/>
+        <h1 style = "display: inline;" >Statistical Graph</h1>
+      </div>
+      <br />
+      <!-- END TOP LAYER-->
 
-<!-- START TOP LAYER-->
-<div id = "top-layer" class="container-fluid">
-<br><br><br>
-<h1 style = "display: inline;" >Statistical Graph</h1>
-<img style = "display: inline;" class = "pull-right" src="img/university.gif" alt="Emory" height="80" width="80" >
+      <!-- Line Graph -->
+      <div class="container-fluid">
+        <h3>Real Time Chart</h3>
+        <div id="real-time-line" class="epoch" style="height: 200px"></div>
+        <br /><br />
+        <h3>Population</h3>
+        <div id="area" class="epoch category10" style="height: 200px;"></div>
+      </div>
+
+      <div class="container-fluid">
+        <br />
+        <h3>Pie Chart</h3>
+        <div id="pie" class="epoch category10" style="width: 400px; height: 400px"></div>
+        <br />
+      </div>
+  
+    </div>
+  
+  </div>
+  
+  <div id="footer">
+    <hr/>
+    <a href="http://www.emory.edu"><img src="img/university2.png" alt="Emory" width="60"/></a>
+    <a href="http://www.sfl.cnrs.fr"><img src="img/sfl.jpg" alt="SFL" width="130"/></a>
+    <a href="http://www.cnrs.fr"><img src="img/cnrs.jpg" alt="CNRS" /></a>
+    <a href="http://www.univ-paris8.fr "><img src="img/P8.jpg" alt="Paris 8 University" width="120" /></a>
+  </div>
 </div>
-<br>
-<!-- END TOP LAYER-->
-
-<!-- Line Graph -->
-<div class = "container-fluid">
-    <h3>Real Time Chart</h3>
-    <div id="real-time-line" class="epoch" style="height: 200px"></div>
-    <br>
-    <br>
-    <h3>Population</h3>
-    <div id="area" class="epoch category10" style="height: 200px;"></div>
-
-</div>
-
-<div class = "container-fluid">
-<br>
-<h3>Pie Chart</h3>
-<div id="pie" class="epoch category10" style="width: 400px; height: 400px"></div>
-<br>
-</div>
-
-</div>
-<!-- Epoch Javascript -->
-<script>
-$(function($) {
-    var data = new RealTimeData(1);
-
-    var chart = $('#real-time-line').epoch({
-        type: 'time.line',
-        data: data.history(),
-        axes: ['left', 'bottom', 'right']
-    });
-
-    setInterval(function() { chart.push(data.next()); }, 2000);
-    chart.push(data.next());
-});
-</script>
-
-<script>
-
-var data = [
-{ label: 'Layer 1', values: [ {x: 0, y: 0}, {x: 1, y: 1}, {x: 2, y: 2},{x: 3, y: 10}, {x: 4, y: 15},{x: 5, y: 8}, {x: 6, y: 1} ] },
-];
-
-var areaChartInstance = $('#area').epoch({
-    type: 'area',
-    data: data,
-    axes: ['left', 'right', 'bottom']
-});
-
-var pieData = [
-  { label: 'Slice 1', value: 10 },
-  { label: 'Slice 2', value: 20 },
-  { label: 'Slice 3', value: 40 },
-  { label: 'Slice 4', value: 30 }
-];
-
-var pieInstance = $('#pie').epoch({
-  type: 'pie',
-  data: pieData
-});
-
-</script>
-
-<!-- LOAD MENU BAR -->
-<script type="text/javascript">
-$(document).ready(function(){
-    $("#result").load("menuTemplate")
-});
-</script>
+            
+          
+  <!-- Epoch Javascript -->
+  <script>
+  $(function($) {
+      var data = new RealTimeData(1);
+  
+      var chart = $('#real-time-line').epoch({
+          type: 'time.line',
+          data: data.history(),
+          axes: ['left', 'bottom', 'right']
+      });
+  
+      setInterval(function() { chart.push(data.next()); }, 2000);
+      chart.push(data.next());
+  });
+  </script>
+  
+  <script>
+  
+  var data = [
+  { label: 'Layer 1', values: [ {x: 0, y: 0}, {x: 1, y: 1}, {x: 2, y: 2},{x: 3, y: 10}, {x: 4, y: 15},{x: 5, y: 8}, {x: 6, y: 1} ] },
+  ];
+  
+  var areaChartInstance = $('#area').epoch({
+      type: 'area',
+      data: data,
+      axes: ['left', 'right', 'bottom']
+  });
+  
+  var pieData = [
+    { label: 'Slice 1', value: 10 },
+    { label: 'Slice 2', value: 20 },
+    { label: 'Slice 3', value: 40 },
+    { label: 'Slice 4', value: 30 }
+  ];
+  
+  var pieInstance = $('#pie').epoch({
+    type: 'pie',
+    data: pieData
+  });
+  
+  </script>
+  
+  <!-- LOAD MENU BAR -->
+  <script type="text/javascript">
+  $(document).ready(function(){
+      $("#result").load("menuTemplate")
+  });
+  </script>
 
 </body>
 </html>

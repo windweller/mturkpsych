@@ -23,3 +23,79 @@
     from { -webkit-transform: rotate(0deg);}
     to { -webkit-transform: rotate(360deg);}
 }
+
+
+/* Sarra El Ayari [sarra.elayari_at_cnrs_dot_fr]- 28/07/2015 */
+
+#top-layer {
+	margin-top: 40px ;	
+}
+
+body {
+background: #C3D9E0 ;
+}
+
+.ok {
+	box-shadow: 1px 1px 12px #555;
+	background: #FFF ;
+	margin-left: auto ;
+	margin-right: auto ;
+	max-width: 1200px;
+}
+
+/* Customize container */
+@media (min-width: 768px) {
+  .container {
+    max-width: 1200px;
+
+  }
+}
+.container-narrow > hr {
+  margin: 30px 0;
+}
+#corps {
+	background: #FFF;
+}
+
+#footer {
+	text-align: center ;
+	padding: 15px ;
+}
+
+#footer img {
+	margin-left: 15px ;
+}
+
+.menu li {
+	padding: 20px ;
+	font-size: 12pt ;
+}
+
+.jumbotron {
+	background:  #d9edf7 ;
+}
+
+.result {
+font-family: "Times New Roman", Times, serif;
+	font-size: 15pt ;
+	padding: 10px ;
+	margin-left: 40px ;	
+}
+
+/* Future*/
+.result .bg-info {
+	padding: 6px ;
+	border: 1px dashed gray ;
+}
+
+/* Past */ 
+.result .bg-warning {
+	padding: 6px ;
+	border: 1px dashed gray ;
+}
+
+/* Present */
+.result .bg-success {
+	padding: 6px ;
+	border: 1px dashed gray ;
+}
