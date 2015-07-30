@@ -71,6 +71,12 @@ trait StaticRoute extends Directives {
     path("realTimeGraph") {
       getFromFile(new File("views/realTimeGraph.html"), `text/html`)
     } ~
+    path("trainingCorpus") {
+      getFromFile(new File("views/trainingCorpus.html"), `text/html`)
+    } ~
+    path("sourceCode") {
+      getFromFile(new File("views/sourceCode.html"), `text/html`)
+    } ~
     path("delayeddiscountv1") {
       getFromFile(new File("views/delayedDiscounting/delayedDiscountv1.html"), `text/html`)
     } ~
