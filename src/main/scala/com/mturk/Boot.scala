@@ -30,6 +30,7 @@ object Boot extends App with MainActors with RootApi {
   sys.addShutdownHook({system.shutdown(); ws.stop()})
 
   IO(Http) ! Http.Bind(rootService, interface = Config.host, port = Config.portHTTP)
+
 }
 
 object Config {
