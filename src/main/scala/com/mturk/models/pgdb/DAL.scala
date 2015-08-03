@@ -36,9 +36,9 @@ object DAL {
         saveToDataBase(files)
       }
 
-//      if (MTable.getTables("User").list().isEmpty) {
-//        User.users.ddl.create
-//      }
+      if (MTable.getTables("User").list().isEmpty) {
+        User.users.ddl.create
+      }
 
       if (MTable.getTables("MTurker").list().isEmpty) {
         MTurker.mTurkers.ddl.create

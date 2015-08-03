@@ -1,11 +1,11 @@
 package com.mturk.tasks.SECcompany
 
-import akka.actor.{ActorLogging, Actor}
+import akka.actor.{Actor, ActorLogging}
+import com.mturk.models.pgdb._
 import com.mturk.tasks.Util.AuthInfo
 import org.json4s.JsonAST.JObject
-import com.mturk.models.pgdb._
 
-import scala.util.{Try, Success}
+import scala.util.Try
 
 
 class SECCompanyActor extends Actor with ActorLogging {
@@ -62,14 +62,14 @@ class SECCompanyActor extends Actor with ActorLogging {
       }
       sender ! TransOk(result._1, result._2, result._3)
 
-    case CasperGetAllCompanies =>
-      DAL.db.withSession{ implicit  session =>
-        Company.getAllCompanies() match {
-          case Nil => sender ! TransAllOk(None, succeedOrNot = false, Some("There is no row in the company table"))
-          case companies: List[Company.Company] =>
-            sender ! TransAllOk(Some(companies), succeedOrNot = true, None)
-        }
-      }
+//    case CasperGetAllCompanies =>
+//      DAL.db.withSession{ implicit  session =>
+//        Company.getAllCompanies() match {
+//          case Nil => sender ! TransAllOk(None, succeedOrNot = false, Some("There is no row in the company table"))
+//          case companies: List[Company.Company] =>
+//            sender ! TransAllOk(Some(companies), succeedOrNot = true, None)
+//        }
+//      }
   }
 }
 

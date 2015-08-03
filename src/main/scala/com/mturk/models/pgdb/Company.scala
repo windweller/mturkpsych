@@ -115,10 +115,10 @@ object Company {
     }
   }
 
-  def getAllCompanies()(implicit s: Session) = {
-    val companyQuery = for (c <- companies) yield c
-    companyQuery.list()
-  }
+//  def getAllCompanies()(implicit s: Session) = {
+//    val companyQuery = for (c <- companies) yield c
+//    companyQuery.list()
+//  }
 
   /**
    * Used by web client to retrieve one
