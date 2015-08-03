@@ -1,11 +1,10 @@
 package com.mturk.tasks.futureDemo
 
 /**
- * Created by Aimingnie on 7/25/15.
+ * Created by Aimingnie on 7/25/15
  */
 object FutureRules {
 
-  //without TN/TC due to speed issue
   val patternFuture2_2_2 = List(
     "ADJP < (JJ < able|enough|willing) < (S < (VP < TO < VP))",
     "ADJP < (JJ < likely|excited) < (S < (VP < TO < VP))",
@@ -99,10 +98,25 @@ object FutureRules {
     "RB < patiently|impatiently",
     "NN|RB < tonight",
     "NN|RB < tomorrow",
+    "NP < (JJ < next) < TN|TC",
+    "NP < (JJ < coming) < TN|TC",
+    "PP  < (IN < by) < (NP < (DT < the|this) < TN|TC)",
+    "PP  < (IN < by) < (NP < (DT < the|this) !< past|last|previous < TN|TC)",
+    "PP  < (IN < by) < TN|TC",
     "(PP  < (IN < from) < (NP|ADVP < (RB < now)))",
     "NP < (RBR|RB|JJ < later) < (DT < this)",
+    "NP|VP < (ADVP < (RB < later)) < (NP < (TN < today))",
+    "NP < (RB|JJ < Later|later) < (TN < today)",
+    "PP < (IN < by) < (NP < (NP < DT) < (PP < TC|TN))",
+    "S <+ (!S) (NP < (DT < this < TN|TC)) !<< VBD !<< (VP [ < (VB < have) | < (VBP [ < have | < 've ] ) | < (VBZ [ < has | < 's ] ) ] < (VP < VBN))",
+    "S <+ (!S) (PP < (IN < in|for) < (NP <, DT|CD|JJ < TC|TN)) !<< VBD !<< (VP [ < (VB < have) | < (VBP [ < have | < 've ] ) | < (VBZ [ < has | < 's ] ) ] < (VP < VBN))",
     "S <+ (!S) (PP < (IN < at) < (NP < CD)) !<< VBD !<< (VP [ < (VB < have) | < (VBP [ < have | < 've ] ) | < (VBZ [ < has | < 's ] ) ] < (VP < VBN))",
-    "S <+ (!S) (RB < later) !<< VBD !<< (VP [ < (VB < have) | < (VBP [ < have | < 've ] ) | < (VBZ [ < has | < 's ] ) ] < (VP < VBN))"
+    "S <+ (!S) (PP  < (IN < on|for) < TN) !<< VBD !<< (VP [ < (VB < have) | < (VBP [ < have | < 've ] ) | < (VBZ [ < has | < 's ] ) ] < (VP < VBN))",
+    "S <+ (!S) (RB < later) !<< VBD !<< (VP [ < (VB < have) | < (VBP [ < have | < 've ] ) | < (VBZ [ < has | < 's ] ) ] < (VP < VBN))",
+    "S <+ (!S) (ADVP < TN|TC < (RB < away)) !<< VBD !<< (VP [ < (VB < have) | < (VBP [ < have | < 've ] ) | < (VBZ [ < has | < 's ] ) ] < (VP < VBN))",
+    "S <+ (!S) (VP < TN|TC < (ADVP < (RB < away))) !<< VBD !<< (VP [ < (VB < have) | < (VBP [ < have | < 've ] ) | < (VBZ [ < has | < 's ] ) ] < (VP < VBN))",
+    "S <+ (!S) (TN < today) !<< VBD !<< (VP [ < (VB < have) | < (VBP [ < have | < 've ] ) | < (VBZ [ < has | < 's ] ) ] < (VP < VBN))",
+    "S <+ (!S) PP < (IN < in) < (NP < (NP <, DT < (NN < couple)) < (PP < (IN < of) < TN|TC)) !<< VBD !<< (VP [ < (VB < have) | < (VBP [ < have | < 've ] ) | < (VBZ [ < has | < 's ] ) ] < (VP < VBN))"
   )
 
   val patternPast = List(

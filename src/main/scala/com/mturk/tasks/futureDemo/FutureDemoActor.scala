@@ -11,6 +11,7 @@ import edu.stanford.nlp.trees.tregex.TregexPattern
 import org.json4s.JsonAST.JObject
 
 import scala.collection.mutable
+import scala.collection.mutable.ListBuffer
 
 /**
  * Created by Aimingnie on 7/20/15
@@ -23,8 +24,11 @@ class FutureDemoActor extends Actor with ActorLogging {
 
   val lp = LexicalizedParser.loadModel("edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz", "-MAX_ITEMS","50000")
 
-  val patternsFuture = patternFuture2_2_2.map(e => TregexPattern.compile(e))
-  val patternsPast = patternPast.map(e => TregexPattern.compile(e))
+  val tnterms = List("today", "tomorrow", "tom", "tmrw")
+  val tcterms = List("second", "sec", "minute", "min")
+
+  val patternsFuture = preprocessTregex(patternFuture2_2_2).map(e => TregexPattern.compile(e))
+  val patternsPast = preprocessTregex(patternPast).map(e => TregexPattern.compile(e))
 
   override def receive = {
     case JObjectSentences(jObject) =>
@@ -44,6 +48,30 @@ class FutureDemoActor extends Actor with ActorLogging {
       } else {
         sender ! TransOk(None, succeedOrNot = false, Some("must define a JSON field 'sentences'"))
       }
+  }
+
+  private[this] def preprocessTregex(patterns: List[String]): List[String] = {
+    val result = ListBuffer.empty[String]
+    patterns.foreach { p =>
+      if (p.contains("TN|TC")) {
+        //just replace all TN and TC
+        //we are not replacing TN right now
+        result ++= tnterms.map(tn => p.replace("TN|TC", tn))
+        result ++= tcterms.map(tc => p.replace("TN|TC", tc))
+      }
+      else if (p.contains("TC|TN")) {
+        result ++= tnterms.map(tn => p.replace("TC|TN", tn))
+        result ++= tcterms.map(tc => p.replace("TC|TN", tc))
+      }
+      else if (p.contains("TN")) {
+        result ++= tnterms.map(tn => p.replace("TN", tn))
+      }
+      else if (p.contains("TC")) {
+        result ++= tcterms.map(tc => p.replace("TC", tc))
+      }
+      else result += p
+    }
+    result.toList
   }
 
   private[this] def search(tree: Tree): ResultArray = {
@@ -79,7 +107,7 @@ class FutureDemoActor extends Actor with ActorLogging {
       }
     }
 
-    ResultArray(futureStats.sum, mutable.HashMap(patternFuture2_2_2.zip(futureStats): _*), pastStats.sum, mutable.HashMap(patternPast.zip(pastStats): _*))
+    ResultArray(futureStats.sum, mutable.HashMap(preprocessTregex(patternFuture2_2_2).zip(futureStats): _*), pastStats.sum, mutable.HashMap(preprocessTregex(patternPast).zip(pastStats): _*))
   }
 
 
