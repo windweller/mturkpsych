@@ -49,7 +49,7 @@ object Config {
 
   val tempConnect = config.getString("db.postgresql.connect")
   val dbConnect = if (!tempConnect.contains("postgresql"))
-                   "jdbc:"+tempConnect.replace("postgres", "postgresql").replace("172.17.42.1", "104.131.214.249")
+                   "jdbc:"+tempConnect.replace("postgres", "postgresql").replace("172.17.42.1", "45.55.141.51")
                   else tempConnect
 
   val dbURL = extractPattern.replaceFirstIn(dbConnect, "//")
