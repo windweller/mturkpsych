@@ -1,6 +1,12 @@
 <!DOCTYPE>
 <html ng-app="" lang="en">
 <style>
+#demoContainer {
+    visibility: hidden;
+}
+#loadingBar {
+    visibility: hidden;
+}
 #demo span {
     line-height: 250%;
 }
@@ -58,12 +64,16 @@ body > #canvas {
             <br/> <br/>
 
 
-            <div class="jumbotron col-md-12 center">
-                <div class="container">
-              <h4 class = "text-center">
-                [Describe the principle of the demonstration and give examples]
+            <div class="jumbotron col-md-16 center">
+              <h4 class = "text-left">
+                This pogram allows you to input text and determines when each sentence refers to the past (blue), present (yellow), or future (green).
+                <br>
+                To run, paste text into the textbox and click the "Run Analysis" button.
+                <br>
+                Results will appear on the bottom of the page.
+                <br>
+                They can also be downloaded by pressing the "Download CSV" button.
               </h4>
-                </div>
             </div>
 
             <div class="col-md-12 center">
@@ -71,27 +81,37 @@ body > #canvas {
                     <textarea class="form-control" id = "futureInput" placeholder="Enter your text" rows="4" cols="100%" required></textarea><br>
                     <button type= "button" id = "submit" class="btn btn-primary">Run Analysis</button>
                 </form>
+
             </div>
 
+            <br>
+            <!-- PROGRESS BAR -->
+            <div id = "loadingBar" class="col-md-12 center">
+                <div class="progress">
+                  <div class="progress-bar progress-bar-striped active" role="progressbar"
+                        aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%">
+                        LOADING...
+                 </div>
+                </div>
+            </div>
+            <!-- END OF PROGRESS BAR -->
+
+            <div id = "demoContainer">
             <div class="col-md-12 center" >
-                <br/><br/>
-                <h1 style = "display: inline;" >Rules
+                <br/>
+                <h1 id = "ruleID" style = "display: inline;" >Rules
                     <h4 style = "display: inline;" class = "pull-right" >
                         <button id="download" class = "btn btn-primary">Download CSV</button>
                     </h4>
                 </h1>
                 <br/><br/>
-                <img src="img/legend.png" alt="Legend" width="500" class="container-fluid"/>
+                <img src="img/key.jpg" alt="Legend" width="500" class="container-fluid"/>
                 <br/><br/>
+                <h1 id = "resultID" style = "display: inline;">Results</h1>
             </div>
             <div id="demo" class="container-fluid result">
-                <span class="bg-info">Tomorrow I will work on my website.</span>
-                <br/><br/>
-                <span class="bg-warning">I have seen an amazing thing int he sky.</span>
-                <br/><br/>
-                <span class="bg-success">Great, let's do that!</span>
-               </ul>
             </div>
+        </div>
         </div>
 
     <div id="footer">
@@ -102,16 +122,30 @@ body > #canvas {
         <a href="http://www.univ-paris8.fr "><img src="img/P8.jpg" alt="Paris 8 University" width="120" /></a>
     </div>
     </div>
+
+    <script>
+     $(function() {
+       $( "#progressbar" ).progressbar({
+         value: 37
+       });
+     });
+     </script>
+
     <script>
     var theBigArray = [];
     var $button1;
     var count;
     var splitedSentence;
+    var hostName = window.location.protocol;
+    console.log(hostName);
 
     $("#submit").click(function() {
+        document.getElementById("demoContainer").style.visibility= "hidden" ;
         var sentence = document.getElementById('futureInput').value;
         var list = document.getElementById('demo');
         list.innerHTML = "";
+        theBigArray = []; //THIS CONTAINS THE ACTUAL DATA
+
         if(sentence.length <= 0) {
             alert("Textarea is Empty!")
         } else {
@@ -123,7 +157,13 @@ body > #canvas {
             //SPLITTING
             splitedSentences = split(sentence)
             console.log(splitedSentences);
+
+            //SHOW LOADING BAR
+            percentage = 1/(splitedSentences.length)*100;
+            document.getElementById("loadingBar").setAttribute("aria-valuenow", percentage)
+            document.getElementById("loadingBar").style.visibility= "visible" ;
             initializePost(splitedSentences, splitedSentences.length);
+            console.log("skipped this line");
         }
     });
 
@@ -138,8 +178,9 @@ body > #canvas {
     }
 
     function initializePost(array, arraySize) {
+        //arraySize = # of paragraphs
         $.ajax({
-           url: "https://www.mindandlanguagelab.com/future/sentence",
+           url: hostName + "/future/sentence",
             type: "POST",
             datatype: "json",
             contentType: 'application/json; charset=UTF-8',
@@ -147,42 +188,49 @@ body > #canvas {
               "sentences": array[0]
             }) //JSON.stringify(data)
         }).done(function (data, textStatus, jqXHR) {
-            callBackFunc(data, array, arraySize, 1)
+            callBackFunc(data, array, arraySize, 1, 0)
         });
     }
     //attemping to get JSON file
-    function callBackFunc(arr, array, arraySize, pos) {
+    function callBackFunc(arr, array, arraySize, pos, titleIndex) {
+
+        //pos = current # of paragraph
+        percentage = pos/arraySize*100
+        console.log(percentage);
+        document.getElementById("loadingBar").setAttribute("style", "width:"+percentage+"%");
+        document.getElementById("loadingBar").style.visibility= "visible" ;
         var list = document.getElementById('demo');
-
-
-        theBigArray = []; //THIS CONTAINS THE ACTUAL DATA
         for(var i=0;i<arr.length;i++){
             var object = {};
             object.sentence = arr[i].sen;
+            object.parsedSentence = arr[i].parsed;
             object.numberFuture = arr[i].result.future;
             object.numberPast = arr[i].result.past;
             for(j = 0; j < arr[i].result.futureResult.length; j++) {
-                object["ruleFuture_"+j] = arr[i].result.futureResult[j];
+                object[arr[i].result.futureResult[j]._1] = arr[i].result.futureResult[j]._2;
             }
             for(j = 0; j < arr[i].result.pastResult.length; j++) {
-                object["rulePast_"+j] = arr[i].result.pastResult[j];
+                object[arr[i].result.pastResult[j]._1] = arr[i].result.pastResult[j]._2;
             }
             theBigArray.push(object);
             //ASSIGN FONT COLOR
             var fontColor;
             if(object.numberPast < object.numberFuture) { //future
-                fontColor = "bg-info";
-            }
-            else if((object.numberPast == object.numberFuture) || (object.numberPast == 0 && object.numberFuture == 0)) { //present
                 fontColor = "bg-success";
             }
-            else{ //past
+            else if(object.numberPast == object.numberFuture && object.numberPast != 0 && object.numberFuture != 0) { //present
+                fontColor = "bg-nothing";
+            } else if (object.numberPast == 0 && object.numberFuture == 0) {//nothing
                 fontColor = "bg-warning";
             }
+            else{ //past
+                fontColor = "bg-info";
+            }
             //DISPLAY
-            list.innerHTML = list.innerHTML + '<span class = "' + fontColor + '" style="font-size:17px" title = "'+i+'">'+ object.sentence + '</span>';
+            list.innerHTML = list.innerHTML + '<span class = "' + fontColor + '" style="font-size:17px" title = "'+(i+titleIndex)+'">'+ object.sentence + '</span>';
             list.innerHTML = list.innerHTML + "&nbsp;&nbsp;"
         }
+        titleIndex = titleIndex + arr.length;
         list.innerHTML = list.innerHTML + "<br><br>";
         //tooltip
         $(function() {
@@ -200,6 +248,7 @@ body > #canvas {
              },
              content:function () {
                     var temp = $(this).prop('title');
+                    console.log(temp);
                     temp = theBigArray[temp] //THIS IS THE JSON DATA CONTAINER FOR EACH SENTENCE
                     var barChartData = {
                         labels : ["Future","Past"],
@@ -232,7 +281,7 @@ body > #canvas {
 
         if (pos < arraySize) {
             $.ajax({
-               url: "https://www.mindandlanguagelab.com/future/sentence",
+               url: hostName+"/future/sentence",
                 type: "POST",
                 datatype: "json",
                 contentType: 'application/json; charset=UTF-8',
@@ -240,12 +289,20 @@ body > #canvas {
                   "sentences": array[pos]
                 }) //JSON.stringify(data)
             }).done(function (data, textStatus, jqXHR) {
-                callBackFunc(data, array, arraySize, pos+1)
+                callBackFunc(data, array, arraySize, pos+1, titleIndex)
             });
         } else {
             //LOADING BUTTON ENDS
+            //DO SOMETHING WHEN DONE LOADING EVERY AJAX
+            console.log("PRINTED");
             $button1.prop("disabled",false);
             $button1.text("Run Analysis");
+            document.getElementById("demoContainer").style.visibility= "visible" ;
+            document.getElementById("loadingBar").style.visibility= "hidden" ;
+            $('html, body').animate({
+                scrollTop: $("#ruleID").offset().top
+            }, 1200);
+
             return;
         }
 
