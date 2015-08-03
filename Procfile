@@ -1,1 +1,1 @@
-web: target/start com.mturk.Boot -Dhttp.port=${PORT}
+web: target/start com.mturk.Boot

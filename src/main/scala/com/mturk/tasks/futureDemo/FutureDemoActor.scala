@@ -37,7 +37,7 @@ class FutureDemoActor extends Actor with ActorLogging {
         val parsedSentences = sentences.map(sen => (sen, lp.parse(sen)))
 
         //then match them
-        val matchedResult = parsedSentences.map(tuple => MatchedResult(tuple._1, search(tuple._2)))
+        val matchedResult = parsedSentences.map(tuple => MatchedResult(tuple._1, tuple._2.toString, search(tuple._2)))
 
         sender ! TransOk(Some(matchedResult), succeedOrNot = true, None)
 
@@ -79,7 +79,7 @@ class FutureDemoActor extends Actor with ActorLogging {
       }
     }
 
-    ResultArray(futureStats.sum, futureStats, pastStats.sum, pastStats)
+    ResultArray(futureStats.sum, mutable.HashMap(patternFuture2_2_2.zip(futureStats): _*), pastStats.sum, mutable.HashMap(patternPast.zip(pastStats): _*))
   }
 
 
@@ -111,7 +111,7 @@ class FutureDemoActor extends Actor with ActorLogging {
 object FutureDemoProtocol {
   import scala.collection.mutable
   case class JObjectSentences(jObject: JObject)
-  case class MatchedResult(sen: String, result: ResultArray)
-  case class ResultArray(future: Int, futureResult: Array[Int], past: Int, pastResult: Array[Int])
+  case class MatchedResult(sen: String, parsed: String, result: ResultArray)
+  case class ResultArray(future: Int, futureResult: mutable.HashMap[String, Int], past: Int, pastResult: mutable.HashMap[String, Int])
   case class TransOk(sentencesResult: Option[mutable.Queue[MatchedResult]], succeedOrNot: Boolean, errorMessage: Option[String])
 }
