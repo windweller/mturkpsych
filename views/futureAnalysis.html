@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE>
 <html ng-app="" lang="en">
 <style>
 #demo span {
@@ -35,10 +35,10 @@ body > #canvas {
 </head>
 <body>
 <div class="ok">
-    
+
     <div class="container">
 
-   
+
          <div class="menu">
               <ul class="nav navbar-nav">
                 <li><a href="future">Home</a></li>
@@ -48,16 +48,16 @@ body > #canvas {
                 <li><a href="sourceCode">Source Code</a></li>
               </ul>
             </div>
-            
+
             <div id = "top-layer" class="container-fluid">
                 <br/><br/>
                 <hr/>
                 <br/>
                 <h1 style = "display: inline;" >Future Analysis</h1>
             </div>
-            <br/> <br/>          
-            
-            
+            <br/> <br/>
+
+
             <div class="jumbotron col-md-12 center">
                 <div class="container">
               <h4 class = "text-center">
@@ -65,14 +65,14 @@ body > #canvas {
               </h4>
                 </div>
             </div>
-            
+
             <div class="col-md-12 center">
                 <form>
                     <textarea class="form-control" id = "futureInput" placeholder="Enter your text" rows="4" cols="100%" required></textarea><br>
                     <button type= "button" id = "submit" class="btn btn-primary">Run Analysis</button>
                 </form>
             </div>
-            
+
             <div class="col-md-12 center" >
                 <br/><br/>
                 <h1 style = "display: inline;" >Rules
@@ -83,7 +83,7 @@ body > #canvas {
                 <br/><br/>
                 <img src="img/legend.png" alt="Legend" width="500" class="container-fluid"/>
                 <br/><br/>
-            </div>    
+            </div>
             <div id="demo" class="container-fluid result">
                 <span class="bg-info">Tomorrow I will work on my website.</span>
                 <br/><br/>
@@ -107,7 +107,7 @@ body > #canvas {
     var $button1;
     var count;
     var splitedSentence;
-    
+
     $("#submit").click(function() {
         var sentence = document.getElementById('futureInput').value;
         var list = document.getElementById('demo');
@@ -119,14 +119,14 @@ body > #canvas {
             $button1 = $(this);
             $(this).prop("disabled",true);
             $(this).text("Loading...");
-           
+
             //SPLITTING
             splitedSentences = split(sentence)
             console.log(splitedSentences);
             initializePost(splitedSentences, splitedSentences.length);
         }
     });
-    
+
     function split(input) {
         var splitInput = [];
         var temp = input.split("\n");
@@ -136,7 +136,7 @@ body > #canvas {
         }
         return splitInput;
     }
-    
+
     function initializePost(array, arraySize) {
         $.ajax({
            url: "https://www.mindandlanguagelab.com/future/sentence",
@@ -153,8 +153,8 @@ body > #canvas {
     //attemping to get JSON file
     function callBackFunc(arr, array, arraySize, pos) {
         var list = document.getElementById('demo');
-    
-    
+
+
         theBigArray = []; //THIS CONTAINS THE ACTUAL DATA
         for(var i=0;i<arr.length;i++){
             var object = {};
@@ -228,8 +228,8 @@ body > #canvas {
             }
           });
         });
-    
-    
+
+
         if (pos < arraySize) {
             $.ajax({
                url: "https://www.mindandlanguagelab.com/future/sentence",
@@ -248,8 +248,8 @@ body > #canvas {
             $button1.text("Run Analysis");
             return;
         }
-    
-    
+
+
     }
      <!-- ToolTip Script Ends -->
     <!-- CSV Download Javascript -->
@@ -289,7 +289,7 @@ body > #canvas {
     }
     </script>
     <!-- CSV Download Ends -->
-    
+
     <!-- JAVASCRIPT START -->
     <script type="text/javascript">
     //BUTTON animation JAVASCRIPT
