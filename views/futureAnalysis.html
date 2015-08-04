@@ -73,8 +73,14 @@ body > #canvas {
 
             <div class="jumbotron col-md-16 center">
               <h4 class = "text-left">
-                This pogram allows you to input text and determines when each sentence refers to the past (blue), present (yellow), or future (green).
+When we think about the future, we think about a later time from the perspective of an earlier time. So, for example, we can think about tomorrow (the later time) from the perspective of right now (the earlier time). We can also think about the future (possible or actual) of a past time. This still counts as future thinking.                <br>
                 <br>
+                Here we extract future thinking from text.
+                <br><br>
+                Past: only past orientation <br>
+                Present: neither past nor future orientation<br>
+                Future: any future orientation, possibly future of past
+<br><br>
                 To run, paste text into the textbox and click the "Run Analysis" button.
                 <br>
                 Results will appear on the bottom of the page.
@@ -330,7 +336,7 @@ body > #canvas {
             //Json Conversion Ends
             var csv = JSON2CSV(theBigArray);
             console.log(theBigArray);
-            window.open("data:text/csv;charset=utf-8," + escape(csv))
+            window.open("data:text/csv;charset=utf-8," + escape(csv) + ".csv", "table.csv");
         }
     });
     function JSON2CSV(objArray) {
