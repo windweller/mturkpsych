@@ -7,6 +7,10 @@
 #loadingBar {
     visibility: hidden;
 }
+#legend {
+    font-size: 30px;
+    padding: 10px;
+}
 #demo {
     padding: 10px;
 }
@@ -107,15 +111,15 @@ body > #canvas {
                         <button id="download" class = "btn btn-primary">Download CSV</button>
                     </h4>
                 </h1>
-                <br/><br/>
-                <img src="img/key.jpg" alt="Legend" width="500" class="container-fluid"/>
-                <span class="label label-default">Default</span>
-                <span class="label label-primary">Primary</span>
-                <span class="label label-success">Success</span>
-                <span class="label label-info">Info</span>
-                <span class="label label-warning">Warning</span>
-                <span class="label label-danger">Danger</span>
-                <br/><br/>
+                <!-- LEGEND -->
+                <div id = "legend">
+                    <span class="label label-success">Future</span>
+                    <span class="label label-info">Past</span>
+                    <span class="label label-warning">Present</span>
+                </div>
+                <!-- LEGEND ENDS-->
+
+
                 <h1 id = "resultID">Results</h1><br>
             </div>
             <br>
@@ -146,6 +150,8 @@ body > #canvas {
     var $button1;
     var count;
     var splitedSentence;
+    var theURL = "http://www.mindandlanguagelab.com/future/sentence";
+    var localURL = "http://127.0.0.1:8080/future/sentence";
 
     $("#submit").click(function() {
         document.getElementById("demoContainer").style.visibility= "hidden" ;
@@ -188,7 +194,7 @@ body > #canvas {
     function initializePost(array, arraySize) {
         //arraySize = # of paragraphs
         $.ajax({
-            url: "http://www.mindandlanguagelab.com/future/sentence",
+            url: theURL,
             type: "POST",
             datatype: "json",
             contentType: 'application/json; charset=UTF-8',
@@ -289,7 +295,7 @@ body > #canvas {
 
         if (pos < arraySize) {
             $.ajax({
-               url: "http://www.mindandlanguagelab.com/future/sentence",
+               url: theURL,
                 type: "POST",
                 datatype: "json",
                 contentType: 'application/json; charset=UTF-8',

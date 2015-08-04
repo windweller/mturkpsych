@@ -105,3 +105,6 @@ font-family: "Times New Roman", Times, serif;
 	padding: 6px ;
 	border: 1px dashed gray ;
 }
+.label .label-warning{
+    background-color: #FDF8E4;
+}
