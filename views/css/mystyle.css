@@ -28,7 +28,7 @@
 /* Sarra El Ayari [sarra.elayari_at_cnrs_dot_fr]- 28/07/2015 */
 
 #top-layer {
-	margin-top: 40px ;	
+	margin-top: 40px ;
 }
 
 body {
@@ -73,13 +73,14 @@ background: #C3D9E0 ;
 
 .jumbotron {
 	background:  #d9edf7 ;
+    padding: 5px;
 }
 
 .result {
 font-family: "Times New Roman", Times, serif;
 	font-size: 15pt ;
 	padding: 10px ;
-	margin-left: 40px ;	
+	margin-left: 40px ;
 }
 
 /* Future*/
@@ -88,7 +89,7 @@ font-family: "Times New Roman", Times, serif;
 	border: 1px dashed gray ;
 }
 
-/* Past */ 
+/* Past */
 .result .bg-warning {
 	padding: 6px ;
 	border: 1px dashed gray ;
@@ -96,6 +97,11 @@ font-family: "Times New Roman", Times, serif;
 
 /* Present */
 .result .bg-success {
+	padding: 6px ;
+	border: 1px dashed gray ;
+}
+/* Not Triggered */
+.result .bg-nothing {
 	padding: 6px ;
 	border: 1px dashed gray ;
 }
