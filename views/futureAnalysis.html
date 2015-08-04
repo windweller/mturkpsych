@@ -7,6 +7,9 @@
 #loadingBar {
     visibility: hidden;
 }
+#demo {
+    padding: 10px;
+}
 #demo span {
     line-height: 250%;
 }
@@ -107,8 +110,9 @@ body > #canvas {
                 <br/><br/>
                 <img src="img/key.jpg" alt="Legend" width="500" class="container-fluid"/>
                 <br/><br/>
-                <h1 id = "resultID" style = "display: inline;">Results</h1>
+                <h1 id = "resultID">Results</h1><br>
             </div>
+            <br>
             <div id="demo" class="container-fluid result">
             </div>
         </div>
@@ -180,7 +184,7 @@ body > #canvas {
     function initializePost(array, arraySize) {
         //arraySize = # of paragraphs
         $.ajax({
-           url: hostName + "/future/sentence",
+            url: "http:mindandlanguagelab.com/future/sentence",
             type: "POST",
             datatype: "json",
             contentType: 'application/json; charset=UTF-8',
@@ -281,7 +285,7 @@ body > #canvas {
 
         if (pos < arraySize) {
             $.ajax({
-               url: hostName+"/future/sentence",
+               url: "http:mindandlanguagelab.com/future/sentence",
                 type: "POST",
                 datatype: "json",
                 contentType: 'application/json; charset=UTF-8',
