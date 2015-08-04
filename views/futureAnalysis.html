@@ -113,9 +113,9 @@ body > #canvas {
                 </h1>
                 <!-- LEGEND -->
                 <div id = "legend">
-                    <span class="label label-success">Future</span>
-                    <span class="label label-warning">Present</span>
                     <span class="label label-info">Past</span>
+                    <span class="label label-warning">Present</span>
+                    <span class="label label-success">Future</span>
                 </div>
                 <!-- LEGEND ENDS-->
 
@@ -138,20 +138,17 @@ body > #canvas {
     </div>
 
     <script>
-     $(function() {
-       $( "#progressbar" ).progressbar({
-         value: 37
-       });
-     });
-     </script>
-
-    <script>
     var theBigArray = [];
     var $button1;
     var count;
     var splitedSentence;
-    var theURL = "http://www.mindandlanguagelab.com/future/sentence";
-    var localURL = "http://127.0.0.1:8080/future/sentence";
+    var theURL;
+    if(document.URL.indexOf("mind") < 0) {
+        theURL = "http://127.0.0.1:8080/future/sentence";
+    } else {
+        theURL = "http://www.mindandlanguagelab.com/future/sentence";
+    }
+
 
     $("#submit").click(function() {
         document.getElementById("demoContainer").style.visibility= "hidden" ;

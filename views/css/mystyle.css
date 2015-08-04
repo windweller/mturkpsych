@@ -105,6 +105,15 @@ font-family: "Times New Roman", Times, serif;
 	padding: 6px ;
 	border: 1px dashed gray ;
 }
-.label .label-warning{
+.label-warning{
+    color: #4D4D4F;
     background-color: #FDF8E4;
+}
+.label-info{
+    color: #4D4D4F;
+    background-color: #D7EDF8;
+}
+.label-success{
+    color: #4D4D4F;
+    background-color: #DEF0D8;
 }
