@@ -24,6 +24,43 @@
     to { -webkit-transform: rotate(360deg);}
 }
 
+#demoContainer {
+    visibility: hidden;
+}
+#loadingBar {
+    visibility: hidden;
+}
+#legend {
+    font-size: 30px;
+    padding: 10px;
+}
+#demo {
+    padding: 10px;
+}
+#demo span {
+    line-height: 250%;
+}
+body > #canvas {
+      position: fixed;
+      visibility: hidden;
+ }
+ /* Not Triggered */
+ .result .bg-nothing {
+ 	padding: 6px ;
+ 	border: 1px dashed gray ;
+ }
+ .label-warning{
+     color: #4D4D4F;
+     background-color: #FDF8E4;
+ }
+ .label-info{
+     color: #4D4D4F;
+     background-color: #D7EDF8;
+ }
+ .label-success{
+     color: #4D4D4F;
+     background-color: #DEF0D8;
+ }
 
 /* Sarra El Ayari [sarra.elayari_at_cnrs_dot_fr]- 28/07/2015 */
 
@@ -99,21 +136,4 @@ font-family: "Times New Roman", Times, serif;
 .result .bg-success {
 	padding: 6px ;
 	border: 1px dashed gray ;
-}
-/* Not Triggered */
-.result .bg-nothing {
-	padding: 6px ;
-	border: 1px dashed gray ;
-}
-.label-warning{
-    color: #4D4D4F;
-    background-color: #FDF8E4;
-}
-.label-info{
-    color: #4D4D4F;
-    background-color: #D7EDF8;
-}
-.label-success{
-    color: #4D4D4F;
-    background-color: #DEF0D8;
 }
