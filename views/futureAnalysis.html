@@ -122,6 +122,17 @@ When we think about the future, we think about a later time from the perspective
     </div>
 
     <script>
+    /** DETECTING BROWSER **/
+    var isOpera = !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+    // Opera 8.0+ (UA detection to detect Blink/v8-powered Opera)
+    var isFirefox = typeof InstallTrigger !== 'undefined';   // Firefox 1.0+
+    var isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
+    // At least Safari 3+: "[object HTMLElementConstructor]"
+    var isChrome = !!window.chrome && !isOpera;              // Chrome 1+
+    var isIE = /*@cc_on!@*/false || !!document.documentMode;   // At least IE6
+    /** DETECTING BROWSER ENDS**/
+
+    /** VARIABLE **/
     var theBigArray = [];
     var $button1;
     var count;
@@ -314,15 +325,18 @@ When we think about the future, we think about a later time from the perspective
             //Json Conversion Ends
             var csv = JSON2CSV(theBigArray);
             console.log(theBigArray);
-            var link = document.createElement('a');
-            link.download = "table.csv";
-            link.href = "data:text/csv;charset=utf-8," + escape(csv);
 
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            if(isIE) {
+                window.open("data:text/csv;charset=utf-8," + escape(csv) + ".csv", "table.csv");
+            } else {
+                var link = document.createElement('a');
+                link.download = "table.csv";
+                link.href = "data:text/csv;charset=utf-8," + escape(csv);
 
-            //window.open(downloadURL, "table.csv");
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
         }
     });
     function JSON2CSV(objArray) {
