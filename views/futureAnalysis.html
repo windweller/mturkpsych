@@ -1,4 +1,4 @@
-<!DOCTYPE>
+<!DOCTYPE HTML>
 <html ng-app="" lang="en">
 <head>
   <title>WOLFF LAB</title>
@@ -327,7 +327,13 @@ When we think about the future, we think about a later time from the perspective
             console.log(theBigArray);
 
             if(isIE) {
-                window.open("data:text/csv;charset=utf-8," + escape(csv) + ".csv", "table.csv");
+                //window.open("data:text/csv;charset=utf-8," + escape(csv) + ".csv", "table.csv");
+                var CSV = csv;
+                var IEwindow = window.open();
+                IEwindow.document.write('sep=,\r\n' + CSV);
+                IEwindow.document.close();
+                IEwindow.document.execCommand('SaveAs', true,  "table.csv");
+                IEwindow.close();
             } else {
                 var link = document.createElement('a');
                 link.download = "table.csv";
