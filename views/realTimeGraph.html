@@ -49,7 +49,8 @@
 
           <!-- Line Graph -->
           <div class="container-fluid">
-
+              <div id = "loading..">
+              </div>
               <div id="Future" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
               <div id="Past" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 
@@ -112,13 +113,15 @@
                 dataContainer = dataContainer2;
             }
             $('#'+option).highcharts({
-
+                chart: {
+                    zoomType: 'x'
+                },
                 title: {
                     text: '#' + option + ' Tweets for each State',
                     x: -20 //center
                 },
                 subtitle: {
-                    text: 'Source: Twitter',
+                    text: 'Source: Twitter (Drag to Zoom in the Chart)',
                     x: -20
                 },
                 xAxis: {
