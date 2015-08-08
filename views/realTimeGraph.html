@@ -53,6 +53,7 @@
               </div>
               <div id="Future" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
               <div id="Past" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+              <div id="FutureOrientation" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 
 
           </div>
@@ -67,6 +68,7 @@
                             "#804059", "#e5b073", "#41f200", "#005580", "#7a00e6", "#7f0022", "#33271a", "#2d8020", "#003059", "#bfa3d9", "#ff4073"]
         dataContainer1 = []; //future container
         dataContainer2 = []; // past container
+        dataContainer3 = []; //future orientation container
 
 
         $.getJSON( "js/1.json", function( data ) {
@@ -79,11 +81,13 @@
               var x = stateList[i];
               var tempPointContainer = [];
               var tempPointContainer2 = [];
+              var tempPointContainer3 = [];
               //console.log(x);
               for(var y = pos; y < (pos+109); y++) {
                   //console.log(y);
                   tempPointContainer.push(data[y].FIELD3);
                   tempPointContainer2.push(data[y].FIELD4);
+                  tempPointContainer3.push(data[y].FIELD3/(data[y].FIELD3+data[y].FIELD4))
               }
               //console.log("Datapoint contains: " + tempPointContainer);
               var boolean;
@@ -96,14 +100,17 @@
               console.log(theColor);
               var series = {name : x, visible: boolean, color: theColor, data : tempPointContainer};
               var series2 = {name : x, visible: boolean, color: theColor, data : tempPointContainer2};
+              var series3 = {name : x, visible: boolean, color: theColor, data : tempPointContainer3};
 
               //console.log(series);
               dataContainer1.push(series);
               dataContainer2.push(series2);
+              dataContainer3.push(series3);
               pos = pos + 109;
           }
           tweetFunction("Future");
           tweetFunction("Past");
+          tweetFunction("FutureOrientation")
 
 
         });
@@ -111,17 +118,27 @@
             /** HIGH CHART DATA **/
         function tweetFunction (option) {
             dataContainer = [];
+            var mainTitle = null;
+            var yAxisTitle = null;
             if (option == 'Future') {
                 dataContainer = dataContainer1;
-            } else {
+                mainTitle = "# Future Tweets for each State";
+                yAxisTitle = "# of Future Tweets";
+            } else if (option == 'Past'){
                 dataContainer = dataContainer2;
+                mainTitle = "# Past Tweets for each State";
+                yAxisTitle = "# of Past Tweets";
+            } else {
+                dataContainer = dataContainer3;
+                mainTitle = "Future Orientation for each State (1 being most future)";
+                yAxisTitle = "Future Orientation Ration (0 <= Future Orientation <= 1)";
             }
             $('#'+option).highcharts({
                 chart: {
                     zoomType: 'x'
                 },
                 title: {
-                    text: '#' + option + ' Tweets for each State',
+                    text: mainTitle,
                     x: -20 //center
                 },
                 subtitle: {
@@ -136,7 +153,7 @@
                 },
                 yAxis: {
                     title: {
-                        text: '# of ' + option + ' Tweets'
+                        text: yAxisTitle
                     },
                     plotLines: [{
                         value: 0,
