@@ -50,28 +50,21 @@
           <!-- Line Graph -->
           <div class="container-fluid">
 
-              <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+              <div id="Future" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+              <div id="Past" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
 
           </div>
 
-          <script>
-              /**
-              var list = document.getElementById('tabContainer');
-              var list2 = document.getElementById('tabContent');
-              var counter = 2;
-              for (var i = 0; i < stateList.length; i++) {
-                  list.innerHTML = list.innerHTML + "<li><a id='tab" + counter + "' href='#chart" + counter + "' role='tab' data-toggle = 'tab'>" + stateList[i] + "</a></li>";
-                  list2.innerHTML = list2.innerHTML + "<div class = 'tab-pane' id = 'chart" + counter + "'><canvas id = 'myChart"+counter+"' width = '400' height = '400'></canvas>";
-                  //console.log(stateList[i]);
-                  counter = counter + 1;
-              }**/
-          </script>
+
 
         <script>
         var stateList = ['AK','AL', 'AR', 'AZ', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'IA', 'ID', 'IL', 'IN', 'KS', 'KY', 'LA', 'MA', 'MD', 'ME', 'MI', 'MN', 'MO', 'MS', 'MT', 'NC', 'ND', 'NE', 'NH', 'NJ', 'NM', 'NV', 'NY', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VA', 'VT', 'WA', 'WI', 'WV', 'WY'];
         var dateContainer = [20150417, 20150418, 20150419, 20150420, 20150421, 20150422, 20150423, 20150424, 20150425, 20150426, 20150427, 20150428, 20150429, 20150430, 20150501, 20150502, 20150503, 20150504, 20150505, 20150506, 20150507, 20150508, 20150509, 20150510, 20150511, 20150512, 20150513, 20150514, 20150515, 20150516, 20150517, 20150518, 20150519, 20150520, 20150521, 20150522, 20150523, 20150524, 20150525, 20150526, 20150527, 20150528, 20150529, 20150530, 20150531, 20150601, 20150602, 20150603, 20150604, 20150605, 20150606, 20150607, 20150608, 20150609, 20150610, 20150611, 20150612, 20150613, 20150614, 20150615, 20150616, 20150617, 20150618, 20150619, 20150620, 20150621, 20150622, 20150623, 20150624, 20150625, 20150626, 20150627, 20150628, 20150629, 20150630, 20150701, 20150702, 20150703, 20150704, 20150705, 20150706, 20150707, 20150708, 20150709, 20150710, 20150711, 20150712, 20150713, 20150714, 20150715, 20150716, 20150717, 20150718, 20150719, 20150720, 20150721, 20150722, 20150723, 20150724, 20150725, 20150726, 20150727, 20150728, 20150729, 20150730, 20150731, 20150801, 20150802, 20150803];
-        console.log(dateContainer.length);
-        dataContainer = [];
+
+        dataContainer1 = []; //future container
+        dataContainer2 = []; // past container
+
 
         $.getJSON( "js/1.json", function( data ) {
 
@@ -82,32 +75,46 @@
           for(var i = 0; i < (stateList.length); i++) {
               var x = stateList[i];
               var tempPointContainer = [];
+              var tempPointContainer2 = [];
               //console.log(x);
               for(var y = pos; y < (pos+109); y++) {
                   //console.log(y);
                   tempPointContainer.push(data[y].FIELD3);
-                  //console.log(typeof(data[y].FIELD3));
+                  tempPointContainer2.push(data[y].FIELD4);
               }
               //console.log("Datapoint contains: " + tempPointContainer);
-              var series = {name : x, visible: false, data : tempPointContainer};
+              var boolean;
+              if (x == "GA") {
+                  boolean = true;
+              } else {
+                  boolean = false;
+              }
+              var series = {name : x, visible: boolean, data : tempPointContainer};
+              var series2 = {name : x, visible: boolean, data : tempPointContainer2};
+
               //console.log(series);
-              dataContainer.push(series);
+              dataContainer1.push(series);
+              dataContainer2.push(series2);
               pos = pos + 109;
           }
-          console.log(dataContainer);
-          myFunction();
+          tweetFunction("Future");
+          tweetFunction("Past");
+
 
         });
 
             /** HIGH CHART DATA **/
-            var dataContainer2 = [43,24,32];
-        function myFunction () {
-            console.log("is it working? : " + dataContainer);
-
-            $('#container').highcharts({
+        function tweetFunction (option) {
+            dataContainer = [];
+            if (option == 'Future') {
+                dataContainer = dataContainer1;
+            } else {
+                dataContainer = dataContainer2;
+            }
+            $('#'+option).highcharts({
 
                 title: {
-                    text: '# Future Tweets for each state',
+                    text: '#' + option + ' Tweets for each State',
                     x: -20 //center
                 },
                 subtitle: {
@@ -122,7 +129,7 @@
                 },
                 yAxis: {
                     title: {
-                        text: '# of Future Tweets'
+                        text: '# of ' + option + ' Tweets'
                     },
                     plotLines: [{
                         value: 0,
