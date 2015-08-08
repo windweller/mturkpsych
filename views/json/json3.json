@@ -1,0 +1,922 @@
+[
+ {
+   "sen": "Turkish fighter jets , which on Friday attacked Islamic State targets in Syria , have launched a wave of airstrikes in northern Iraq , targeting camps of the militant Kurdistan Workers ' Party for the first time in four years , the prime minister 's office said Saturday.The Iraq raids , which began late Friday and continued into Saturday , effectively ended an unstable two-year cease-fire between the Turkish government and the Kurdish militants , also known by the initials of their Kurdish name , P.K.K. . ",
+   "parsed": "(ROOT (S (S (NP (NP (JJ Turkish) (NN fighter) (NNS jets)) (, ,) (SBAR (WHNP (WDT which)) (S (PP (IN on) (NP (NNP Friday))) (VP (VBD attacked) (NP (JJ Islamic) (NN State) (NNS targets)) (PP (IN in) (NP (NNP Syria)))))) (, ,)) (VP (VBP have) (VP (VBN launched) (NP (NP (DT a) (NN wave)) (PP (IN of) (NP (NP (NNS airstrikes)) (PP (IN in) (NP (JJ northern) (NNP Iraq)))))) (, ,) (S (VP (VBG targeting) (NP (NP (NNS camps)) (PP (IN of) (NP (NP (DT the) (JJ militant) (NP (NNP Kurdistan) (NNPS Workers) (POS ')) (NNP Party)) (PP (IN for) (NP (NP (DT the) (JJ first) (NN time)) (PP (IN in) (NP (CD four) (NNS years))))))))))))) (, ,) (NP (NP (DT the) (JJ prime) (NN minister) (POS 's)) (NN office)) (VP (VBD said) (SBAR (S (NP (NP (NNP Saturday.The) (NNP Iraq) (NNS raids)) (, ,) (SBAR (WHNP (WDT which)) (S (VP (VP (VBD began) (NP (JJ late) (NNP Friday))) (CC and) (VP (VBD continued) (PP (IN into) (NP (NNP Saturday))))))) (, ,)) (ADVP (RB effectively)) (VP (VBD ended) (NP (NP (DT an) (JJ unstable) (JJ two-year) (NN cease-fire)) (PP (IN between) (NP (NP (DT the) (JJ Turkish) (NN government)) (CC and) (NP (DT the) (JJ Kurdish) (NNS militants)))) (, ,) (VP (ADVP (RB also)) (JJ known) (PP (IN by) (NP (NP (DT the) (NNS initials)) (PP (IN of) (NP (PRP$ their) (NNP Kurdish) (NN name)))))) (, ,) (NP (NNP P.K.K.))))))) (. .)))",
+   "result": {
+     "future": 1,
+     "futureResult": [
+       {
+         "_1": "MD < wo",
+         "_2": 0
+       },
+       {
+         "_1": "MD < can",
+         "_2": 0
+       },
+       {
+         "_1": "S < (NP $ (ADVP <<# better) $ VP)",
+         "_2": 0
+       },
+       {
+         "_1": "ADJP < (JJ < able|enough|willing) < (S < (VP < TO < VP))",
+         "_2": 0
+       },
+       {
+         "_1": "JJ < future",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < /goal/",
+         "_2": 0
+       },
+       {
+         "_1": "VBN|JJ < /worr/",
+         "_2": 0
+       },
+       {
+         "_1": "ROOT < (S|SQ <, (VP !< TO|S !< VBG))",
+         "_2": 0
+       },
+       {
+         "_1": "VB|VBD|VBG|VBN|VBP|VBZ < fancy|fancies|fancying|fancied",
+         "_2": 0
+       },
+       {
+         "_1": "ADJP < (JJ < due) !< (PP < TO)",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < ban|bans",
+         "_2": 0
+       },
+       {
+         "_1": "JJ < ready",
+         "_2": 0
+       },
+       {
+         "_1": "JJ < imminent",
+         "_2": 0
+       },
+       {
+         "_1": "VBG|JJ < upcoming",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < /plan/",
+         "_2": 0
+       },
+       {
+         "_1": "RB < patiently|impatiently",
+         "_2": 0
+       },
+       {
+         "_1": "VBG|JJ < pending",
+         "_2": 0
+       },
+       {
+         "_1": "VP < (MD < could) < (RB < n't) < (VP < (VB < wait))",
+         "_2": 0
+       },
+       {
+         "_1": "RB < sometime",
+         "_2": 0
+       },
+       {
+         "_1": "VP < (VBN < supposed) < (S < (VP < TO))",
+         "_2": 0
+       },
+       {
+         "_1": "VP < (VB|VBD|VBG|VBN|VBP|VBZ < /need/) < NP",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < /ambition/",
+         "_2": 0
+       },
+       {
+         "_1": "VB|VBD|VBG|VBN|VBP|VBZ < worry|worries|worrying|worried",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < worry|worries",
+         "_2": 0
+       },
+       {
+         "_1": "VBG < gon",
+         "_2": 0
+       },
+       {
+         "_1": "__  !< (RB < n't|not) < (VP !< (__ < /seem|appear|happen|used|begin|began|love|like|tried|fail|decline|propose/) < (S < (VP < TO < VP)))",
+         "_2": 0
+       },
+       {
+         "_1": "S < (NP $ (RB < better) $ VP)",
+         "_2": 0
+       },
+       {
+         "_1": "RB < soon",
+         "_2": 0
+       },
+       {
+         "_1": "NP !< NP|JJ < (S < (VP < TO < VP))",
+         "_2": 0
+       },
+       {
+         "_1": "S <+ (!S) (RB < later) !<< VBD !<< (VP [ < (VB < have) | < (VBP [ < have | < 've ] ) | < (VBZ [ < has | < 's ] ) ] < (VP < VBN))",
+         "_2": 0
+       },
+       {
+         "_1": "VP < (VB|VBD|VBG|VBN|VBP|VBZ < /figur/) < (PRT < (RP < out))",
+         "_2": 0
+       },
+       {
+         "_1": "RB < potentially|possibly",
+         "_2": 0
+       },
+       {
+         "_1": "VB|VBD|VBG|VBN|VBP|VBZ < /consider/",
+         "_2": 0
+       },
+       {
+         "_1": "S <+ (!S) (PP < (IN < at) < (NP < CD)) !<< VBD !<< (VP [ < (VB < have) | < (VBP [ < have | < 've ] ) | < (VBZ [ < has | < 's ] ) ] < (VP < VBN))",
+         "_2": 0
+       },
+       {
+         "_1": "JJ < eligible",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < /expectation/",
+         "_2": 0
+       },
+       {
+         "_1": "ROOT < (S|SQ <, INTJ < (VP !< TO|S !< VBG))",
+         "_2": 0
+       },
+       {
+         "_1": "VP < (MD < may) < (VP !< (VB < be|have))",
+         "_2": 0
+       },
+       {
+         "_1": "VP < (MD < ca) < (VP < (VB < wait))",
+         "_2": 0
+       },
+       {
+         "_1": "VP < (MD < /ought/) < (S < ( VP < TO))",
+         "_2": 0
+       },
+       {
+         "_1": "VBP < wan",
+         "_2": 0
+       },
+       {
+         "_1": "S|VP|ADJP|ADVP < (IN|RB < about) $ (S < (VP < TO))",
+         "_2": 0
+       },
+       {
+         "_1": "VP < (VB|VBG|VBP|VBZ|VBD|VBN < go|going|goes|went|gone) < (S < (VP < TO))",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < /budget/",
+         "_2": 0
+       },
+       {
+         "_1": "VP < (MD < must) < (VP !< (VB < be|have))",
+         "_2": 0
+       },
+       {
+         "_1": "RB < ahead",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < /will/",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < /schedule/",
+         "_2": 0
+       },
+       {
+         "_1": "VP < (VB|VBD|VBG|VBN|VBP|VBZ < /hav|had|has/) < (S < (VP < TO))",
+         "_2": 0
+       },
+       {
+         "_1": "VB|VBD|VBG|VBN|VBP|VBZ < /want/",
+         "_2": 0
+       },
+       {
+         "_1": "VP < (VB|VBD|VBG|VBN|VBP|VBZ < /need/) < (S < (VP < TO))",
+         "_2": 0
+       },
+       {
+         "_1": "VP < (PP < (IN < about|of ) !< (RB < instead) < (S < (VP <+(VP) VBG)))",
+         "_2": 0
+       },
+       {
+         "_1": "MD < should",
+         "_2": 0
+       },
+       {
+         "_1": "MD < might",
+         "_2": 0
+       },
+       {
+         "_1": "(PP  < (IN < from) < (NP|ADVP < (RB < now)))",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < /need/",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < /due/",
+         "_2": 0
+       },
+       {
+         "_1": "VBN|JJ < excited",
+         "_2": 0
+       },
+       {
+         "_1": "VB|VBD|VBG|VBN|VBP|VBZ < /schedul/",
+         "_2": 0
+       },
+       {
+         "_1": "ADJP < (JJ < likely|excited) < (S < (VP < TO < VP))",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS << /hope/",
+         "_2": 0
+       },
+       {
+         "_1": "VB|VBD|VBG|VBN|VBP|VBZ << /hope|hoping/",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < possibility|possibilities",
+         "_2": 0
+       },
+       {
+         "_1": "VB|VBD|VBG|VBN|VBP|VBZ < plan|plans|planned|planning",
+         "_2": 0
+       },
+       {
+         "_1": "JJ < impending",
+         "_2": 0
+       },
+       {
+         "_1": "VB|VBD|VBG|VBN|VBP|VBZ < /ban/",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < need",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < eligibility|eligibilities",
+         "_2": 0
+       },
+       {
+         "_1": "SBAR < WHNP|WHADVP < (S < (VP < TO))",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < /option/",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < fancy|fancies",
+         "_2": 0
+       },
+       {
+         "_1": "NN|RB < tonight",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < /consequence/",
+         "_2": 0
+       },
+       {
+         "_1": "NP < (RBR|RB|JJ < later) < (DT < this)",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < /guarantee/",
+         "_2": 0
+       },
+       {
+         "_1": "MD < shall",
+         "_2": 0
+       },
+       {
+         "_1": "JJ < potential|possible",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < /deadline/",
+         "_2": 0
+       },
+       {
+         "_1": "NN|RB < tomorrow",
+         "_2": 0
+       },
+       {
+         "_1": "MD < will|'ll",
+         "_2": 0
+       },
+       {
+         "_1": "VB|VBD|VBG|VBN|VBP|VBZ < /guarantee/",
+         "_2": 0
+       },
+       {
+         "_1": "JJ < patient|impatient",
+         "_2": 0
+       },
+       {
+         "_1": "MD < ca",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < /choice/",
+         "_2": 0
+       },
+       {
+         "_1": "S < VP << /look/ << forward",
+         "_2": 0
+       },
+       {
+         "_1": "JJ < next",
+         "_2": 0
+       },
+       {
+         "_1": "S < (RB < about) < (VP < (TO < to))",
+         "_2": 0
+       },
+       {
+         "_1": "VP < VBZ|VBG|VBP|VB !<< is|are|have << (PP < (IN < for) << NNS)",
+         "_2": 1
+       },
+       {
+         "_1": "NN|JJ < future",
+         "_2": 0
+       },
+       {
+         "_1": "MD < could",
+         "_2": 0
+       },
+       {
+         "_1": "RB < finna|funna",
+         "_2": 0
+       },
+       {
+         "_1": "VB|VBD|VBG|VBN|VBP|VBZ < /choos/",
+         "_2": 0
+       },
+       {
+         "_1": "MD < would|'d",
+         "_2": 0
+       },
+       {
+         "_1": "ROOT < (S|SQ <, (NP < (NN < someone|somebody)) < (VP < VB|VBP !< TO|S !< VBG))",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < necessity|necessities",
+         "_2": 0
+       },
+       {
+         "_1": "VP < VBP << (PP < S)",
+         "_2": 0
+       }
+     ],
+     "past": 2,
+     "pastResult": [
+       {
+         "_1": "VP [ < ( VB < thank ) | < ( VBP < thank ) | < ( VBZ < thanks ) | < ( VBG < thanking ) ] < ( PP < ( IN < for ) )",
+         "_2": 0
+       },
+       {
+         "_1": "ago",
+         "_2": 0
+       },
+       {
+         "_1": "VP [ < ( VB < have ) | < ( VBP [ < have | < 've ] ) | < ( VBZ [ < has | < 's ] ) ] < ( VP < VBN )",
+         "_2": 1
+       },
+       {
+         "_1": "NP < (JJ < last) < (NNS < weeks|weekends|months|years)",
+         "_2": 0
+       },
+       {
+         "_1": "forgets|forgot|forgotten|forget !.to",
+         "_2": 0
+       },
+       {
+         "_1": "NP << regret|regrets",
+         "_2": 0
+       },
+       {
+         "_1": "yesterday",
+         "_2": 0
+       },
+       {
+         "_1": "S < (when < VBD) <<  MD < would",
+         "_2": 0
+       },
+       {
+         "_1": "VP << wish|wishes|wished|wishing",
+         "_2": 0
+       },
+       {
+         "_1": "NP < ( NP < ( NNS [ < thanks | < congratulations | < congrats | < props | < kudos | < praise ] ) ) < ( PP < ( IN < for ) )",
+         "_2": 0
+       },
+       {
+         "_1": "NP < (JJ < last) < (NN < week|weekend|month|year)",
+         "_2": 0
+       },
+       {
+         "_1": "VP [ < ( VB [ < remember | < miss | < regret | < recall | < recollect ] ) | < ( VBP [ < remember | < miss | < regret | < recall | < recollect ] ) | < ( VBZ [ < remembers | < misses | < regrets | < recalls | < recollects ] ) ] < NP",
+         "_2": 0
+       },
+       {
+         "_1": "so.far",
+         "_2": 0
+       },
+       {
+         "_1": "VBD",
+         "_2": 1
+       },
+       {
+         "_1": "proud . of|former|previous",
+         "_2": 0
+       },
+       {
+         "_1": "NP < ( JJ|NN < past )",
+         "_2": 0
+       }
+     ]
+   }
+ },
+ {
+   "sen": "After a three-decade conflict that claimed at least 40,000 lives , the two sides reached a fragile peace in 2013 , though there have been a few minor clashes since then . ",
+   "parsed": "(ROOT (S (PP (IN After) (NP (NP (DT a) (JJ three-decade) (NN conflict)) (SBAR (WHNP (WDT that)) (S (VP (VBD claimed) (NP (QP (IN at) (JJS least) (CD 40,000)) (NNS lives))))))) (, ,) (NP (DT the) (CD two) (NNS sides)) (VP (VBD reached) (NP (DT a) (JJ fragile) (NN peace)) (PP (IN in) (NP (CD 2013))) (, ,) (SBAR (IN though) (S (NP (EX there)) (VP (VBP have) (VP (VBN been) (NP (NP (DT a) (JJ few) (JJ minor) (NNS clashes)) (PP (IN since) (NP (RB then))))))))) (. .)))",
+   "result": {
+     "future": 0,
+     "futureResult": [
+       {
+         "_1": "MD < wo",
+         "_2": 0
+       },
+       {
+         "_1": "MD < can",
+         "_2": 0
+       },
+       {
+         "_1": "S < (NP $ (ADVP <<# better) $ VP)",
+         "_2": 0
+       },
+       {
+         "_1": "ADJP < (JJ < able|enough|willing) < (S < (VP < TO < VP))",
+         "_2": 0
+       },
+       {
+         "_1": "JJ < future",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < /goal/",
+         "_2": 0
+       },
+       {
+         "_1": "VBN|JJ < /worr/",
+         "_2": 0
+       },
+       {
+         "_1": "ROOT < (S|SQ <, (VP !< TO|S !< VBG))",
+         "_2": 0
+       },
+       {
+         "_1": "VB|VBD|VBG|VBN|VBP|VBZ < fancy|fancies|fancying|fancied",
+         "_2": 0
+       },
+       {
+         "_1": "ADJP < (JJ < due) !< (PP < TO)",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < ban|bans",
+         "_2": 0
+       },
+       {
+         "_1": "JJ < ready",
+         "_2": 0
+       },
+       {
+         "_1": "JJ < imminent",
+         "_2": 0
+       },
+       {
+         "_1": "VBG|JJ < upcoming",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < /plan/",
+         "_2": 0
+       },
+       {
+         "_1": "RB < patiently|impatiently",
+         "_2": 0
+       },
+       {
+         "_1": "VBG|JJ < pending",
+         "_2": 0
+       },
+       {
+         "_1": "VP < (MD < could) < (RB < n't) < (VP < (VB < wait))",
+         "_2": 0
+       },
+       {
+         "_1": "RB < sometime",
+         "_2": 0
+       },
+       {
+         "_1": "VP < (VBN < supposed) < (S < (VP < TO))",
+         "_2": 0
+       },
+       {
+         "_1": "VP < (VB|VBD|VBG|VBN|VBP|VBZ < /need/) < NP",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < /ambition/",
+         "_2": 0
+       },
+       {
+         "_1": "VB|VBD|VBG|VBN|VBP|VBZ < worry|worries|worrying|worried",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < worry|worries",
+         "_2": 0
+       },
+       {
+         "_1": "VBG < gon",
+         "_2": 0
+       },
+       {
+         "_1": "__  !< (RB < n't|not) < (VP !< (__ < /seem|appear|happen|used|begin|began|love|like|tried|fail|decline|propose/) < (S < (VP < TO < VP)))",
+         "_2": 0
+       },
+       {
+         "_1": "S < (NP $ (RB < better) $ VP)",
+         "_2": 0
+       },
+       {
+         "_1": "RB < soon",
+         "_2": 0
+       },
+       {
+         "_1": "NP !< NP|JJ < (S < (VP < TO < VP))",
+         "_2": 0
+       },
+       {
+         "_1": "S <+ (!S) (RB < later) !<< VBD !<< (VP [ < (VB < have) | < (VBP [ < have | < 've ] ) | < (VBZ [ < has | < 's ] ) ] < (VP < VBN))",
+         "_2": 0
+       },
+       {
+         "_1": "VP < (VB|VBD|VBG|VBN|VBP|VBZ < /figur/) < (PRT < (RP < out))",
+         "_2": 0
+       },
+       {
+         "_1": "RB < potentially|possibly",
+         "_2": 0
+       },
+       {
+         "_1": "VB|VBD|VBG|VBN|VBP|VBZ < /consider/",
+         "_2": 0
+       },
+       {
+         "_1": "S <+ (!S) (PP < (IN < at) < (NP < CD)) !<< VBD !<< (VP [ < (VB < have) | < (VBP [ < have | < 've ] ) | < (VBZ [ < has | < 's ] ) ] < (VP < VBN))",
+         "_2": 0
+       },
+       {
+         "_1": "JJ < eligible",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < /expectation/",
+         "_2": 0
+       },
+       {
+         "_1": "ROOT < (S|SQ <, INTJ < (VP !< TO|S !< VBG))",
+         "_2": 0
+       },
+       {
+         "_1": "VP < (MD < may) < (VP !< (VB < be|have))",
+         "_2": 0
+       },
+       {
+         "_1": "VP < (MD < ca) < (VP < (VB < wait))",
+         "_2": 0
+       },
+       {
+         "_1": "VP < (MD < /ought/) < (S < ( VP < TO))",
+         "_2": 0
+       },
+       {
+         "_1": "VBP < wan",
+         "_2": 0
+       },
+       {
+         "_1": "S|VP|ADJP|ADVP < (IN|RB < about) $ (S < (VP < TO))",
+         "_2": 0
+       },
+       {
+         "_1": "VP < (VB|VBG|VBP|VBZ|VBD|VBN < go|going|goes|went|gone) < (S < (VP < TO))",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < /budget/",
+         "_2": 0
+       },
+       {
+         "_1": "VP < (MD < must) < (VP !< (VB < be|have))",
+         "_2": 0
+       },
+       {
+         "_1": "RB < ahead",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < /will/",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < /schedule/",
+         "_2": 0
+       },
+       {
+         "_1": "VP < (VB|VBD|VBG|VBN|VBP|VBZ < /hav|had|has/) < (S < (VP < TO))",
+         "_2": 0
+       },
+       {
+         "_1": "VB|VBD|VBG|VBN|VBP|VBZ < /want/",
+         "_2": 0
+       },
+       {
+         "_1": "VP < (VB|VBD|VBG|VBN|VBP|VBZ < /need/) < (S < (VP < TO))",
+         "_2": 0
+       },
+       {
+         "_1": "VP < (PP < (IN < about|of ) !< (RB < instead) < (S < (VP <+(VP) VBG)))",
+         "_2": 0
+       },
+       {
+         "_1": "MD < should",
+         "_2": 0
+       },
+       {
+         "_1": "MD < might",
+         "_2": 0
+       },
+       {
+         "_1": "(PP  < (IN < from) < (NP|ADVP < (RB < now)))",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < /need/",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < /due/",
+         "_2": 0
+       },
+       {
+         "_1": "VBN|JJ < excited",
+         "_2": 0
+       },
+       {
+         "_1": "VB|VBD|VBG|VBN|VBP|VBZ < /schedul/",
+         "_2": 0
+       },
+       {
+         "_1": "ADJP < (JJ < likely|excited) < (S < (VP < TO < VP))",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS << /hope/",
+         "_2": 0
+       },
+       {
+         "_1": "VB|VBD|VBG|VBN|VBP|VBZ << /hope|hoping/",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < possibility|possibilities",
+         "_2": 0
+       },
+       {
+         "_1": "VB|VBD|VBG|VBN|VBP|VBZ < plan|plans|planned|planning",
+         "_2": 0
+       },
+       {
+         "_1": "JJ < impending",
+         "_2": 0
+       },
+       {
+         "_1": "VB|VBD|VBG|VBN|VBP|VBZ < /ban/",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < need",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < eligibility|eligibilities",
+         "_2": 0
+       },
+       {
+         "_1": "SBAR < WHNP|WHADVP < (S < (VP < TO))",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < /option/",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < fancy|fancies",
+         "_2": 0
+       },
+       {
+         "_1": "NN|RB < tonight",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < /consequence/",
+         "_2": 0
+       },
+       {
+         "_1": "NP < (RBR|RB|JJ < later) < (DT < this)",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < /guarantee/",
+         "_2": 0
+       },
+       {
+         "_1": "MD < shall",
+         "_2": 0
+       },
+       {
+         "_1": "JJ < potential|possible",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < /deadline/",
+         "_2": 0
+       },
+       {
+         "_1": "NN|RB < tomorrow",
+         "_2": 0
+       },
+       {
+         "_1": "MD < will|'ll",
+         "_2": 0
+       },
+       {
+         "_1": "VB|VBD|VBG|VBN|VBP|VBZ < /guarantee/",
+         "_2": 0
+       },
+       {
+         "_1": "JJ < patient|impatient",
+         "_2": 0
+       },
+       {
+         "_1": "MD < ca",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < /choice/",
+         "_2": 0
+       },
+       {
+         "_1": "S < VP << /look/ << forward",
+         "_2": 0
+       },
+       {
+         "_1": "JJ < next",
+         "_2": 0
+       },
+       {
+         "_1": "S < (RB < about) < (VP < (TO < to))",
+         "_2": 0
+       },
+       {
+         "_1": "VP < VBZ|VBG|VBP|VB !<< is|are|have << (PP < (IN < for) << NNS)",
+         "_2": 0
+       },
+       {
+         "_1": "NN|JJ < future",
+         "_2": 0
+       },
+       {
+         "_1": "MD < could",
+         "_2": 0
+       },
+       {
+         "_1": "RB < finna|funna",
+         "_2": 0
+       },
+       {
+         "_1": "VB|VBD|VBG|VBN|VBP|VBZ < /choos/",
+         "_2": 0
+       },
+       {
+         "_1": "MD < would|'d",
+         "_2": 0
+       },
+       {
+         "_1": "ROOT < (S|SQ <, (NP < (NN < someone|somebody)) < (VP < VB|VBP !< TO|S !< VBG))",
+         "_2": 0
+       },
+       {
+         "_1": "NN|NNS < necessity|necessities",
+         "_2": 0
+       },
+       {
+         "_1": "VP < VBP << (PP < S)",
+         "_2": 0
+       }
+     ],
+     "past": 2,
+     "pastResult": [
+       {
+         "_1": "VP [ < ( VB < thank ) | < ( VBP < thank ) | < ( VBZ < thanks ) | < ( VBG < thanking ) ] < ( PP < ( IN < for ) )",
+         "_2": 0
+       },
+       {
+         "_1": "ago",
+         "_2": 0
+       },
+       {
+         "_1": "VP [ < ( VB < have ) | < ( VBP [ < have | < 've ] ) | < ( VBZ [ < has | < 's ] ) ] < ( VP < VBN )",
+         "_2": 1
+       },
+       {
+         "_1": "NP < (JJ < last) < (NNS < weeks|weekends|months|years)",
+         "_2": 0
+       },
+       {
+         "_1": "forgets|forgot|forgotten|forget !.to",
+         "_2": 0
+       },
+       {
+         "_1": "NP << regret|regrets",
+         "_2": 0
+       },
+       {
+         "_1": "yesterday",
+         "_2": 0
+       },
+       {
+         "_1": "S < (when < VBD) <<  MD < would",
+         "_2": 0
+       },
+       {
+         "_1": "VP << wish|wishes|wished|wishing",
+         "_2": 0
+       },
+       {
+         "_1": "NP < ( NP < ( NNS [ < thanks | < congratulations | < congrats | < props | < kudos | < praise ] ) ) < ( PP < ( IN < for ) )",
+         "_2": 0
+       },
+       {
+         "_1": "NP < (JJ < last) < (NN < week|weekend|month|year)",
+         "_2": 0
+       },
+       {
+         "_1": "VP [ < ( VB [ < remember | < miss | < regret | < recall | < recollect ] ) | < ( VBP [ < remember | < miss | < regret | < recall | < recollect ] ) | < ( VBZ [ < remembers | < misses | < regrets | < recalls | < recollects ] ) ] < NP",
+         "_2": 0
+       },
+       {
+         "_1": "so.far",
+         "_2": 0
+       },
+       {
+         "_1": "VBD",
+         "_2": 1
+       },
+       {
+         "_1": "proud . of|former|previous",
+         "_2": 0
+       },
+       {
+         "_1": "NP < ( JJ|NN < past )",
+         "_2": 0
+       }
+     ]
+   }
+ }
+]
