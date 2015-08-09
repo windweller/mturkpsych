@@ -137,3 +137,12 @@ font-family: "Times New Roman", Times, serif;
 	padding: 6px ;
 	border: 1px dashed gray ;
 }
+
+.size16 {
+	font-size: 16px;
+}
+
+.jumbotron section {
+	padding-bottom: 10px;
+	margin-bottom: 5px;
+}
