@@ -14,7 +14,6 @@
   <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.8.1/bootstrap-table.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.8.1/locale/bootstrap-table-zh-CN.min.js"></script>
   <!-- tooltip -->
-  <script type="text/javascript" src="future/data"></script>
   <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
   <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
   <script src="js/vendor/Chart.js"></script> <!-- TOOLTIP CHART -->
@@ -224,9 +223,7 @@ When we think about the future, we think about a later time from the perspective
             if(object.numberPast < object.numberFuture) { //future
                 fontColor = "bg-success";
             }
-            else if(object.numberPast == object.numberFuture && object.numberPast != 0 && object.numberFuture != 0) { //present
-                fontColor = "bg-nothing";
-            } else if (object.numberPast == 0 && object.numberFuture == 0) {//nothing
+            else if (object.numberPast ==  object.numberFuture) {//nothing
                 fontColor = "bg-warning";
             }
             else{ //past

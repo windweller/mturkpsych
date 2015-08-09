@@ -49,14 +49,47 @@
 
           <!-- Line Graph -->
           <div class="container-fluid">
+              <div id = "loading..">
+              </div>
 
-              <div id="Future" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-              <div id="FutureOrientation" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-              <div id="PresentOrientation" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-              <div id="PastOrientation" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 
-          </div>
+              <ul class="nav nav-tabs" role="tablist">
+                  <li class="active"><a id="tab1" href="#chart1" role="tab" data-toggle="tab">Tense Orientation Graph</a></li>
+                  <li><a id="tab2" href="#chart2" role="tab" data-toggle="tab">Number of Tweet Graph</a></li>
+              </ul>
 
+              <div class="tab-content">
+                  <div class="tab-pane active" id="chart1">
+                      <div id="FutureOrientation" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                      <div id="PresentOrientation" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                      <div id="PastOrientation" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                  </div>
+                  <div class="tab-pane" id="chart2">
+                      <div id="Future" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                  </div>
+              </div>
+
+
+
+
+
+              </div>
+        <script>
+        $('#tab1').on('shown.bs.tab', function (e) {
+            var x = document.getElementById('chart1');
+            var y = document.getElementById('chart2');
+            x.style.visibility = 'visible';
+            y.style.visibility = 'hidden';
+        });
+
+        $('#tab2').on('shown.bs.tab', function (e) {
+            var x = document.getElementById('chart1');
+            var y = document.getElementById('chart2');
+            x.style.visibility = 'visible';
+            y.style.visibility = 'hidden';
+        });
+
+        </script>
 
 
         <script>
