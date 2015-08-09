@@ -51,10 +51,10 @@
           <div class="container-fluid">
               <div id = "loading..">
               </div>
-              <div id="Past" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-              <div id="Present" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
               <div id="Future" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
               <div id="FutureOrientation" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+              <div id="PresentOrientation" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+              <div id="PastOrientation" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 
 
           </div>
@@ -71,7 +71,9 @@
         pastContainer = []; //past container
         presentContainer = []; // present container
         futureContainer = []; //future  container
-        FutureOrientationContainer = []; //future orientation container
+        futureOrientationContainer = []; //future orientation container
+        presentOrientationContainer = [];
+        pastOrientationContainer = [];
 
 
         $.getJSON( "js/convertcsv.json", function( data ) {
@@ -85,13 +87,17 @@
               var tempPresentContainer = []; // past container
               var tempFutureContainer = []; // future orientation container
               var tempFutureOrientContainer = []; // present container
+              var tempPresentOrientationContainer = [];
+              var tempPastOrientationContainer = [];
               //console.log(x);
               for(var y = pos; y < (pos+106); y++) {
                   //console.log(y);
                   tempPastContainer.push(data[y].past);
                   tempPresentContainer.push(data[y].present);
                   tempFutureContainer.push(data[y].future);
-                  tempFutureOrientContainer.push(data[y].future/(data[y].future+data[y].past))
+                  tempFutureOrientContainer.push(data[y].future/(data[y].future+data[y].past));
+                  tempPresentOrientationContainer.push(data[y].present/(data[y].past+data[y].present));
+                  tempPastOrientationContainer.push(data[y].past/(data[y].future+data[y].past));
               }
               //console.log("Datapoint contains: " + tempPointContainer);
               var boolean;
@@ -106,19 +112,27 @@
               var seriesPresent = {name : x, visible: boolean, color: theColor, data : tempPresentContainer};
               var seriesFuture = {name : x, visible: boolean, color: theColor, data : tempFutureContainer};
               var seriesFutureOrient = {name : x, visible: boolean, color: theColor, data : tempFutureOrientContainer};
+              var seriesPresentOrient = {name : x, visible: boolean, color: theColor, data : tempPresentOrientationContainer};
+              var seriesPastOrient = {name : x, visible: boolean, color: theColor, data : tempPastOrientationContainer};
+
 
 
               //console.log(series);
               pastContainer.push(seriesPast);
               presentContainer.push(seriesPresent);
               futureContainer.push(seriesFuture);
-              FutureOrientationContainer.push(seriesFutureOrient);
+              futureOrientationContainer.push(seriesFutureOrient);
+              presentOrientationContainer.push(seriesPresentOrient);
+              pastOrientationContainer.push(seriesPastOrient)
               pos = pos + 106;
           }
-          tweetFunction("Past");
-          tweetFunction("Present");
+          //tweetFunction("Past");
+          //tweetFunction("Present");
           tweetFunction("Future");
           tweetFunction("FutureOrientation")
+          tweetFunction("PresentOrientation")
+          tweetFunction("PastOrientation")
+
 
 
         });
@@ -132,18 +146,18 @@
                 dataContainer = futureContainer;
                 mainTitle = "# Future Tweets for each State";
                 yAxisTitle = "# of Future Tweets";
-            } else if (option == 'Past'){
-                dataContainer = pastContainer;
-                mainTitle = "# Past Tweets for each State";
-                yAxisTitle = "# of Past Tweets";
-            } else if (option == 'Present'){
-                dataContainer = presentContainer;
-                mainTitle = "# Present Tweets for each State";
-                yAxisTitle = "# of Present Tweets";
-            } else {
-                dataContainer = FutureOrientationContainer;
+            } else if (option == 'FutureOrientation'){
+                dataContainer = futureOrientationContainer;
                 mainTitle = "Future Orientation for each State (1 being most future)";
                 yAxisTitle = "Future Orientation Ratio (0 <= X <= 1)";
+            } else if (option == 'PresentOrientation'){
+                dataContainer = presentOrientationContainer;
+                mainTitle = "Present Orientation for each State (1 being most present)";
+                yAxisTitle = "Present Orientation Ratio (0 <= Y <= 1)";
+            } else {
+                dataContainer = pastOrientationContainer;
+                mainTitle = "Past Orientation for each State (1 being most past)";
+                yAxisTitle = "Past Orientation Ratio (0 <= Z <= 1)";
             }
             $('#'+option).highcharts({
                 chart: {
