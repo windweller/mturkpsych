@@ -66,6 +66,7 @@ body > #canvas {
 
 #top-layer {
 	margin-top: 40px ;
+	margin-bottom: 40px;
 }
 
 body {
@@ -146,3 +147,4 @@ font-family: "Times New Roman", Times, serif;
 	padding-bottom: 10px;
 	margin-bottom: 5px;
 }
+
