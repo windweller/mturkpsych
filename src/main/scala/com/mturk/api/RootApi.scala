@@ -62,6 +62,9 @@ trait StaticRoute extends Directives {
     path("future") {
       getFromFile(new File("views/future.html"), `text/html`)
     } ~
+    path("wordiverse5") {
+      getFromFile(new File("views/wordiverse5.html"), `text/html`)
+    } ~
     path("menuTemplate") {
       getFromFile(new File("views/menuTemplate.html"), `text/html`)
     } ~

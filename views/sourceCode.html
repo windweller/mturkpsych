@@ -14,7 +14,7 @@
 </head>
 <body>
  <div class="ok">
-    
+
     <div class="container">
 
       <div class="menu">
@@ -24,6 +24,8 @@
                 <li><a href="realTimeGraph">Statistical graph</a></li>
                 <li><a href="trainingCorpus">Training Corpus</a></li>
                 <li><a href="sourceCode">Source Code</a></li>
+                <li><a href="wordiverse5">Wordiverse</a></li>
+
               </ul>
       </div>
       <div id = "top-layer" class="container-fluid">
@@ -33,7 +35,7 @@
         <h1 style = "display: inline;" >Source code</h1>
       </div>
       <br />
-      
+
       <div id="content" class="container-fluid" class="col-md-10 center">
         <br />
         <div class="jumbotron">
@@ -67,29 +69,29 @@
     <a href="http://www.cnrs.fr"><img src="img/cnrs.jpg" alt="CNRS" /></a>
     <a href="http://www.univ-paris8.fr "><img src="img/P8.jpg" alt="Paris 8 University" width="120" /></a>
   </div></div>
-  
+
   <!-- JAVASCRIPT START -->
   <script type="text/javascript">
   $(document).ready(function(){
       $("#result").load("menuTemplate")
   });
   </script>
-  
+
   <script type="text/javascript">
-  
+
   function myFunction() {
       var theText = document.getElementById("futureInput").value
-  
+
       if(theText.includes("future")) {
           document.getElementById("rules").innerHTML = "future"
       } else {
           document.getElementById("rules").innerHTML = "not future"
       }
-  
-  
+
+
   }
   </script>
-  
+
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 

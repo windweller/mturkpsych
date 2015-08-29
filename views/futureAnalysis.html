@@ -14,14 +14,10 @@
   <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.8.1/bootstrap-table.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.8.1/locale/bootstrap-table-zh-CN.min.js"></script>
   <!-- tooltip -->
-  <script type="text/javascript" src="future/data"></script>
   <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
   <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
   <script src="js/vendor/Chart.js"></script> <!-- TOOLTIP CHART -->
-  <!-- Loading Button -->
-  <link rel="stylesheet" href="js/vendor/dist/ladda-themeless.min.css">
-  <script src="js/vendor/dist/spin.min.js"></script>
-  <script src="js/vendor/dist/ladda.min.js"></script>
+
 
 </head>
 <body>
@@ -30,15 +26,17 @@
     <div class="container">
 
 
-         <div class="menu">
-              <ul class="nav navbar-nav">
-                <li><a href="future">Home</a></li>
-                <li><a href="futureAnalysis">Demo</a></li>
-                <li><a href="realTimeGraph">Statistical graph</a></li>
-                <li><a href="trainingCorpus">Training Corpus</a></li>
-                <li><a href="sourceCode">Source Code</a></li>
-              </ul>
-            </div>
+        <div class="menu">
+                <ul class="nav navbar-nav">
+                  <li><a href="future">Home</a></li>
+                  <li><a href="futureAnalysis">Demo</a></li>
+                  <li><a href="realTimeGraph">Statistical graph</a></li>
+                  <li><a href="trainingCorpus">Training Corpus</a></li>
+                  <li><a href="sourceCode">Source Code</a></li>
+                  <li><a href="wordiverse5">Wordiverse</a></li>
+
+                </ul>
+        </div>
 
             <div id = "top-layer" class="container-fluid">
                 <br/><br/>
@@ -61,7 +59,7 @@
                 To run, paste text into the textbox and click the "Run Analysis" button.
                 Results will appear on the bottom of the page.
                 You can also be downloaded by pressing the "Download CSV" button.
-          </small>     
+          </small>
           </section>
 
             <section>
@@ -71,7 +69,7 @@
                 Future: any future orientation, possibly future of past <br><br>
 
                 Warning: we are running StanfordNLP PCFG English parser on the server, it might take a long time to process for a large chunk of text.
-          </small>     
+          </small>
           </section>
 
             </div>
@@ -87,7 +85,7 @@
             <br>
             <!-- PROGRESS BAR -->
             <div id = "loadingBar" class="col-md-12 center">
-                <div class="progress">
+                <div class="progress"><br>
                   <div class="progress-bar progress-bar-striped active" role="progressbar"
                         aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%">
                         LOADING...

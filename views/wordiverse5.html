@@ -5,6 +5,8 @@
   <title>Wordiverse</title>
 
 <link href="css/vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="css/mystyle.css">
+
 
 <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
 <script src="js/vendor/d3.min.js"></script>
@@ -37,29 +39,56 @@ body {
 </head>
 
 <body>
+    <div class="ok">
+        <div class = "container">
+        <div class="menu">
+             <ul class="nav navbar-nav">
+               <li><a href="future">Home</a></li>
+               <li><a href="futureAnalysis">Demo</a></li>
+               <li><a href="realTimeGraph">Statistical graph</a></li>
+               <li><a href="trainingCorpus">Training Corpus</a></li>
+               <li><a href="sourceCode">Source Code</a></li>
+               <li><a href="wordiverse5">Wordiverse</a></li>
+             </ul>
+           </div>
 
-<div class="container">
-<h1 style="text-align:center;">Wordiverse</h1>
-</div>
+           <div id = "top-layer" class="container-fluid">
+               <br/><br/>
+               <hr/>
+               <br/>
+               <h1 style="display: inline;">Wordiverse</h1>
+               <br>
+               <br>
+               <h3 style = "display: inline;" >tsne</h3>
+           </div>
+           <br/> <br/>
 
-<div class="container">
-  <hr>
-  <b>Word files (Comma delimitted):</b><br>
-  <input type="file" id="word_files" name="files[]" multiple />
-  <output id="word_list"></output>
+       <div class="jumbotron col-md-16 center">
+          <b>Word files (Comma delimitted):</b><br>
+          <input type="file" id="word_files" name="files[]" multiple />
+          <output id="word_list"></output>
+      </div>
 
-</div>
+    <div class="container">
+    <button type="button" id="inbut" class="btn btn-primary" style="width:200px; height:50px;">Run</button>
+    <button type="button" id="stopbut" class="btn btn-danger" style="width:200px; height:50px;">Stop</button>
 
+    <br>
 
-<div class="container">
-<button type="button" id="inbut" class="btn btn-primary" style="width:200px; height:50px;">Run</button>
-<button type="button" id="stopbut" class="btn btn-danger" style="width:200px; height:50px;">Stop</button>
-
-<br>
-
-<div id="embed"></div>
+    <div id="embed"></div>
 
 
+    </div>
+
+
+      <div id="footer">
+            <div class="container">
+        <hr/>
+        <a href="http://www.emory.edu"><img src="img/university2.png" alt="Emory" width="60"/></a>
+        <a href="http://www.sfl.cnrs.fr"><img src="img/sfl.jpg" alt="SFL" width="130"/></a>
+        <a href="http://www.cnrs.fr"><img src="img/cnrs.jpg" alt="CNRS" /></a>
+        <a href="http://www.univ-paris8.fr "><img src="img/P8.jpg" alt="Paris 8 University" width="120" /></a>
+      </div></div>
 </div>
 
 </body>
@@ -114,8 +143,8 @@ function initEmbedding() {
   $("#embed").empty();
   var div = d3.select("#embed");
   svg = div.append("svg") // svg is global
-    .attr("width", 1140)
-    .attr("height", 1140);
+    .attr("width", "100%")
+    .attr("height", 1000);
 }
 
 var gs;
