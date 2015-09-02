@@ -59,9 +59,6 @@ body {
                    <hr/>
                    <br/>
                    <h1 style="display: inline;">Wordiverse</h1>
-                   <br>
-                   <br>
-                   <h3 style = "display: inline;" >tsne</h3>
                </div>
                <br/> <br/>
 
@@ -149,11 +146,11 @@ document.getElementById('word_files').addEventListener('change', wordFileSelect)
 var XY = 0, XZ = 1, YZ = 2;
 var PERSPECTIVE = XY;
 
-var width = 1000, height = 700;
+var width = 1000, height = 1000;
 var tx=0, ty=0, tz=0;
 var ss = 1;
 var center_x = width/2;
-var center_y = 200;
+var center_y = height/2;
 function updateEmbedding() {
 
   // move the groups accordingly
