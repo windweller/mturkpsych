@@ -1,12 +1,14 @@
 <!doctype html>
 <html lang="en">
+<!-- This version takes input from a single coordinate file
+	 and it includes colored groups, perspective views for 3D,
+	 and label search.										-->
 <head>
   <meta charset="utf-8">
   <title>Wordiverse</title>
 
 <link href="css/vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="css/mystyle.css">
-
 
 <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
 <script src="js/vendor/d3.min.js"></script>
@@ -41,52 +43,71 @@ body {
 <body>
     <div class="ok">
         <div class = "container">
-        <div class="menu">
-             <ul class="nav navbar-nav">
-               <li><a href="future">Home</a></li>
-               <li><a href="futureAnalysis">Demo</a></li>
-               <li><a href="realTimeGraph">Statistical graph</a></li>
-               <li><a href="trainingCorpus">Training Corpus</a></li>
-               <li><a href="sourceCode">Source Code</a></li>
-               <li><a href="wordiverse5">Wordiverse</a></li>
-             </ul>
-           </div>
+            <div class="menu">
+                 <ul class="nav navbar-nav">
+                   <li><a href="future">Home</a></li>
+                   <li><a href="futureAnalysis">Demo</a></li>
+                   <li><a href="realTimeGraph">Statistical graph</a></li>
+                   <li><a href="trainingCorpus">Training Corpus</a></li>
+                   <li><a href="sourceCode">Source Code</a></li>
+                   <li><a href="wordiverse5">Wordiverse</a></li>
+                 </ul>
+               </div>
 
-           <div id = "top-layer" class="container-fluid">
-               <br/><br/>
-               <hr/>
-               <br/>
-               <h1 style="display: inline;">Wordiverse</h1>
-               <br>
-               <br>
-               <h3 style = "display: inline;" >tsne</h3>
-           </div>
-           <br/> <br/>
+               <div id = "top-layer" class="container-fluid">
+                   <br/><br/>
+                   <hr/>
+                   <br/>
+                   <h1 style="display: inline;">Wordiverse</h1>
+                   <br>
+                   <br>
+                   <h3 style = "display: inline;" >tsne</h3>
+               </div>
+               <br/> <br/>
 
-       <div class="jumbotron col-md-16 center">
-          <b>Word files (Comma delimitted):</b><br>
-          <input type="file" id="word_files" name="files[]" multiple />
-          <output id="word_list"></output>
-      </div>
+               <div class="jumbotron col-md-16 center">
+                  <b>Word files (Comma delimitted):</b><br>
+                  <input type="file" id="word_files" name="files[]" multiple />
+                  <output id="word_list"></output>
+              </div>
 
-    <button type="button" id="inbut" class="btn btn-primary" style="width:200px; height:50px;">Run</button>
-    <button type="button" id="stopbut" class="btn btn-danger" style="width:200px; height:50px;">Stop</button>
 
-    <br>
-
-    <div id="embed"></div>
-
+              <b>Perspective</b><br>
+              <button type="button" id="xy" style="width:100px; height:25px;">X,Y</button>
+              <button type="button" id="xz" style="width:100px; height:25px;">X,Z</button>
+              <button type="button" id="yz" style="width:100px; height:25px;">Y,Z</button>
 
 
 
-      <div id="footer">
-            <div class="container">
-        <hr/>
-        <a href="http://www.emory.edu"><img src="img/university2.png" alt="Emory" width="60"/></a>
-        <a href="http://www.sfl.cnrs.fr"><img src="img/sfl.jpg" alt="SFL" width="130"/></a>
-        <a href="http://www.cnrs.fr"><img src="img/cnrs.jpg" alt="CNRS" /></a>
-        <a href="http://www.univ-paris8.fr "><img src="img/P8.jpg" alt="Paris 8 University" width="120" /></a>
-      </div></div>
+                <div class="container">
+                  <hr>
+                  <div class="row">
+                	<div class="col-sm-2">
+                	  <button type="button" id="search" style="width:100px; height:25px;">Search</button>
+                	</div>
+                	<div class="col-sm-2">
+                	  <input id="searchtxt" style="width:100px; height:25px;"></textarea>
+                	  <div id="failedsearch" style="text-align:left; font-family: Impact;"></div>
+                    </div>
+                    <br><br>
+                  </div>
+                </div>
+
+            	<button type="button" id="inbut" class="btn btn-primary" style="width:200px; height:50px;">Run</button>
+            	<button type="button" id="stopbut" class="btn btn-danger" style="width:200px; height:50px;">Stop</button>
+            	<br>
+
+	<div id="embed"></div>
+
+    <div id="footer">
+          <div class="container">
+      <hr/>
+      <a href="http://www.emory.edu"><img src="img/university2.png" alt="Emory" width="60"/></a>
+      <a href="http://www.sfl.cnrs.fr"><img src="img/sfl.jpg" alt="SFL" width="130"/></a>
+      <a href="http://www.cnrs.fr"><img src="img/cnrs.jpg" alt="CNRS" /></a>
+      <a href="http://www.univ-paris8.fr "><img src="img/P8.jpg" alt="Paris 8 University" width="120" /></a>
+    </div></div>
+
 </div>
 
 </body>
@@ -106,7 +127,8 @@ function wordFileSelect(evt) {
 
     // files is a FileList of File objects. List some properties.
     var output = [];
-	label_txt = "";
+	data_txt = "";
+	dotrain = false;
     for (var i = 0, f; f = word_files[i]; i++) {
       output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
                   f.size, ' bytes, last modified: ',
@@ -124,25 +146,44 @@ function wordFileSelect(evt) {
 
 document.getElementById('word_files').addEventListener('change', wordFileSelect);
 
+var XY = 0, XZ = 1, YZ = 2;
+var PERSPECTIVE = XY;
 
+var width = 1000, height = 700;
+var tx=0, ty=0, tz=0;
+var ss = 1;
+var center_x = width/2;
+var center_y = 200;
 function updateEmbedding() {
 
-  // get current solution
-  var Y = data;
   // move the groups accordingly
-  gs.attr("transform", function(d, i) { return "translate(" +
-                                          ((Y[i][0]*20*ss + tx) + 400) + "," +
-                                          ((Y[i][1]*20*ss + ty) + 400) + ")"; });
+  gs.attr("transform", function(d, i) {
+	  var x;
+	  var y;
+	  if(PERSPECTIVE == XY){
+		x = (data[i][0]*20*ss + tx) + center_x;
+		y = (data[i][1]*20*ss + ty) + center_y;
+	  }
+	  else if(PERSPECTIVE == XZ){
+		x = (data[i][0]*20*ss + tx) + center_x;
+		y = (data[i][2]*20*ss + tz) + center_y;
+	  }
+	  else if(PERSPECTIVE == YZ){
+		x = (data[i][1]*20*ss + ty) + center_x;
+		y = (data[i][2]*20*ss + tz) + center_y;
+	  }
+	  return "translate(" + x + "," + y + ")"; });
 
 }
+
 
 var svg;
 function initEmbedding() {
   $("#embed").empty();
   var div = d3.select("#embed");
   svg = div.append("svg") // svg is global
-    .attr("width", "100%")
-    .attr("height", 1000);
+    .attr("width", width)
+    .attr("height", height);
 }
 
 var gs;
@@ -162,17 +203,18 @@ function drawEmbedding() {
       .attr('stroke-width', 1)
       .attr('stroke', 'black')
       .attr('fill', function(d,i) {
-			if(categories[i]==0)
-				return 'rgb(0,0,255)';
-			else if(categories[i]==1)
-				return 'rgb(255,0,0)';
-			else if(categories[i]==2)
-				return 'rgb(0,255,0)';
-			else if(categories[i]==3)
-				return 'rgb(255,255,0)';
-			else if(categories[i]==4)
-				return 'rgb(255,0,255)';
-			});
+			var min=1000;
+			var max=-1;
+			for(var j=0;j<categories.length;j+=1){
+				if(categories[j]>max)
+					max = categories[j];
+				if(categories[j]<min)
+					min = categories[j];
+			}
+
+			var spread = 255/(max-min);
+			return 'rgb(255,'+Math.round(categories[i]*spread % 255)+',0)';
+		});
 
     if(labels.length > 0) {
       ts = gs.append("text")
@@ -190,12 +232,57 @@ function drawEmbedding() {
     zoomListener(svg);
 }
 
-var tx=0, ty=0;
-var ss = 1;
 function zoomHandler() {
-  tx = d3.event.translate[0];
-  ty = d3.event.translate[1];
+	var translate = d3.event.translate;
+	if(PERSPECTIVE == XY){
+		tx = translate[0];
+		ty = translate[1];
+	}
+	else if(PERSPECTIVE == XZ){
+		tx = translate[0];
+		tz = translate[1];
+	}
+	else if(PERSPECTIVE == YZ){
+		ty = translate[0];
+		tz = translate[1];
+	}
+
   ss = d3.event.scale;
+}
+
+function search(word){
+	$("#failedsearch").html("");
+
+	var index = labels.indexOf(word);
+	if(index != -1){
+		tx = -data[index][0]*20*ss;
+		ty = -data[index][1]*20*ss;
+		tz = -data[index][2]*20*ss;
+
+		if(PERSPECTIVE == XY)
+			center(tx,ty);
+		else if(PERSPECTIVE == XZ)
+			center(tx,tz);
+		else if(PERSPECTIVE == YZ)
+			center(ty,tz);
+
+		updateEmbedding();
+	}
+	else{
+		$("#failedsearch").html("Not found");
+	}
+}
+
+function center(x, y){
+	var newZoomListener = d3.behavior.zoom()
+      .scaleExtent([0.1, 10])
+	  .scale(ss)
+	  .center([x,y])
+      .on("zoom", zoomHandler)
+	  .translate([x,y]);
+
+    newZoomListener(svg);
+
 }
 
 var stepnum = 0;
@@ -203,8 +290,8 @@ function step() {
   updateEmbedding();
 }
 
-labels = [];
-categories = [];
+var labels = [];
+var categories = [];
 function preProData() {
 
   var d = ",";
@@ -257,6 +344,29 @@ $(window).load(function() {
     iid = setInterval(step, 10);
     dotrain = true;
 
+  });
+
+  $("#xy").click(function() {
+    PERSPECTIVE = XY;
+	center(tx,ty);
+	updateEmbedding();
+  });
+
+  $("#xz").click(function() {
+    PERSPECTIVE = XZ;
+	center(tx,tz);
+	updateEmbedding();
+  });
+
+  $("#yz").click(function() {
+    PERSPECTIVE = YZ;
+	center(ty,tz);
+	updateEmbedding();
+  });
+
+  $("#search").click(function() {
+    var word = $("#searchtxt").val();
+	search(word);
   });
 });
 
