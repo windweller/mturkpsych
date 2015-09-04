@@ -112,6 +112,8 @@ body {
 
 <script>
 
+
+
 var Y; // tsne result stored here
 var data;
 
@@ -149,8 +151,10 @@ var PERSPECTIVE = XY;
 var width = 1000, height = 1000;
 var tx=0, ty=0, tz=0;
 var ss = 1;
-var center_x = width/2;
-var center_y = height/2;
+var center_x = 500;
+var center_y = 500;
+
+
 function updateEmbedding() {
 
   // move the groups accordingly
@@ -175,6 +179,7 @@ function updateEmbedding() {
 
 
 var svg;
+
 function initEmbedding() {
   $("#embed").empty();
   var div = d3.select("#embed");
@@ -186,6 +191,8 @@ function initEmbedding() {
 var gs;
 var cs;
 var ts;
+
+
 function drawEmbedding() {
 
     gs = svg.selectAll(".b")
@@ -223,7 +230,6 @@ function drawEmbedding() {
     }
 
     var zoomListener = d3.behavior.zoom()
-      .scaleExtent([0.1, 10])
       .center([0,0])
       .on("zoom", zoomHandler);
     zoomListener(svg);
@@ -256,12 +262,18 @@ function search(word){
 		ty = -data[index][1]*20*ss;
 		tz = -data[index][2]*20*ss;
 
-		if(PERSPECTIVE == XY)
-			center(tx,ty);
-		else if(PERSPECTIVE == XZ)
-			center(tx,tz);
-		else if(PERSPECTIVE == YZ)
-			center(ty,tz);
+		if(PERSPECTIVE == XY){
+            center(tx,ty);
+            d3.behavior.zoom().center(tx,ty);
+        }
+		else if(PERSPECTIVE == XZ) {
+            center(tx,tz);
+            d3.behavior.zoom().center(tx,tz);
+        }
+		else if(PERSPECTIVE == YZ){
+            center(ty,tz);
+            d3.behavior.zoom().center(ty,tz);
+        }
 
 		updateEmbedding();
 	}
@@ -274,7 +286,7 @@ function center(x, y){
 	var newZoomListener = d3.behavior.zoom()
       .scaleExtent([0.1, 10])
 	  .scale(ss)
-	  .center([x,y])
+	  .center([0,0])
       .on("zoom", zoomHandler)
 	  .translate([x,y]);
 
