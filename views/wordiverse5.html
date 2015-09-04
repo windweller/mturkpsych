@@ -217,8 +217,8 @@ function drawEmbedding() {
       .attr('stroke-width', 1)
       .attr('stroke', 'black')
       .attr('fill', function(d,i) {
-			var min=1000;
-			var max=-1;
+			var min = Infinity;
+			var max = -Infinity;
 			for(var j=0;j<categories.length;j+=1){
 				if(categories[j]>max)
 					max = categories[j];
@@ -226,8 +226,26 @@ function drawEmbedding() {
 					min = categories[j];
 			}
 
-			var spread = 255/(max-min);
-			return 'rgb(255,'+Math.round(categories[i]*spread % 255)+',0)';
+			var spread = (5.0*255)/(max-min);
+			var color = Math.round(categories[i]*spread) % (5*255);
+
+			// red - yellow
+			if(color >= 0 && color < 255)
+				return 'rgb(255,'+ (color%255) +',0)';
+			// yellow - green
+			else if(color >= 255 && color < 2*255)
+				return 'rgb('+ (255-(color%255)) +',255,0)';
+			// green - turquoise
+			else if(color >= 2*255 && color < 3*255)
+				return 'rgb(0,255,'+ (color%255) +')';
+			// turquoise - blue
+			else if(color >= 3*255 && color < 4*255)
+				return 'rgb(0,'+ (255-(color%255)) +',255)';
+			// blue - purple
+			else if(color >= 4*255 && color <= 5*255)
+				return 'rgb('+ (color%255) +',0,255)';
+			else
+				return 'rgb(255,255,255)';
 		});
 
     if(labels.length > 0) {
@@ -240,6 +258,8 @@ function drawEmbedding() {
     }
 
     var zoomListener = d3.behavior.zoom()
+      .scaleExtent([0.1, 10])
+      .center([0,0])
       .on("zoom", zoomHandler);
     zoomListener(svg);
 }
