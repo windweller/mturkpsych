@@ -179,13 +179,24 @@ function updateEmbedding() {
 
 
 var svg;
+var zoom = d3.behavior.zoom().scaleExtent([1, 8]).on("zoom", zoomed);
+
 
 function initEmbedding() {
   $("#embed").empty();
   var div = d3.select("#embed");
   svg = div.append("svg") // svg is global
     .attr("width", width)
-    .attr("height", height);
+    .attr("height", height)
+    .call(zoom)
+    .append("g");
+}
+
+function zoomed() {
+    svg.attr("transform",
+        "translate(" + zoom.translate() + ")" +
+        "scale(" + zoom.scale() + ")"
+    );
 }
 
 var gs;
