@@ -90,8 +90,7 @@ body {
                   </div>
                 </div>
 
-            	<button type="button" id="inbut" class="btn btn-primary" style="width:200px; height:50px;">Run</button>
-            	<button type="button" id="stopbut" class="btn btn-danger" style="width:200px; height:50px;">Stop</button>
+            	<button type="button" id="inbut" class="btn btn-primary" style="width:200px; height:50px;">Display</button>
             	<br>
 
 	<div id="embed"></div>
@@ -179,7 +178,7 @@ function updateEmbedding() {
 
 
 var svg;
-var zoom = d3.behavior.zoom().scaleExtent([1, 8]).on("zoom", zoomed);
+var zoom = d3.behavior.zoom().scaleExtent([0.1, 10]).on("zoom", zoomed);
 
 
 function initEmbedding() {
@@ -241,7 +240,6 @@ function drawEmbedding() {
     }
 
     var zoomListener = d3.behavior.zoom()
-      .center([0,0])
       .on("zoom", zoomHandler);
     zoomListener(svg);
 }
@@ -266,7 +264,7 @@ function zoomHandler() {
 
 function search(word){
 	$("#failedsearch").html("");
-
+    console.log("clicked");
 	var index = labels.indexOf(word);
 	if(index != -1){
 		tx = -data[index][0]*20*ss;
@@ -275,15 +273,12 @@ function search(word){
 
 		if(PERSPECTIVE == XY){
             center(tx,ty);
-            d3.behavior.zoom().center(tx,ty);
         }
 		else if(PERSPECTIVE == XZ) {
             center(tx,tz);
-            d3.behavior.zoom().center(tx,tz);
         }
 		else if(PERSPECTIVE == YZ){
             center(ty,tz);
-            d3.behavior.zoom().center(ty,tz);
         }
 
 		updateEmbedding();
@@ -292,18 +287,22 @@ function search(word){
 		$("#failedsearch").html("Not found");
 	}
 }
-
 function center(x, y){
+    zoom.scale(1);
+    zoom.translate([0, 0]);
+    svg.attr("transform",
+        "translate(" + zoom.translate() + ")" +
+        "scale(" + zoom.scale() + ")"
+    );
 	var newZoomListener = d3.behavior.zoom()
-      .scaleExtent([0.1, 10])
-	  .scale(ss)
-	  .center([0,0])
-      .on("zoom", zoomHandler)
-	  .translate([x,y]);
-
+      .scale(1)
+	  .center([x,y])
+      .on("zoom", zoomed);
     newZoomListener(svg);
+    console.log(newZoomListener.scale());
 
 }
+
 
 var stepnum = 0;
 function step() {
