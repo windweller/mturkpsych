@@ -119,6 +119,7 @@ var word_files;
 
 var data_txt;
 
+
 function wordFileSelect(evt) {
     word_files = evt.target.files; // FileList object
 
@@ -138,6 +139,7 @@ function wordFileSelect(evt) {
 		reader.readAsText(f);
     }
     document.getElementById('word_list').innerHTML = '<ul>' + output.join('') + '</ul>';
+
 
 }
 
@@ -261,6 +263,7 @@ function drawEmbedding() {
       .center([0,0])
       .on("zoom", zoomHandler);
     zoomListener(svg);
+
 }
 
 function zoomHandler() {
