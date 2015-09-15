@@ -1,0 +1,225 @@
+<html>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<head>
+  <title>3D-Wordiverse</title>
+
+  <style>
+    body {font: 10pt arial;}
+    #visibleWhenClicked {
+        visibility: hidden;
+    }
+  </style>
+
+  <link href="css/vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="css/vendor/slider.css">
+  <link rel="stylesheet" type="text/css" href="css/mystyle.css">
+
+  <script type="text/javascript" src="js/vendor/vis.js"></script>
+  <script type="text/javascript" src="js/vendor/jquery-2.1.4.min.js"></script>
+  <script type="text/javascript" src="js/vendor/bootstrapslider.js"></script>
+
+
+</head>
+
+<body>
+    <div class="ok">
+
+        <div class = "container">
+            <div class="menu">
+                 <ul class="nav navbar-nav">
+                   <li><a href="future">Home</a></li>
+                   <li><a href="futureAnalysis">Demo</a></li>
+                   <li><a href="realTimeGraph">Statistical graph</a></li>
+                   <li><a href="trainingCorpus">Training Corpus</a></li>
+                   <li><a href="sourceCode">Source Code</a></li>
+                   <li><a href="wordiverse5">Wordiverse</a></li>
+                   <li><a href="3dwordiverse">3D-Wordiverse</a></li>
+
+                 </ul>
+            </div>
+
+            <div id = "top-layer" class="container-fluid">
+                <br/><br/>
+                <hr/>
+                <br/>
+                <h1 style="display: inline;">3D - Wordiverse</h1>
+
+            </div>
+            <br/> <br/>
+
+            <div class="jumbotron col-md-16 center">
+            <input type="file" id="files" name="files[]" multiple />
+            <output id="list"></output>
+            </div>
+
+            <button type="button" id="find" class="btn btn-primary" style="width:120px; height:45px;">Display</button>
+            <hr>
+            <div id = "visibleWhenClicked" class="jumbotron col-md-16 center">
+            <h4 align = "center">Use this slider to adjust the size of the point. (Because sometimes it's hard to distinguish/click each individual point)</h4>
+            <div align = "center">
+            <input type="text" id="foo" class="span2" value="" data-slider-min="10" data-slider-max="1000" data-slider-step="1" data-slider-value="1" data-slider-orientation="horizontal" data-slider-selection="after"data-slider-tooltip="hide">
+            </div>
+            <h4 align = "center">Hover/Click each individual point to see detail</h5>
+            <hr>
+            </div>
+            <div id="mygraph">
+                <div style="position: relative; overflow: hidden; width: 600px; height: 600px;">
+                    <canvas width="600" height="600" style="position: relative; width: 100%; height: 100%;">
+                        <div style="color: red; font-weight: bold; padding: 10px;">Error: your browser does not support HTML canvas</div>
+                    </canvas>
+                <div style="position: absolute; bottom: 0px; left: 0px; width: 580px;">
+
+                </div>
+                </div>
+            </div>
+
+            <div id="footer">
+                  <div class="container">
+              <hr/>
+              <a href="http://www.emory.edu"><img src="img/university2.png" alt="Emory" width="60"/></a>
+              <a href="http://www.sfl.cnrs.fr"><img src="img/sfl.jpg" alt="SFL" width="130"/></a>
+              <a href="http://www.cnrs.fr"><img src="img/cnrs.jpg" alt="CNRS" /></a>
+              <a href="http://www.univ-paris8.fr "><img src="img/P8.jpg" alt="Paris 8 University" width="120" /></a>
+            </div></div>
+
+            <div id="info"></div>
+    </div>
+</div>
+<script>
+var data_txt;
+var dataContent;
+var labels = [];
+var categories = [];
+
+  function handleFileSelect(evt) {
+    var files = evt.target.files; // FileList object
+
+    // files is a FileList of File objects. List some properties.
+    data_txt = "";
+    var output = [];
+    for (var i = 0, f; f = files[i]; i++) {
+      output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
+                  f.size, ' bytes, last modified: ',
+                  f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
+                  '</li>');
+
+      var reader = new FileReader();
+      reader.onload = function(e) {
+          data_txt += reader.result + "\n";
+      }
+      reader.readAsText(f);
+    }
+    document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
+  }
+  document.getElementById('files').addEventListener('change', handleFileSelect);
+
+
+  $("#find").click(function() {
+      var d = ",";
+      var lines = data_txt.split("\n");
+      var raw_data = [];
+      for(var i=1;i<lines.length;i++) {
+        var row = lines[i];
+        if (! /\S/.test(row)) {
+          // row is empty and only has whitespace
+          continue;
+        }
+        var cells = row.split(d);
+        var data_point = [];
+        labels.push(cells[0]);
+        categories.push(cells[1]);
+        for(var j=2;j<cells.length;j++) {
+          if(cells[j].length !== 0) {
+            data_point.push(parseFloat(cells[j]));
+          }
+        }
+
+        raw_data.push(data_point);
+      }
+      dataContent = raw_data; // set global
+
+      drawVisualization(1000/100000.0);
+      document.getElementById("visibleWhenClicked").style.visibility= "visible" ;
+
+  });
+
+</script>
+
+<script type="text/javascript">
+  var data = null;
+  var graph = null;
+
+
+  // Called when the Visualization API is loaded.
+  function drawVisualization(inputDotSize) {
+    // create the data table.
+    data = new vis.DataSet();
+    // create some shortcuts to math functions
+    var sqrt = Math.sqrt;
+    var pow = Math.pow;
+    var random = Math.random;
+
+    // create the animation data
+    for (var i = 0; i < dataContent.length; i++) {
+      var x = dataContent[i][0];
+      var y = dataContent[i][1];
+      var z = dataContent[i][2];
+      var dist = categories[i]/10;
+
+      data.add({x:x,y:y,z:z, style:dist});
+    }
+
+    // specify options
+    var options = {
+      width:  '1000px',
+      height: '1000px',
+      style: 'dot-color',
+      showPerspective: true,
+      cameraPosition: {horizontal: -1.0, vertical: -10.5, distance: 1.7},
+      showGrid: false,
+      keepAspectRatio: true,
+      verticalRatio: 1,
+      legendLabel: 'category',
+      xValueLabel: function (x) {return ""},
+      yValueLabel: function (y) {return ""},
+      zValueLabel: function (z) {return ""},
+      tooltip: function(point) {
+          var word;
+          for(var i = 0; i < dataContent.length; i++) {
+              if(point.x == dataContent[i][0] && point.y == dataContent[i][1] && point.z == dataContent[i][2]) {
+                  //console.log("index: " + i);
+                  //console.log(point.x + " " + point.y + "  " + point.z);
+                  //console.log(dataContent[i][0] + " " + dataContent[i][1] + " " + dataContent[i][2]);
+                  word = labels[i];
+                  color= categories[i]/10.0;
+              }
+          }
+          return word + " - Color: " + color + "\n\n" + "Coordinate: " + "(" + point.x + "," + point.y + "," + point.z + ")";
+      },
+      cameraPosition: {
+        horizontal: -0.35,
+        vertical: 0.22,
+        distance: 1.8
+      }
+    };
+
+    // create our graph
+    var container = document.getElementById('mygraph');
+    graph = new vis.Graph3d(container, data, options, inputDotSize);
+    console.log("DOT SIZE:" + dotSizeFromUser);
+  }
+
+  $('#foo').slider("setValue", 1000)
+    .on('slide', function(ev){
+
+       $('#bar').val(ev.value/100000.0);
+       dotSizeFromUser = ev.value/100000.0;
+       console.log(graph);
+       console.log(graph.getCameraPosition());
+       console.log(graph.redraw());
+       console.log(dotSizeFromUser);
+    });
+</script>
+
+</body></html>
