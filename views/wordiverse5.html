@@ -51,6 +51,8 @@ body {
                    <li><a href="trainingCorpus">Training Corpus</a></li>
                    <li><a href="sourceCode">Source Code</a></li>
                    <li><a href="wordiverse5">Wordiverse</a></li>
+                   <li><a href="3dwordiverse">3D-Wordiverse</a></li>
+
                  </ul>
                </div>
 
@@ -83,7 +85,7 @@ body {
                 	  <div id="failedsearch" style="text-align:left; font-family: Impact;"></div>
                     </div>
                     <div class="col-sm-2">
-                	  <button type="button" id="search" style="width:120px; height:25px;">Search</button>
+                	  <button type="button" id="search" class="btn btn-primary" style="width:120px; height:25px;">Search</button>
                 	</div>
                     <br><br>
                   </div>
@@ -103,6 +105,7 @@ body {
       <a href="http://www.univ-paris8.fr "><img src="img/P8.jpg" alt="Paris 8 University" width="120" /></a>
     </div></div>
 
+</div>
 </div>
 
 </body>
@@ -139,9 +142,13 @@ function wordFileSelect(evt) {
 		reader.readAsText(f);
     }
     document.getElementById('word_list').innerHTML = '<ul>' + output.join('') + '</ul>';
-
-
+    if(data_txt == "") {
+        console.log("empty");
+    }
 }
+
+
+
 
 document.getElementById('word_files').addEventListener('change', wordFileSelect);
 
@@ -334,7 +341,7 @@ function step() {
 var labels = [];
 var categories = [];
 function preProData() {
-
+  console.log(data_txt);
   var d = ",";
   var lines = data_txt.split("\n");
   var raw_data = [];
