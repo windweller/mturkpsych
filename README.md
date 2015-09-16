@@ -9,4 +9,4 @@ The frontend framework is Zurb Foundation 5, which I start to dislike. Anyway, p
 
 Website URL: www.mindandlanguagelab.com
 
-Contact Info: anie@emory.edu
+Contact Info: anie@emory.edu, tlee54@emory.edu (Frontend Javascript, HTML, CSS)
