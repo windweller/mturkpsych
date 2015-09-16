@@ -61,6 +61,9 @@
             <input type="text" id="foo" class="span2" value="" data-slider-min="10" data-slider-max="1000" data-slider-step="1" data-slider-value="1" data-slider-orientation="horizontal" data-slider-selection="after"data-slider-tooltip="hide">
             </div>
             <h4 align = "center">Hover/Click each individual point to see detail</h5>
+            <div align = "center" class="checkbox">
+              <h4><label class="checkbox-inline"><input id = "textCheck" type="checkbox" value="">SHOW TEXT LABEL</label></h4>
+            </div>
             <hr>
             </div>
             <div id="mygraph">
@@ -92,6 +95,23 @@ var dataContent;
 var labels = [];
 var categories = [];
 
+ $('#files').click(function() {
+     //RESET
+     data_txt = null;
+     dataContent = null;
+     labels = [];
+     categories = [];
+     isThereLimitOnCameraRotation = false;
+     canZoomInfinite = true;
+     dotSizeFromUser = 0.001;
+     if($('#textCheck').prop("checked") == true) {
+         enableDrawText = true;
+     } else {
+         enableDrawText = false;
+     }
+ }
+
+ );
   function handleFileSelect(evt) {
     var files = evt.target.files; // FileList object
 
@@ -116,6 +136,9 @@ var categories = [];
 
 
   $("#find").click(function() {
+      //RESET data
+
+
       var d = ",";
       var lines = data_txt.split("\n");
       var raw_data = [];
@@ -166,8 +189,9 @@ var categories = [];
       var y = dataContent[i][1];
       var z = dataContent[i][2];
       var dist = categories[i]/10;
+      var vocabulary = labels[i];
 
-      data.add({x:x,y:y,z:z, style:dist});
+      data.add({x:x,y:y,z:z, style:dist, word:vocabulary});
     }
 
     // specify options
@@ -175,7 +199,7 @@ var categories = [];
       width:  '1000px',
       height: '1000px',
       style: 'dot-color',
-      showPerspective: true,
+      showPerspective: false,
       cameraPosition: {horizontal: -1.0, vertical: -10.5, distance: 1.7},
       showGrid: false,
       keepAspectRatio: true,
@@ -195,7 +219,7 @@ var categories = [];
                   color= categories[i]/10.0;
               }
           }
-          return word + " - Color: " + color + "\n\n" + "Coordinate: " + "(" + point.x + "," + point.y + "," + point.z + ")";
+          return word + " - Color: " + color + "\n";
       },
       cameraPosition: {
         horizontal: -0.35,
@@ -215,11 +239,18 @@ var categories = [];
 
        $('#bar').val(ev.value/100000.0);
        dotSizeFromUser = ev.value/100000.0;
-       console.log(graph);
-       console.log(graph.getCameraPosition());
-       console.log(graph.redraw());
-       console.log(dotSizeFromUser);
+       graph.redraw();
     });
+
+    $('#textCheck').change( function() {
+        if(enableDrawText == true)
+            enableDrawText = false;
+        else
+            enableDrawText = true;
+
+        graph.redraw();
+    }
+    );
 </script>
 
 </body></html>

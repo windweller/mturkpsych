@@ -29,6 +29,8 @@
 
 "use strict";
 var isThereLimitOnCameraRotation = false;
+var canZoomInfinite = true;
+var enableDrawText = false;
 var dotSizeFromUser = 0.001;
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -7156,6 +7158,7 @@ return /******/ (function(modules) { // webpackBootstrap
   Graph3d.prototype._getDataPoints = function (data) {
     // TODO: store the created matrix dataPoints in the filters instead of reloading each time
     var x, y, i, z, obj, point;
+                                                   var word;
 
     var dataPoints = [];
 
@@ -7183,13 +7186,14 @@ return /******/ (function(modules) { // webpackBootstrap
       };
       dataX.sort(sortNumber);
       dataY.sort(sortNumber);
-
+    //STORE X,Y,Z
       // create a grid, a 2d matrix, with all values.
       var dataMatrix = []; // temporary data matrix
       for (i = 0; i < data.length; i++) {
         x = data[i][this.colX] || 0;
         y = data[i][this.colY] || 0;
-        z = data[i][this.colZ] || 0;
+                                                   z = data[i][this.colZ] || 0;
+                                                   word = data[i].word || "";
 
         var xIndex = dataX.indexOf(x); // TODO: implement Array().indexOf() for Internet Explorer
         var yIndex = dataY.indexOf(y);
@@ -7198,10 +7202,9 @@ return /******/ (function(modules) { // webpackBootstrap
           dataMatrix[xIndex] = [];
         }
 
-        var point3d = new Point3d();
-        point3d.x = x;
-        point3d.y = y;
-        point3d.z = z;
+        var point3d = new Point3d(x,y,z,word);
+                                                   console.log("printing:" + word);
+
 
         obj = {};
         obj.point = point3d;
@@ -7225,13 +7228,16 @@ return /******/ (function(modules) { // webpackBootstrap
         }
       }
     } else {
+                                                   //EDIT POINT3D
       // 'dot', 'dot-line', etc.
       // copy all values from the google data table to a list with Point3d objects
       for (i = 0; i < data.length; i++) {
-        point = new Point3d();
-        point.x = data[i][this.colX] || 0;
-        point.y = data[i][this.colY] || 0;
-        point.z = data[i][this.colZ] || 0;
+        var xdot = data[i][this.colX] || 0;
+        var ydot = data[i][this.colY] || 0;
+        var zdot = data[i][this.colZ] || 0;
+        var worddot = data[i].word || "";
+        point = new Point3d(xdot,ydot,zdot,worddot);
+
 
         if (this.colValue !== undefined) {
           point.value = data[i][this.colValue] || 0;
@@ -8260,6 +8266,7 @@ return /******/ (function(modules) { // webpackBootstrap
         ctx.beginPath();
         ctx.moveTo(from.x, from.y);
         ctx.lineTo(point.screen.x, point.screen.y);
+                    
         ctx.stroke();
       }
 
@@ -8298,13 +8305,22 @@ return /******/ (function(modules) { // webpackBootstrap
       }
 
       // draw the circle
-      ctx.lineWidth = this._getStrokeWidth(point);
-      ctx.strokeStyle = borderColor;
+      ctx.lineWidth = 1;
+      ctx.fillStyle = 'rgba(0,0,0,0.1)';
       ctx.fillStyle = color;
       ctx.beginPath();
       ctx.arc(point.screen.x, point.screen.y, radius, 0, Math.PI * 2, true);
       ctx.fill();
       ctx.stroke();
+                                                   
+    //draw text
+    if(enableDrawText) {
+    ctx.fillStyle = "#000000";
+    ctx.font = "15px Arial";
+    ctx.fillText(point.point.word, point.screen.x+15, point.screen.y+10);
+    }
+                                                  
+
     }
   };
 
@@ -9095,6 +9111,9 @@ return /******/ (function(modules) { // webpackBootstrap
     this.x = x !== undefined ? x : 0;
     this.y = y !== undefined ? y : 0;
     this.z = z !== undefined ? z : 0;
+                                                   if(arguments.length ==4) {
+                                                   this.word = arguments[3];
+                                                   }
   };
 
   /**
@@ -9277,8 +9296,8 @@ return /******/ (function(modules) { // webpackBootstrap
     // Radius must be larger than the corner of the graph,
     // which has a distance of sqrt(0.5^2+0.5^2) = 0.71 from the center of the
     // graph
-                                                   
     if (this.armLength < 0.05) this.armLength = 0.05;
+
     if (this.armLength > 5.0) this.armLength = 5.0;
 
     this.calculateCameraOrientation();
