@@ -7,4 +7,6 @@ The JavaScript file is written in complete future style with q.js and jQuery, an
 
 The frontend framework is Zurb Foundation 5, which I start to dislike. Anyway, please let me know if you intend to download or use this in any way.
 
+Website URL: www.mindandlanguagelab.com
+
 Contact Info: anie@emory.edu
