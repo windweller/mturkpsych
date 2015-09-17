@@ -32,6 +32,8 @@ var isThereLimitOnCameraRotation = false;
 var canZoomInfinite = true;
 var enableDrawText = false;
 var dotSizeFromUser = 0.001;
+var fontSizeFromUser = "15px Arial";
+
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
@@ -8316,8 +8318,8 @@ return /******/ (function(modules) { // webpackBootstrap
     //draw text
     if(enableDrawText) {
     ctx.fillStyle = "#000000";
-    ctx.font = "15px Arial";
-    ctx.fillText(point.point.word, point.screen.x+15, point.screen.y+10);
+    ctx.font = fontSizeFromUser;
+    ctx.fillText(point.point.word, point.screen.x+15, point.screen.y+7);
     }
                                                   
 

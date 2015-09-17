@@ -56,9 +56,13 @@
             <button type="button" id="find" class="btn btn-primary" style="width:120px; height:45px;">Display</button>
             <hr>
             <div id = "visibleWhenClicked" class="jumbotron col-md-16 center">
-            <h4 align = "center">Use this slider to adjust the size of the point. (Because sometimes it's hard to distinguish/click each individual point)</h4>
+            <h4 align = "center">Use this slider to adjust the SIZE of the POINT.</h4>
             <div align = "center">
             <input type="text" id="foo" class="span2" value="" data-slider-min="10" data-slider-max="1000" data-slider-step="1" data-slider-value="1" data-slider-orientation="horizontal" data-slider-selection="after"data-slider-tooltip="hide">
+            </div>
+            <h4 align = "center">Use this slider to adjust the SIZE of the LABEL.</h4>
+            <div align = "center">
+            <input type="text" id="foo1" class="span2" value="" data-slider-min="1" data-slider-max="30" data-slider-step="1" data-slider-value="1" data-slider-orientation="horizontal" data-slider-selection="after"data-slider-tooltip="hide">
             </div>
             <h4 align = "center">Hover/Click each individual point to see detail</h5>
             <div align = "center" class="checkbox">
@@ -231,7 +235,6 @@ var categories = [];
     // create our graph
     var container = document.getElementById('mygraph');
     graph = new vis.Graph3d(container, data, options, inputDotSize);
-    console.log("DOT SIZE:" + dotSizeFromUser);
   }
 
   $('#foo').slider("setValue", 1000)
@@ -241,6 +244,14 @@ var categories = [];
        dotSizeFromUser = ev.value/100000.0;
        graph.redraw();
     });
+
+    $('#foo1').slider("setValue", 15)
+      .on('slide', function(ev){
+
+         $('#bar').val(ev.value);
+         fontSizeFromUser = ev.value+"px Arial";
+         graph.redraw();
+      });
 
     $('#textCheck').change( function() {
         if(enableDrawText == true)
