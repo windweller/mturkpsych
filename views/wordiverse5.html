@@ -7,20 +7,19 @@
   <meta charset="utf-8">
   <title>Wordiverse</title>
 
-<link href="css/vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" type="text/css" href="css/mystyle.css">
+  <link href="css/vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="css/mystyle.css">
 
-<script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
-<script src="js/vendor/d3.min.js"></script>
-<script src="js/vendor/bootstrap.min.js"></script>
-<script src="js/vendor/tsne.js"></script>
+  <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+  <script src="js/vendor/d3.min.js"></script>
+  <script src="js/vendor/bootstrap.min.js"></script>
+  <script src="js/vendor/tsne.js"></script>
 
 <!-- Tracking code -->
 <script type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-3698471-13']);
   _gaq.push(['_trackPageview']);
-
   (function() {
     var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
@@ -44,7 +43,7 @@ body {
     <div class="ok">
         <div class = "container">
             <div class="menu">
-                 <ul class="nav navbar-nav">
+                <ul class="nav navbar-nav">
                    <li><a href="future">Home</a></li>
                    <li><a href="futureAnalysis">Demo</a></li>
                    <li><a href="realTimeGraph">Statistical graph</a></li>
@@ -53,371 +52,487 @@ body {
                    <li><a href="wordiverse5">Wordiverse</a></li>
                    <li><a href="3dwordiverse">3D-Wordiverse</a></li>
 
-                 </ul>
-               </div>
+                </ul>
+            </div>
+			<div id = "top-layer" class="container-fluid">
+                <br/><br/>
+                <hr/>
+                <br/>
+                <h1 style="display: inline;">Wordiverse</h1>
+            </div>
+            <br/> <br/>
+			<div class="jumbotron col-md-16 center">
+                <b>Word files (Comma delimitted):</b><br>
+                <input type="file" id="input_files" name="files[]"/>
+                <output id="input_list"></output>
+            </div>
 
-               <div id = "top-layer" class="container-fluid">
-                   <br/><br/>
-                   <hr/>
-                   <br/>
-                   <h1 style="display: inline;">Wordiverse</h1>
-               </div>
-               <br/> <br/>
+			<b>Perspective</b><br>
+            <button type="button" id="xy" style="width:100px; height:25px;">X,Y</button>
+            <button type="button" id="xz" style="width:100px; height:25px;">X,Z</button>
+            <button type="button" id="yz" style="width:100px; height:25px;">Y,Z</button>
 
-               <div class="jumbotron col-md-16 center">
-                  <b>Word files (Comma delimitted):</b><br>
-                  <input type="file" id="word_files" name="files[]" multiple />
-                  <output id="word_list"></output>
-              </div>
-
-
-              <b>Perspective</b><br>
-              <button type="button" id="xy" style="width:100px; height:25px;">X,Y</button>
-              <button type="button" id="xz" style="width:100px; height:25px;">X,Z</button>
-              <button type="button" id="yz" style="width:100px; height:25px;">Y,Z</button>
-
-                <div class="container">
-                  <hr>
-                  <div class="row">
-
+			<div class="container">
+                <hr>
+                <div class="row">
                 	<div class="col-sm-2">
-                	  <input id="searchtxt" style="width:180px; height:25px;"></textarea>
-                	  <div id="failedsearch" style="text-align:left; font-family: Impact;"></div>
+						<input id="searchtext" style="width:180px; height:25px;"></textarea>
                     </div>
                     <div class="col-sm-2">
-                	  <button type="button" id="search" class="btn btn-primary" style="width:120px; height:25px;">Search</button>
+						<button type="button" id="search" style="width:120px; height:25px;">Search</button>
                 	</div>
-                    <br><br>
-                  </div>
                 </div>
+				<div id="failedsearch" style="text-align:left; font-family: Impact;"></div>
+				<br>
+				<div class="row">
+					<div class="col-sm-2">
+						<input id="tagtext" style="width:180px; height:25px;"></textarea>
+						<div id="failedtag" style="text-align:left; font-family: Impact;"></div>
+                    </div>
+					<div class="col-sm-4">
+						<b>Create Tag (right click)</b>
+					</div>
+                    <br>
+                </div>
+            </div>
+			<hr>
+			<button type="button" id="display" class="btn btn-primary" style="width:200px; height:50px;">Display</button>
+			<button type="button" id="save" class="btn btn-danger" style="width:200px; height:50px;">Save</button>
+			<br>
+			<a download="wordiverse.csv" id="downloadlink" style="display: none">Download</a>
+			<br>
+			<div id="position" style="text-align:left; font-family: Impact;"></div>
+			<div id="embed"></div>
 
-            	<button type="button" id="inbut" class="btn btn-primary" style="width:200px; height:50px;">Display</button>
-            	<br>
-
-	<div id="embed"></div>
-
-    <div id="footer">
-          <div class="container">
-      <hr/>
-      <a href="http://www.emory.edu"><img src="img/university2.png" alt="Emory" width="60"/></a>
-      <a href="http://www.sfl.cnrs.fr"><img src="img/sfl.jpg" alt="SFL" width="130"/></a>
-      <a href="http://www.cnrs.fr"><img src="img/cnrs.jpg" alt="CNRS" /></a>
-      <a href="http://www.univ-paris8.fr "><img src="img/P8.jpg" alt="Paris 8 University" width="120" /></a>
-    </div></div>
-
-</div>
-</div>
-
+			<div id="footer">
+				<div class="container">
+					<hr/>
+					<!--
+					<a href="http://www.emory.edu"><img src="img/university2.png" alt="Emory" width="60"/></a>
+					<a href="http://www.sfl.cnrs.fr"><img src="img/sfl.jpg" alt="SFL" width="130"/></a>
+					<a href="http://www.cnrs.fr"><img src="img/cnrs.jpg" alt="CNRS" /></a>
+					<a href="http://www.univ-paris8.fr "><img src="img/P8.jpg" alt="Paris 8 University" width="120" /></a>
+					-->
+				</div>
+			</div>
+		</div>
+	</div>
 </body>
 
 
 <script>
+// Javascript for displaying wordiverse
 
+// Global variables
+var Data;			// 2D array of data points (ex., point_x = Data[point_id][0])
+var Input_files;	// file or files containing data points
+var Input_txt;		// text from Input_files
 
-
-var Y; // tsne result stored here
-var data;
-
-var word_files;
-
-var data_txt;
-
-
-function wordFileSelect(evt) {
-    word_files = evt.target.files; // FileList object
-
-    // files is a FileList of File objects. List some properties.
-    var output = [];
-	data_txt = "";
-	dotrain = false;
-    for (var i = 0, f; f = word_files[i]; i++) {
-      output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
-                  f.size, ' bytes, last modified: ',
-                  f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
-                  '</li>');
-		var reader = new FileReader();
-		reader.onload = function(e) {
-          data_txt += reader.result + "\n";
-        }
-		reader.readAsText(f);
-    }
-    document.getElementById('word_list').innerHTML = '<ul>' + output.join('') + '</ul>';
-    if(data_txt == "") {
-        console.log("empty");
-    }
-}
-
-
-
-
-document.getElementById('word_files').addEventListener('change', wordFileSelect);
+var Labels;			// array of labels for each point
+var Categories;		// array of categories for each point (used to assign colors)
 
 var XY = 0, XZ = 1, YZ = 2;
-var PERSPECTIVE = XY;
+var Perspective = XY;		// This is the current perspective mode
 
-var width = 1000, height = 1000;
-var tx=0, ty=0, tz=0;
-var ss = 1;
-var center_x = 500;
-var center_y = 500;
+var Width = 1000, Height = 600;
+var Center_x = Width/2;
+var Center_y = Height/2;
 
+// the origin can be changed to center at some point
+var Origin_x=0, Origin_y=0, Origin_z=0;
 
-function updateEmbedding() {
-
-  // move the groups accordingly
-  gs.attr("transform", function(d, i) {
-	  var x;
-	  var y;
-	  if(PERSPECTIVE == XY){
-		x = (data[i][0]*20*ss + tx) + center_x;
-		y = (data[i][1]*20*ss + ty) + center_y;
-	  }
-	  else if(PERSPECTIVE == XZ){
-		x = (data[i][0]*20*ss + tx) + center_x;
-		y = (data[i][2]*20*ss + tz) + center_y;
-	  }
-	  else if(PERSPECTIVE == YZ){
-		x = (data[i][1]*20*ss + ty) + center_x;
-		y = (data[i][2]*20*ss + tz) + center_y;
-	  }
-	  return "translate(" + x + "," + y + ")"; });
-
-}
+// keep track of 3D position
+var Translation_x=0, Translation_y=0, Translation_z=0;
+var Scale = 1;
 
 
-var svg;
-var zoom = d3.behavior.zoom().scaleExtent([0.1, 10]).on("zoom", zoomed);
-
+// D3 objects
+var Display;	// display screen (scalable vector graphics)
+var Points;		// display points
+var Circles;	// point circle objects
+var Text;		// point text objects
+var Zoom;		// zoom listener object
 
 function initEmbedding() {
-  $("#embed").empty();
-  var div = d3.select("#embed");
-  svg = div.append("svg") // svg is global
-    .attr("width", width)
-    .attr("height", height)
-    .call(zoom)
-    .append("g");
+	// Create the display screen
+	$("#embed").empty();
+	// Allow user to translate and scale view
+    Zoom = d3.behavior.zoom()
+      .scaleExtent([0.2, 5])
+      .on("zoom", zoomHandler);
+
+	var div = d3.select("#embed");
+	Display = div.append("svg")
+		.attr("width", Width)
+		.attr("height", Height)
+		.call(Zoom)
+		.append("g");
+
+    Zoom(Display);
 }
 
-function zoomed() {
-    svg.attr("transform",
-        "translate(" + zoom.translate() + ")" +
-        "scale(" + zoom.scale() + ")"
-    );
+function getData() {
+	// Get data points
+	var d = ",";
+	var lines = Input_txt.split("\n");
+	Data = [];
+	Labels = [];
+	Categories = [];
+	for(var i=1;i<lines.length;i++) {
+		var row = lines[i];
+		if (! /\S/.test(row)) {
+			// row is empty and only has whitespace
+			continue;
+		}
+		var cells = row.split(d);
+		var data_point = [];
+		Labels.push(cells[0]); 		// get label
+		Categories.push(cells[1]); 	// get category
+		for(var j=2;j<cells.length;j++) {
+			if(cells[j].length !== 0) {
+				var coor = parseFloat(cells[j]);
+				data_point.push(coor);
+			}
+		}
+		Data.push(data_point);
+	}
 }
-
-var gs;
-var cs;
-var ts;
-
 
 function drawEmbedding() {
-
-    gs = svg.selectAll(".b")
-      .data(data)
+	// Create all points and labels
+    Points = Display.selectAll(".b")
+      .data(Data)
       .enter().append("g")
       .attr("class", "u");
 
-    cs = gs.append("circle")
+	// Create a circle for each point
+    Circles = Points.append("circle")
       .attr("cx", 0)
       .attr("cy", 0)
-      .attr("r", 5)
-      .attr('stroke-width', 1)
-      .attr('stroke', 'black')
-      .attr('fill', function(d,i) {
-			var min = Infinity;
-			var max = -Infinity;
-			for(var j=0;j<categories.length;j+=1){
-				if(categories[j]>max)
-					max = categories[j];
-				if(categories[j]<min)
-					min = categories[j];
-			}
+      .attr("r", function(d,i) {return (Categories[i]==-1)? 10: 5;})
+      .attr('stroke-width', function(d,i) {return (Categories[i]==-1)? 2: 1;})
+      .attr('stroke', function(d,i) {return (Categories[i]==-1)? "SlateBlue": "Black";})
+      .attr('fill', color);
 
-			var spread = (5.0*255)/(max-min);
-			var color = Math.round(categories[i]*spread) % (5*255);
+	// Create a label for each point
+	Text = Points.append("text")
+      .attr("text-anchor", "top")
+      .attr("transform", function(d,i) {return (Categories[i]==-1)? "translate(12, -12)": "translate(5, -5)";})
+      .attr("font-size", function(d,i) {return (Categories[i]==-1)? 32: 12;})
+	  .attr("fill", function(d,i) {return (Categories[i]==-1)? "SlateBlue": "Black";})
+      //.attr("fill", "#333")
+      .text(function(d,i) { return Labels[i]; });
+}
 
-			// red - yellow
-			if(color >= 0 && color < 255)
-				return 'rgb(255,'+ (color%255) +',0)';
-			// yellow - green
-			else if(color >= 255 && color < 2*255)
-				return 'rgb('+ (255-(color%255)) +',255,0)';
-			// green - turquoise
-			else if(color >= 2*255 && color < 3*255)
-				return 'rgb(0,255,'+ (color%255) +')';
-			// turquoise - blue
-			else if(color >= 3*255 && color < 4*255)
-				return 'rgb(0,'+ (255-(color%255)) +',255)';
-			// blue - purple
-			else if(color >= 4*255 && color <= 5*255)
-				return 'rgb('+ (color%255) +',0,255)';
-			else
-				return 'rgb(255,255,255)';
-		});
+function updateDisplay() {
+  // Adjust points on the screen based on current viewpoint
+  Points.attr("transform", function(d, i) {
+	  var x, y;
+	  if(Perspective == XY){
+		x = 20*(Data[i][0] - Origin_x);
+		y = 20*(Data[i][1] - Origin_y);
+	  }
+	  else if(Perspective == XZ){
+		x = 20*(Data[i][0] - Origin_x);
+		y = 20*(Data[i][2] - Origin_z);
+	  }
+	  else if(Perspective == YZ){
+		x = 20*(Data[i][1] - Origin_y);
+		y = 20*(Data[i][2] - Origin_z);
+	  }
+	  return "translate(" + x + "," + y + ")"; });
+}
 
-    if(labels.length > 0) {
-      ts = gs.append("text")
-        .attr("text-anchor", "top")
-        .attr("transform", "translate(5, -5)")
-        .attr("font-size", 12)
-        .attr("fill", "#333")
-        .text(function(d,i) { return labels[i]; });
-    }
+function color(d,i) {
+	// For a single point, assign a color based on its category
+	var min = Infinity;
+	var max = -Infinity;
 
-    var zoomListener = d3.behavior.zoom()
-      .scaleExtent([0.1, 10])
-      .center([0,0])
-      .on("zoom", zoomHandler);
-    zoomListener(svg);
+	for(var j=0;j<Categories.length;j+=1){
+		if(Categories[j]>max)
+			max = Categories[j];
+		if(Categories[j]<min)
+			min = Categories[j];
+	}
+	min = Math.max(min,0);
+	max = Math.max(max,1);
+	var spread = (5.0*255)/(max-min);
+	var color = Math.round(Categories[i]*spread) % (5*255);
 
+	if(Categories[i] == -1)
+		return 'rgb(255,255,255)';
+	// red - yellow
+	else if(color >= 0 && color < 255)
+		return 'rgb(255,'+ (color%255) +',0)';
+	// yellow - green
+	else if(color >= 255 && color < 2*255)
+		return 'rgb('+ (255-(color%255)) +',255,0)';
+	// green - turquoise
+	else if(color >= 2*255 && color < 3*255)
+		return 'rgb(0,255,'+ (color%255) +')';
+	// turquoise - blue
+	else if(color >= 3*255 && color < 4*255)
+		return 'rgb(0,'+ (255-(color%255)) +',255)';
+	// blue - purple
+	else if(color >= 4*255 && color <= 5*255)
+		return 'rgb('+ (color%255) +',0,255)';
+	else
+		return 'rgb(255,255,255)';
 }
 
 function zoomHandler() {
+	// zoom handling function
 	var translate = d3.event.translate;
-	if(PERSPECTIVE == XY){
-		tx = translate[0];
-		ty = translate[1];
+
+	// keep track of 3D position
+	if(Perspective == XY){
+		Translation_x = translate[0] - Center_x;
+		Translation_y = translate[1] - Center_y;
 	}
-	else if(PERSPECTIVE == XZ){
-		tx = translate[0];
-		tz = translate[1];
+	else if(Perspective == XZ){
+		Translation_x = translate[0] - Center_x;
+		Translation_z = translate[1] - Center_y;
 	}
-	else if(PERSPECTIVE == YZ){
-		ty = translate[0];
-		tz = translate[1];
+	else if(Perspective == YZ){
+		Translation_y = translate[0] - Center_x;
+		Translation_z = translate[1] - Center_y;
 	}
 
-  ss = d3.event.scale;
+	/* Put a threshold on the furthest away you can zoom
+	var threshold_x = Scale*Width, threshold_y = Scale*Height;
+	var x = Zoom.translate()[0], y = Zoom.translate()[1];
+	x = Math.min(threshold_x + Width, x);
+	x = Math.max(-threshold_x,x);
+	y = Math.min(threshold_y + Height,y);
+	y = Math.max(-threshold_y,y);
+	Zoom.translate([x,y]);*/
+
+	Scale = d3.event.scale;
+	Display.attr("transform",
+        "translate(" + Zoom.translate() + ")"
+		+"scale(" + Zoom.scale() + ")");
 }
 
-function search(word){
+function center(x, y){
+	// Center viewpoint at (x,y)
+    Zoom.translate([x+Center_x,y+Center_y]).scale(Scale);
+	Zoom.event(Display.transition());
+}
+
+function search(label){
+	// Center viewpoint at the point with the label
 	$("#failedsearch").html("");
-    console.log("clicked");
-	var index = labels.indexOf(word);
+	var index = Labels.indexOf(label);
 	if(index != -1){
-		tx = -data[index][0]*20*ss;
-		ty = -data[index][1]*20*ss;
-		tz = -data[index][2]*20*ss;
-
-		if(PERSPECTIVE == XY){
-            center(tx,ty);
-        }
-		else if(PERSPECTIVE == XZ) {
-            center(tx,tz);
-        }
-		else if(PERSPECTIVE == YZ){
-            center(ty,tz);
-        }
-
-		updateEmbedding();
+		Origin_x = Data[index][0];
+		Origin_y = Data[index][1];
+		Origin_z = Data[index][2];
+		center(0,0);
+		updateDisplay();
+		$("#failedsearch").html(""+Data[index][0]+", "+Data[index][1]+", "+Data[index][2]);
 	}
 	else{
 		$("#failedsearch").html("Not found");
 	}
 }
-function center(x, y){
-    zoom.scale(1);
-    zoom.translate([0, 0]);
-    svg.attr("transform",
-        "translate(" + zoom.translate() + ")" +
-        "scale(" + zoom.scale() + ")"
-    );
-	var newZoomListener = d3.behavior.zoom()
-      .scale(1)
-	  .center([x,y])
-      .on("zoom", zoomed);
-    newZoomListener(svg);
-    console.log(newZoomListener.scale());
 
+function absoluteToRelativeCoordinates(data_x,data_y,data_z){
+	/* This function shows how to convert from absolute
+	 * coordinates (the coordinates in Data) to relative
+	 * coordinates (the x and y position in the display screen).
+	 */
+	var display_x, display_y;
+	if(Perspective = XY){
+		display_x = Scale*20*(data_x - Origin_x)+Translation_x + Center_x;
+		display_y = Scale*20*(data_y - Origin_y)+Translation_y + Center_y;
+	}
+	else if(Perspective = XZ){
+		display_x = Scale*20*(data_x - Origin_x)+Translation_x + Center_x;
+		display_y = Scale*20*(data_z - Origin_z)+Translation_z + Center_y;
+	}
+	else if(Perspective = YZ){
+		display_x = Scale*20*(data_y - Origin_y)+Translation_y + Center_x;
+		display_y = Scale*20*(data_z - Origin_z)+Translation_z + Center_y;
+	}
+	return [display_x,display_y];
 }
 
-
-var stepnum = 0;
-function step() {
-  updateEmbedding();
+function relativeToAbsoluteCoordinates(display_x, display_y){
+	/* This function shows how to convert from relative
+	 * coordinates (the x and y position in the display screen)
+	 * to absolute coordinates (the coordinates in Data).
+	 */
+	var data_x, data_y, data_z;
+	if(Perspective == XY){
+		data_x = ((display_x - Translation_x - Center_x)/Scale)/20 + Origin_x;
+		data_y = ((display_y - Translation_y - Center_y)/Scale)/20 + Origin_y;
+		data_z = ((-Translation_z)/Scale)/20 + Origin_z;
+	}
+	else if(Perspective == XZ){
+		data_x = ((display_x - Translation_x - Center_x)/Scale)/20 + Origin_x;
+		data_y = ((-Translation_y)/Scale)/20 + Origin_y;
+		data_z = ((display_y - Translation_z - Center_y)/Scale)/20 + Origin_z;
+	}
+	else if(Perspective == YZ){
+		data_x = ((-Translation_x)/Scale)/20 + Origin_x;
+		data_y = ((display_x - Translation_y - Center_x)/Scale)/20 + Origin_y;
+		data_z = ((display_y - Translation_z - Center_y)/Scale)/20 + Origin_z;
+	}
+	return [data_x, data_y, data_z];
 }
 
-var labels = [];
-var categories = [];
-function preProData() {
-  console.log(data_txt);
-  var d = ",";
-  var lines = data_txt.split("\n");
-  var raw_data = [];
-  for(var i=1;i<lines.length;i++) {
-    var row = lines[i];
-    if (! /\S/.test(row)) {
-      // row is empty and only has whitespace
-      continue;
+function createTag(e) {
+	$("#failedtag").html("");
+	var label = $("#tagtext").val();
+	$("#tagtext").html("");
+
+	var offset = $("#embed").offset();
+	var display_x = e.pageX - offset.left;
+	var display_y = e.pageY - offset.top;
+	var data_coor = relativeToAbsoluteCoordinates(display_x, display_y);
+	console.log(data_coor);
+
+	Data.push(data_coor);
+	Labels.push(label);
+	Categories.push(-1);
+
+	initEmbedding();
+	drawEmbedding();
+	if(Perspective == XY)
+		center(Translation_x,Translation_y);
+	else if(Perspective == XZ)
+		center(Translation_x,Translation_z);
+	else if(Perspective == YZ)
+		center(Translation_y,Translation_z);
+	updateDisplay();
+}
+
+function saveOutput(){
+	var Output_file;
+	var text = "";
+	for(var i=0; i<Data.length; i++){
+		text += Labels[i]+","+Categories[i]+","+Data[i][0]+","+Data[i][1]+","+Data[i][2]+"\n";
+	}
+
+    var data = new Blob([text], {type: 'text/plain'});
+
+    // If we are replacing a previously generated file we need to
+    // manually revoke the object URL to avoid memory leaks.
+    if (Output_file !== null) {
+      window.URL.revokeObjectURL(Output_file);
     }
-    var cells = row.split(d);
-    var data_point = [];
-	labels.push(cells[0]);
-	categories.push(cells[1]);
-    for(var j=2;j<cells.length;j++) {
-      if(cells[j].length !== 0) {
-        data_point.push(parseFloat(cells[j]));
-      }
-    }
 
-    raw_data.push(data_point);
-  }
-  data = raw_data; // set global
+    Output_file = window.URL.createObjectURL(data);
+
+	var link = document.getElementById('downloadlink');
+    link.href = Output_file;
+    link.style.display = 'block';
 }
 
-dotrain = true;
-iid = -1;
+function inputFileSelect(evt) {
+	// This function handles the "Choose file" button and loads Input_txt
+	Input_files = FileSelect(evt, 'input_list');
+	Input_txt = "";
+
+	var reader = new FileReader();
+	reader.onload = function(e) {
+		Input_txt += reader.result + "\n";
+    }
+	for (var i = 0, f; f = Input_files[i]; i++)
+		reader.readAsText(f);
+}
+
+function FileSelect(evt, element_id) {
+	// This function handles the "Choose file" button
+    files = evt.target.files; // FileList object
+    // files is a FileList of File objects. List some properties.
+    var output = [];
+	Input_txt = "";
+    for (var i = 0, f; f = files[i]; i++) {
+		output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
+                  f.size, ' bytes, last modified: ',
+                  f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
+                  '</li>');
+    }
+    document.getElementById(element_id).innerHTML = '<ul>' + output.join('') + '</ul>';
+	return files;
+}
+
+document.getElementById('input_files').addEventListener('change', inputFileSelect);
+
+// Main code
 $(window).load(function() {
+	  initEmbedding();
+	  // Display button
+	  $("#display").click(function() {
+		initEmbedding();
+		getData();
+		if(Labels.length > 0) {
+		  if(Data.length !== Labels.length) {
+			alert('number of rows in Text labels ('+Labels.length+') does not match number of rows in Data (' + Data.length + ')! Aborting.');
+			return;
+		  }
+		}
+		drawEmbedding();
+		center(Center_x,Center_y);
+		updateDisplay();
+	  });
+	  // X,Y Perspective
+	  $("#xy").click(function() {
+		Perspective = XY;
+		center(Translation_x,Translation_y);
+		updateDisplay();
+	  });
+	  // X,Z Perspective
+	  $("#xz").click(function() {
+		Perspective = XZ;
+		center(Translation_x,Translation_z);
+		updateDisplay();
+	  });
+	  // Y,Z Perspective
+	  $("#yz").click(function() {
+		Perspective = YZ;
+		center(Translation_y,Translation_z);
+		updateDisplay();
+	  });
+	  // Search button
+	  $("#search").click(function() {
+		var label = $("#searchtext").val();
+		search(label);
+	  });
+	  $("#save").click(function() {
+		saveOutput();
+	  });
+	  $("#embed").ready(function(){
+			document.getElementById('embed').oncontextmenu = function() {return false;};
 
-  initEmbedding();
+			$("#embed").mousedown(function(e){
+				if( e.button == 2 ) {
+					var tag = $("#tagtext").val();
+					if(tag === "")
+						$("#failedtag").html("Type the tag name above");
+					else if(Labels.indexOf(tag) != -1)
+						$("#failedtag").html("Tag name already exists");
+					else{
+						createTag(e);
+					}
+					return false;
+				}
+				return true;
+			});
+			$("#embed").mouseover(function(e){
+				var offset = $("#embed").offset();
+				var display_x = e.pageX - offset.left;
+				var display_y = e.pageY - offset.top;
+				var data_coor = relativeToAbsoluteCoordinates(display_x, display_y);
+				$("#position").html("position: " + data_coor[0]+", "+data_coor[1]+", "+data_coor[2]);
+			});
+			/*$("#embed").mouseover(function(e){
+				$("#position").html("");
+			});*/
+	  });
 
-  $("#stopbut").click(function() {
-    dotrain = false;
-  });
-
-  $("#inbut").click(function() {
-
-    initEmbedding();
-    preProData();
-
-    if(labels.length > 0) {
-      if(data.length !== labels.length) {
-        alert('number of rows in Text labels ('+labels.length+') does not match number of rows in Data (' + data.length + ')! Aborting.');
-        return;
-      }
-    }
-
-    drawEmbedding();
-    iid = setInterval(step, 10);
-    dotrain = true;
-
-  });
-
-  $("#xy").click(function() {
-    PERSPECTIVE = XY;
-	center(tx,ty);
-	updateEmbedding();
-  });
-
-  $("#xz").click(function() {
-    PERSPECTIVE = XZ;
-	center(tx,tz);
-	updateEmbedding();
-  });
-
-  $("#yz").click(function() {
-    PERSPECTIVE = YZ;
-	center(ty,tz);
-	updateEmbedding();
-  });
-
-  $("#search").click(function() {
-    var word = $("#searchtxt").val();
-	search(word);
-  });
 });
-
 </script>
 
 </html>
