@@ -33,6 +33,10 @@ var canZoomInfinite = true;
 var enableDrawText = false;
 var dotSizeFromUser = 0.001;
 var fontSizeFromUser = "15px Arial";
+//shift center
+var shiftX = 0;
+var shiftY = 0;
+var shiftZ = 0;
 
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -6810,9 +6814,10 @@ return /******/ (function(modules) { // webpackBootstrap
     this.scale.value = 1 / (this.valueMax - this.valueMin);
 
     // position the camera arm
-    var xCenter = (this.xMax + this.xMin) / 2 * this.scale.x;
-    var yCenter = (this.yMax + this.yMin) / 2 * this.scale.y;
-    var zCenter = (this.zMax + this.zMin) / 2 * this.scale.z;
+    var xCenter = (this.xMax + this.xMin) / 2 * this.scale.x + shiftX;
+    var yCenter = (this.yMax + this.yMin) / 2 * this.scale.y + shiftY;
+    var zCenter = (this.zMax + this.zMin) / 2 * this.scale.z + shiftZ;
+                                                   console.log("this is  called");
     this.camera.setArmLocation(xCenter, yCenter, zCenter);
   };
 

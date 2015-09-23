@@ -68,7 +68,19 @@
             <div align = "center" class="checkbox">
               <h4><label class="checkbox-inline"><input id = "textCheck" type="checkbox" value="">SHOW TEXT LABEL</label></h4>
             </div>
-            <hr>
+            <div align = "center">
+                <hr>
+                Use below to shift center of X, Y, Z <br>
+            <button type="button" id="xplus" class="btn btn-primary" style="width:120px; height:45px;">x+</button>
+            <button type="button" id="xminus" class="btn btn-primary" style="width:120px; height:45px;">x-</button>
+            <button type="button" id="yplus" class="btn btn-primary" style="width:120px; height:45px;">y+</button>
+            <button type="button" id="yminus" class="btn btn-primary" style="width:120px; height:45px;">y-</button>
+            <button type="button" id="zplus" class="btn btn-primary" style="width:120px; height:45px;">z+</button>
+            <button type="button" id="zminus" class="btn btn-primary" style="width:120px; height:45px;">z-</button>
+            <button type="button" id="restoreCenter" class="btn btn-primary" style="width:120px; height:45px;">Restore</button>
+
+
+            </div>
             </div>
             <div id="mygraph">
                 <div style="position: relative; overflow: hidden; width: 600px; height: 600px;">
@@ -262,6 +274,56 @@ var categories = [];
         graph.redraw();
     }
     );
+    var shiftBy = 0.005
+    $("#xplus").click(function() {
+        shiftX = shiftX + shiftBy;
+        graph._setScale();
+        graph.redraw();
+        console.log("X: " + shiftX + "Y: " + shiftY  + "Z: " + shiftZ);
+    });
+    $("#xminus").click(function() {
+        shiftX = shiftX - shiftBy
+        graph._setScale();
+        graph.redraw();
+        console.log("X: " + shiftX + "Y: " + shiftY  + "Z: " + shiftZ);
+    });
+    $("#yplus").click(function() {
+        shiftY = shiftY + shiftBy;
+        graph._setScale();
+        graph.redraw();
+        console.log("X: " + shiftX + "Y: " + shiftY  + "Z: " + shiftZ);
+    });
+    $("#yminus").click(function() {
+        shiftY = shiftY - shiftBy;
+        graph._setScale();
+        graph.redraw();
+        console.log("X: " + shiftX + "Y: " + shiftY  + "Z: " + shiftZ);
+
+    });
+    $("#zplus").click(function() {
+        shiftZ = shiftZ + shiftBy;
+        graph._setScale();
+        graph.redraw();
+        console.log("X: " + shiftX + "Y: " + shiftY  + "Z: " + shiftZ);
+
+    });
+    $("#zminus").click(function() {
+        shiftZ = shiftZ - shiftBy;
+        graph._setScale();
+        graph.redraw();
+        console.log("X: " + shiftX + "Y: " + shiftY  + "Z: " + shiftZ);
+
+    });
+    $("#restoreCenter").click(function() {
+        shiftX = 0;
+        shiftY = 0;
+        shiftZ = 0;
+        graph._setScale();
+        graph.redraw();
+        console.log("X: " + shiftX + "Y: " + shiftY  + "Z: " + shiftZ);
+
+    });
+
 </script>
 
 </body></html>
