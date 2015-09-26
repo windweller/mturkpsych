@@ -25,6 +25,9 @@
 
 /*
  * FIND "theCameraRotation" to find the camera rotating angle
+ * FIND "translationOntoScreenX" to find the 3d to 2d translation
+ * find "EDIT POINT3D VISUALIZATION"
+ * FIND "TOOLTIP CONTENT EDIT"
  */
 
 "use strict";
@@ -37,6 +40,8 @@ var fontSizeFromUser = "15px Arial";
 var shiftX = 0;
 var shiftY = 0;
 var shiftZ = 0;
+//mouse position
+var mousePosition = {x: 0, y: 0};
 
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -6791,6 +6796,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
   /**
    * Calculate the scaling values, dependent on the range in x, y, and z direction
+   * CHANGE CENTER FOR ZOOM
    */
   Graph3d.prototype._setScale = function () {
     this.scale = new Point3d(1 / (this.xMax - this.xMin), 1 / (this.yMax - this.yMin), 1 / (this.zMax - this.zMin));
@@ -6817,7 +6823,6 @@ return /******/ (function(modules) { // webpackBootstrap
     var xCenter = (this.xMax + this.xMin) / 2 * this.scale.x + shiftX;
     var yCenter = (this.yMax + this.yMin) / 2 * this.scale.y + shiftY;
     var zCenter = (this.zMax + this.zMin) / 2 * this.scale.z + shiftZ;
-                                                   console.log("this is  called");
     this.camera.setArmLocation(xCenter, yCenter, zCenter);
   };
 
@@ -6892,7 +6897,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
     // shift and scale the point to the center of the screen
     // use the width of the graph to scale both horizontally and vertically.
-    return new Point2d(this.xcenter + bx * this.frame.canvas.clientWidth, this.ycenter - by * this.frame.canvas.clientWidth);
+    var translationOntoScreenX = this.xcenter + bx * this.frame.canvas.clientWidth;
+    var translationOntoScreenY = this.ycenter - by * this.frame.canvas.clientWidth;
+                                    
+    return new Point2d(translationOntoScreenX, translationOntoScreenY);
   };
 
   /**
@@ -7165,7 +7173,7 @@ return /******/ (function(modules) { // webpackBootstrap
   Graph3d.prototype._getDataPoints = function (data) {
     // TODO: store the created matrix dataPoints in the filters instead of reloading each time
     var x, y, i, z, obj, point;
-                                                   var word;
+                                                   var word, color;
 
     var dataPoints = [];
 
@@ -7201,6 +7209,7 @@ return /******/ (function(modules) { // webpackBootstrap
         y = data[i][this.colY] || 0;
                                                    z = data[i][this.colZ] || 0;
                                                    word = data[i].word || "";
+                                                   color = data[i].color || "";
 
         var xIndex = dataX.indexOf(x); // TODO: implement Array().indexOf() for Internet Explorer
         var yIndex = dataY.indexOf(y);
@@ -7209,8 +7218,7 @@ return /******/ (function(modules) { // webpackBootstrap
           dataMatrix[xIndex] = [];
         }
 
-        var point3d = new Point3d(x,y,z,word);
-                                                   console.log("printing:" + word);
+        var point3d = new Point3d(x,y,z,word, color);
 
 
         obj = {};
@@ -7235,7 +7243,7 @@ return /******/ (function(modules) { // webpackBootstrap
         }
       }
     } else {
-                                                   //EDIT POINT3D
+      //EDIT POINT3D VISUALIZATION
       // 'dot', 'dot-line', etc.
       // copy all values from the google data table to a list with Point3d objects
       for (i = 0; i < data.length; i++) {
@@ -7243,8 +7251,8 @@ return /******/ (function(modules) { // webpackBootstrap
         var ydot = data[i][this.colY] || 0;
         var zdot = data[i][this.colZ] || 0;
         var worddot = data[i].word || "";
-        point = new Point3d(xdot,ydot,zdot,worddot);
-
+        var colordot = data[i].color;
+        point = new Point3d(xdot,ydot,zdot,worddot,colordot);
 
         if (this.colValue !== undefined) {
           point.value = data[i][this.colValue] || 0;
@@ -8317,8 +8325,15 @@ return /******/ (function(modules) { // webpackBootstrap
       ctx.fillStyle = color;
       ctx.beginPath();
       ctx.arc(point.screen.x, point.screen.y, radius, 0, Math.PI * 2, true);
-      ctx.fill();
+      if(!(point.point.color == null)) {
+         ctx.fill();
+      } else {
+          ctx.arc(point.screen.x, point.screen.y, radius+3, 0, Math.PI * 2, true);
+
+      }
+                                              
       ctx.stroke();
+
                                                    
     //draw text
     if(enableDrawText) {
@@ -8598,6 +8613,14 @@ return /******/ (function(modules) { // webpackBootstrap
     util.removeEventListener(document, 'mouseup', this.onmouseup);
     util.preventDefault(event);
   };
+                                                   
+    Graph3d.prototype._getMouseCoord = function (event) {
+        var mouseXa = getMouseX(event) - boundingRect.left;
+        var mouseYa = getMouseY(event) - boundingRect.top;
+        console.log("X: " + mouseX + "Y: " + mouseY);
+        var newCoordData = this._dataPointFromXY(mouseXa, mouseYa);
+        console.log(newCoordData.point);
+};
 
   /**
    * After having moved the mouse, a tooltip should pop up when the mouse is resting on a data point
@@ -8608,6 +8631,9 @@ return /******/ (function(modules) { // webpackBootstrap
     var boundingRect = this.frame.getBoundingClientRect();
     var mouseX = getMouseX(event) - boundingRect.left;
     var mouseY = getMouseY(event) - boundingRect.top;
+                                                   mousePosition.x = mouseX;
+                                                   mousePosition.y = mouseY;
+                                                   //console.log("tooltip mouse X : " + mouseX + "Y: " + mouseY);
 
     if (!this.showTooltip) {
       return;
@@ -8626,6 +8652,7 @@ return /******/ (function(modules) { // webpackBootstrap
     if (this.tooltip && this.tooltip.dataPoint) {
       // tooltip is currently visible
       var dataPoint = this._dataPointFromXY(mouseX, mouseY);
+                                                   
       if (dataPoint !== this.tooltip.dataPoint) {
         // datapoint changed
         if (dataPoint) {
@@ -8858,11 +8885,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
     this._hideTooltip();
 
+                                                    //TOOLTIP CONTENT EDIT
     this.tooltip.dataPoint = dataPoint;
     if (typeof this.showTooltip === 'function') {
-      content.innerHTML = this.showTooltip(dataPoint.point);
+      content.innerHTML = "";
+                                                   content.innerHTML = content.innerHTML + '[' + dataPoint.point.word + '] ' + 'Color: ' + dataPoint.point.color;
     } else {
-      content.innerHTML = '<table>' + '<tr><td>x:</td><td>' + dataPoint.point.x + '</td></tr>' + '<tr><td>y:</td><td>' + dataPoint.point.y + '</td></tr>' + '<tr><td>z:</td><td>' + dataPoint.point.z + '</td></tr>' + '</table>';
+                                                   content.innerHTML = '<table>' + '<tr><td>x:</td><td>' + dataPoint.point.x + '</td></tr>' + '<tr><td>y:</td><td>' + dataPoint.point.y + '</td></tr>' + '<tr><td>z:</td><td>' + dataPoint.point.z + '</td></tr>' + '</table>';
     }
 
     content.style.left = '0';
@@ -9118,8 +9147,10 @@ return /******/ (function(modules) { // webpackBootstrap
     this.x = x !== undefined ? x : 0;
     this.y = y !== undefined ? y : 0;
     this.z = z !== undefined ? z : 0;
-                                                   if(arguments.length ==4) {
+                                                  
+                                                   if(arguments.length ==5) {
                                                    this.word = arguments[3];
+                                                   this.color = arguments[4];
                                                    }
   };
 

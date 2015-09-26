@@ -5,18 +5,79 @@
   <title>3D-Wordiverse</title>
 
   <style>
+
+    #minimize {
+        float: left;
+    }
     body {font: 10pt arial;}
     #visibleWhenClicked {
         visibility: hidden;
     }
+
+    .Fixed
+    {
+        position: fixed;
+        bottom: 30px;
+        left: 0px;
+        right: 0px;
+        border: dotted;
+        border-width: thin;
+        background-color:  #C3D9E0;
+        padding: 20px;
+        width: 90%;
+        opacity: 0.8;
+        margin: 0 auto;
+        visibility: hidden;
+    }
+    .Fixed2
+    {
+        position: fixed;
+        top: 40px;
+        left: 0px;
+        right: 0px;
+        border: dotted;
+        border-width: thin;
+        background-color:  #C3D9E0;
+        padding: 10px;
+        width: 100%;
+        opacity: 0.8;
+        margin: 0 auto;
+        visibility: hidden;
+    }
+    .Fixed3
+    {
+        position: fixed;
+        top: 56px;
+        left: 13px;
+        right: 0px;
+        opacity: 0.8;
+        margin: 0 auto;
+        visibility: hidden;
+    }
+    textarea {
+        resize: none;
+    };
   </style>
 
   <link href="css/vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="css/vendor/slider.css">
   <link rel="stylesheet" type="text/css" href="css/mystyle.css">
 
-  <script type="text/javascript" src="js/vendor/vis.js"></script>
+  <script>
+    var idCounter = 0;
+    /** DETECTING BROWSER **/
+    var isOpera = !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+    // Opera 8.0+ (UA detection to detect Blink/v8-powered Opera)
+    var isFirefox = typeof InstallTrigger !== 'undefined';   // Firefox 1.0+
+    var isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
+    // At least Safari 3+: "[object HTMLElementConstructor]"
+    var isChrome = !!window.chrome && !isOpera;              // Chrome 1+
+    var isIE = /*@cc_on!@*/false || !!document.documentMode;   // At least IE6
+    /** DETECTING BROWSER ENDS**/
+  </script>
+
   <script type="text/javascript" src="js/vendor/jquery-2.1.4.min.js"></script>
+  <script type="text/javascript" src="js/vendor/vis.js"></script>
   <script type="text/javascript" src="js/vendor/bootstrapslider.js"></script>
 
 
@@ -56,31 +117,22 @@
             <button type="button" id="find" class="btn btn-primary" style="width:120px; height:45px;">Display</button>
             <hr>
             <div id = "visibleWhenClicked" class="jumbotron col-md-16 center">
-            <h4 align = "center">Use this slider to adjust the SIZE of the POINT.</h4>
-            <div align = "center">
-            <input type="text" id="foo" class="span2" value="" data-slider-min="10" data-slider-max="1000" data-slider-step="1" data-slider-value="1" data-slider-orientation="horizontal" data-slider-selection="after"data-slider-tooltip="hide">
-            </div>
-            <h4 align = "center">Use this slider to adjust the SIZE of the LABEL.</h4>
-            <div align = "center">
-            <input type="text" id="foo1" class="span2" value="" data-slider-min="1" data-slider-max="30" data-slider-step="1" data-slider-value="1" data-slider-orientation="horizontal" data-slider-selection="after"data-slider-tooltip="hide">
-            </div>
-            <h4 align = "center">Hover/Click each individual point to see detail</h5>
-            <div align = "center" class="checkbox">
-              <h4><label class="checkbox-inline"><input id = "textCheck" type="checkbox" value="">SHOW TEXT LABEL</label></h4>
-            </div>
+
+            <h5 align = "center">Hover/Click each individual point to see detail</h5>
+
             <div align = "center">
                 <hr>
                 Use below to shift center of X, Y, Z <br>
                 (Or use keyboard q,w,a,s,z,x, each corresponding to x+,x-,y+,y-,z+,z-)<br>
-            <button type="button" id="xplus" class="btn btn-primary" style="width:120px; height:45px;">x+</button>
-            <button type="button" id="xminus" class="btn btn-primary" style="width:120px; height:45px;">x-</button>
-            <button type="button" id="yplus" class="btn btn-primary" style="width:120px; height:45px;">y+</button>
-            <button type="button" id="yminus" class="btn btn-primary" style="width:120px; height:45px;">y-</button>
-            <button type="button" id="zplus" class="btn btn-primary" style="width:120px; height:45px;">z+</button>
-            <button type="button" id="zminus" class="btn btn-primary" style="width:120px; height:45px;">z-</button>
+            <button type="button" id="xplus" class="btn btn-primary" style="width:60px; height:45px;">x+</button>
+            <button type="button" id="xminus" class="btn btn-primary" style="width:60px; height:45px;">x-</button>
+            <button type="button" id="yplus" class="btn btn-primary" style="width:60px; height:45px;">y+</button>
+            <button type="button" id="yminus" class="btn btn-primary" style="width:60px; height:45px;">y-</button>
+            <button type="button" id="zplus" class="btn btn-primary" style="width:60px; height:45px;">z+</button>
+            <button type="button" id="zminus" class="btn btn-primary" style="width:60px; height:45px;">z-</button>
             <button type="button" id="restoreCenter" class="btn btn-primary" style="width:120px; height:45px;">Restore</button>
-
-
+            &nbsp&nbsp&nbsp&nbsp&nbsp
+            <button type="button" id="download" class="btn btn-primary" style="width:150px; height:45px;">DOWNLOAD CSV</button>
             </div>
             </div>
             <div id="mygraph">
@@ -93,6 +145,43 @@
                 </div>
                 </div>
             </div>
+
+            <div class = "container fixed" id = "new">
+                <div align = "center" >
+                    Label: <textarea id = "hover1" resize= none; rows="1" cols="10"></textarea> &nbsp
+                    Xcoord: <textarea id = "hover2"  resize= none; rows="1" cols="10"></textarea> &nbsp
+                    Ycoord: <textarea id = "hover3"  resize= none; rows="1" cols="10"></textarea> &nbsp
+                    Zcoord: <textarea id = "hover4"  resize= none; rows="1" cols="10"></textarea> &nbsp
+                    <button align = "right" type="button" id="newLabelQuick" class="btn btn-primary" style="width:100px; height:45px;">Quick New</button>
+                    <button align = "right" type="button" id="newLabel" class="btn btn-primary" style="width:100px; height:45px;">Create New</button>
+                    <button align = "right" type="button" id="newLabelEdit" class="btn btn-primary" style="width:80px; height:45px;">Update</button>
+                    <button align = "right" type="button" id="newLabelDelete" class="btn btn-primary" style="width:60x; height:45px;">Delete</button>
+                    <button align = "right" type="button" id="newLabelClose" class="btn btn-primary" style="width:40px; height:45px;">X</button>
+
+
+                </div>
+            </div>
+
+            <div class = "fixed2" id = "topMenu">
+                <div align = "center">
+                    <h4 align = "center">
+                        <button align = "right" type="button" id="minimize" class="btn btn-primary" style="width:100px; height:30px;">MINIMIZE</button>
+                    </h4>
+                    <h4 align = "center">
+                        Adjust the SIZE of the POINT: <input type="text" id="foo" class="span2" value="" data-slider-min="10" data-slider-max="1000" data-slider-step="1" data-slider-value="1" data-slider-orientation="horizontal" data-slider-selection="after"data-slider-tooltip="hide">&nbsp&nbsp&nbsp
+                        Adjust the SIZE of the LABEL: <input type="text" id="foo1" class="span2" value="" data-slider-min="1" data-slider-max="30" data-slider-step="1" data-slider-value="1" data-slider-orientation="horizontal" data-slider-selection="after"data-slider-tooltip="hide">&nbsp&nbsp&nbsp
+                        <label class="checkbox-inline"><input id = "textCheck" type="checkbox" value="">SHOW TEXT LABEL</label>
+                    </h4>
+
+
+                </div>
+            </div>
+            <div class = "fixed3" id = "topIcon">
+                <button align = "right" type="button" id="minimize2" class="btn btn-primary" style="width:40px; height:30px;">+</button>
+            </div>
+
+
+
 
             <div id="footer">
                   <div class="container">
@@ -111,6 +200,15 @@ var data_txt;
 var dataContent;
 var labels = [];
 var categories = [];
+$("#minimize").click(function() {
+        document.getElementById("topMenu").style.visibility= "hidden" ;
+        document.getElementById("topIcon").style.visibility= "visible" ;
+});
+$("#minimize2").click(function() {
+        document.getElementById("topMenu").style.visibility= "visible" ;
+        document.getElementById("topIcon").style.visibility= "hidden" ;
+});
+
 
  $('#files').click(function() {
      //RESET
@@ -181,7 +279,16 @@ var categories = [];
 
       drawVisualization(1000/100000.0);
       document.getElementById("visibleWhenClicked").style.visibility= "visible" ;
+      document.getElementById("topMenu").style.visibility= "hidden" ;
+      document.getElementById("topIcon").style.visibility= "hidden" ;
+      document.getElementById("new").style.visibility= "hidden" ;
+      document.getElementById("topMenu").style.visibility= "visible" ;
 
+
+
+      $('html, body').animate({
+          scrollTop: $("#mygraph").offset().top
+      }, 1200);
   });
 
 </script>
@@ -208,9 +315,9 @@ var categories = [];
       var dist = categories[i]/10;
       var vocabulary = labels[i];
 
-      data.add({x:x,y:y,z:z, style:dist, word:vocabulary});
+      data.add({id: idCounter, x:x,y:y,z:z, style:dist, word:vocabulary, color: dist});
+      idCounter = idCounter + 1;
     }
-
     // specify options
     var options = {
       width:  '1000px',
@@ -226,17 +333,8 @@ var categories = [];
       yValueLabel: function (y) {return ""},
       zValueLabel: function (z) {return ""},
       tooltip: function(point) {
-          var word;
-          for(var i = 0; i < dataContent.length; i++) {
-              if(point.x == dataContent[i][0] && point.y == dataContent[i][1] && point.z == dataContent[i][2]) {
-                  //console.log("index: " + i);
-                  //console.log(point.x + " " + point.y + "  " + point.z);
-                  //console.log(dataContent[i][0] + " " + dataContent[i][1] + " " + dataContent[i][2]);
-                  word = labels[i];
-                  color= categories[i]/10.0;
-              }
-          }
-          return word + " - Color: " + color + "\n";
+
+          return "TOOLTIP";
       },
       cameraPosition: {
         horizontal: -0.35,
@@ -279,7 +377,6 @@ var categories = [];
     function redrawScale () {
         graph._setScale();
         graph.redraw();
-        console.log("X: " + shiftX + "Y: " + shiftY  + "Z: " + shiftZ);
     }
     $("#xplus").click(function() {
         shiftX = shiftX + shiftBy;
@@ -344,8 +441,165 @@ var categories = [];
         else if (event.keyCode == 88) {
             shiftZ = shiftZ + shiftBy
             redrawScale();
+        } }, true);
+
+    $("#newLabelQuick").click(function() {
+        var word = $("#hover1").val();
+        word = word + "*"
+        var x1 = $("#hover2").val();
+        var y1 = $("#hover3").val();
+        var z1 = $("#hover4").val();
+        x1 = Number(x1)+0.5;
+        y1 = Number(y1)+0.5;
+        z1 = Number(z1)+0.5;
+
+        data.add({id: idCounter, x:x1,y:y1,z:z1, style:null, word:word, color: null});
+        idCounter = idCounter + 1;
+        graph.redraw();
+    });
+    $("#newLabel").click(function() {
+        var word = $("#hover1").val();
+
+        var x1 = Number($("#hover2").val());
+        var y1 = Number($("#hover3").val());
+        var z1 = Number($("#hover4").val());
+
+        //search if already exist
+        var i;
+        var tempData;
+        var ids = data.getIds();
+        for(i = 0; i < ids.length; i++) {
+            tempData = data.get(ids[i]);
+            if ((tempData.x == x1) && (tempData.y == y1) && (tempData.z == z1)) {
+                var r = confirm("A word ''" + word + "' with same vector exists. Are you sure you want to continue?");
+                if (r) {
+                    data.add({id: idCounter, x:x1,y:y1,z:z1, style:null, word:word, color: null});
+                    graph.redraw
+                    alert("Point Inserted");
+                } else {
+                    alert("Stopped");
+                }
+            }
         }
-}, true);
+
+    });
+    $("#newLabelClose").click(function() {
+        document.getElementById("new").style.visibility= "hidden" ;
+    });
+    $("#newLabelEdit").click(function() {
+        alert("NOT YET SUPPORTED. I'M WORKING ON IT!");
+    });
+    $("#newLabelDelete").click(function() {
+        var i;
+        var word = $("#hover1").val();
+        var x1 = Number($("#hover2").val());
+        var y1 = Number($("#hover3").val());
+        var z1 = Number($("#hover4").val());
+        var tempData;
+        var ids = data.getIds();
+        console.log(ids);
+        for(i = 0; i < ids.length; i++) {
+            tempData = data.get(ids[i]);
+            console.log(tempData);
+            if ((tempData.x == x1) && (tempData.y == y1) && (tempData.z == z1) && (tempData.word == word)) {
+                data.remove(tempData.id);
+                console.log("found item to delete");
+            }
+        }
+        graph.redraw();
+    });
+
+    //click to initiate floating bottom menu
+    var $body = $('#mygraph');
+    $body.on('mousedown', function (evt) {
+      $body.on('mouseup mousemove', function handler(evt) {
+        if (evt.type === 'mouseup') {
+            document.getElementById("new").style.visibility= "visible" ;
+            console.log("n clicked");
+            console.log("X: " + mousePosition.x + "Y: " + mousePosition.y);
+            var dataPoint2 = graph._dataPointFromXY(mousePosition.x, mousePosition.y);
+            console.log("The DataPoint: " +dataPoint2.point.word + " " +  dataPoint2.point.x + " " + dataPoint2.point.y + " " + dataPoint2.point.color);
+            $("#hover1").val(dataPoint2.point.word);
+            $("#hover2").val(dataPoint2.point.x);
+            $("#hover3").val(dataPoint2.point.y);
+            $("#hover4").val(dataPoint2.point.z);
+        } else {
+          //console.log("drag");
+        }
+        $body.off('mouseup mousemove', handler);
+      });
+    });
+
+    //CSV Download
+    $("#download").click(function() {
+        var theBigArray = [];
+        var tempData;
+        var ids = data.getIds();
+        for(i = 0; i < ids.length; i++) {
+            var object = {};
+            tempData = data.get(ids[i]);
+            console.log(tempData);
+            object.verb = tempData.word;
+            object.cluster = tempData.color;
+            object.x = tempData.x;
+            object.y = tempData.y;
+            object.z = tempData.z;
+            console.log("OBJECT: " + object);
+            theBigArray.push(object);
+        }
+        console.log("THE BIG ARRAY: " + theBigArray);
+
+        if(theBigArray.length == 0){
+            alert("EMPTY");
+        } else {
+            //Json Conversion for Download Starts
+            var downloadable = theBigArray;
+            //Json Conversion Ends
+            var csv = JSON2CSV(theBigArray);
+            console.log(theBigArray);
+
+            if(isIE) {
+                //window.open("data:text/csv;charset=utf-8," + escape(csv) + ".csv", "table.csv");
+                var CSV = csv;
+                var IEwindow = window.open();
+                IEwindow.document.write('sep=,\r\n' + CSV);
+                IEwindow.document.close();
+                IEwindow.document.execCommand('SaveAs', true,  "table.csv");
+                IEwindow.close();
+            } else {
+                var link = document.createElement('a');
+                link.download = "table.csv";
+                link.href = "data:text/csv;charset=utf-8," + escape(csv);
+
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+    });
+    function JSON2CSV(objArray) {
+        var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+        var str = '';
+        var line = '';
+        var head = array[0];
+        for (var index in array[0]) {
+            var value = index + "";
+            line += '"' + value.replace(/"/g, '""') + '",';
+        }
+        line = line.slice(0, -1);
+        str += line + '\r\n';
+        for (var i = 0; i < array.length; i++) {
+           var line = '';
+           for (var index in array[i]) {
+                var value = array[i][index] + "";
+                line += '"' + value.replace(/"/g, '""') + '",';
+            }
+           line = line.slice(0, -1);
+           str += line + '\r\n';
+       }
+       return str;
+    }
+
 
 </script>
 
