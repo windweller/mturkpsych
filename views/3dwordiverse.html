@@ -74,6 +74,11 @@
     var isChrome = !!window.chrome && !isOpera;              // Chrome 1+
     var isIE = /*@cc_on!@*/false || !!document.documentMode;   // At least IE6
     /** DETECTING BROWSER ENDS**/
+    var globalWord = null;
+    var globalx1 = null;
+    var globaly1 = null;
+    var globalz1 = null;
+    var globalcolor = null;
   </script>
 
   <script type="text/javascript" src="js/vendor/jquery-2.1.4.min.js"></script>
@@ -453,8 +458,8 @@ $("#minimize2").click(function() {
         y1 = Number(y1)+0.5;
         z1 = Number(z1)+0.5;
 
-        data.add({id: idCounter, x:x1,y:y1,z:z1, style:null, word:word, color: null});
         idCounter = idCounter + 1;
+        data.add({id: idCounter, x:x1,y:y1,z:z1, style:null, word:word, color: null});
         graph.redraw();
     });
     $("#newLabel").click(function() {
@@ -468,12 +473,78 @@ $("#minimize2").click(function() {
         var i;
         var tempData;
         var ids = data.getIds();
+        var flag = true;
         for(i = 0; i < ids.length; i++) {
             tempData = data.get(ids[i]);
-            if ((tempData.x == x1) && (tempData.y == y1) && (tempData.z == z1)) {
+            console.log(tempData.x + " " + tempData.y + " " + tempData.z);
+            console.log("Global 2: " + globalx1 + " " + globaly1 + " " + globalz1);
+            if ((tempData.x == globalx1) && (tempData.y == globaly1) && (tempData.z == globalz1)) {
+                flag = false;
+                console.log("ever entered??");
                 var r = confirm("A word ''" + word + "' with same vector exists. Are you sure you want to continue?");
                 if (r) {
+                    idCounter = idCounter + 1;
                     data.add({id: idCounter, x:x1,y:y1,z:z1, style:null, word:word, color: null});
+                    graph.redraw
+                    alert("Point Inserted");
+                    break;
+                } else {
+                    alert("Stopped");
+                    break;
+                }
+            }
+        }
+        if(flag) {
+            console.log("this was entered");
+            idCounter = idCounter + 1;
+            data.add({id: idCounter, x:x1,y:y1,z:z1, style:null, word:word, color: null});
+            graph.redraw
+        }
+
+    });
+    $("#newLabelClose").click(function() {
+        document.getElementById("new").style.visibility= "hidden" ;
+    });
+
+    $("#newLabelEdit").click(function() {
+
+        //DELETE FUNCTION
+        var i;
+        var word = globalWord
+        var x1 = Number(globalx1);
+        var y1 = Number(globaly1);
+        var z1 = Number(globalz1);
+        var tempData;
+        var ids = data.getIds();
+        console.log(ids);
+        for(i = 0; i < ids.length; i++) {
+            tempData = data.get(ids[i]);
+            console.log(tempData);
+            if ((tempData.x == x1) && (tempData.y == y1) && (tempData.z == z1) && (tempData.word == word)) {
+                data.remove(tempData.id);
+                console.log("found item to delete");
+            }
+        }
+
+        //EDIT FUNCTION
+        console.log("starting to edit");
+        word = $("#hover1").val();
+
+        x1 = Number($("#hover2").val());
+        y1 = Number($("#hover3").val());
+        z1 = Number($("#hover4").val());
+
+        //search if already exist
+        ids = data.getIds();
+        var flag = true;
+        for(i = 0; i < ids.length; i++) {
+            tempData = data.get(ids[i]);
+            if ((tempData.x == globalx1) && (tempData.y == globaly1) && (tempData.z == globalz1)) {
+                var flag = false;
+                var r = confirm("A word ''" + word + "' with same vector exists. Are you sure you want to continue?");
+                if (r) {
+                    idCounter = idCounter + 1;
+                    data.add({id: idCounter, x:x1,y:y1,z:z1, style:globalcolor, word:word, color: globalcolor});
                     graph.redraw
                     alert("Point Inserted");
                 } else {
@@ -481,13 +552,12 @@ $("#minimize2").click(function() {
                 }
             }
         }
-
-    });
-    $("#newLabelClose").click(function() {
-        document.getElementById("new").style.visibility= "hidden" ;
-    });
-    $("#newLabelEdit").click(function() {
-        alert("NOT YET SUPPORTED. I'M WORKING ON IT!");
+        if(flag) {
+            console.log("this sentence is launched");
+            idCounter = idCounter + 1;
+            data.add({id: idCounter, x:x1,y:y1,z:z1, style:globalcolor, word:word, color: globalcolor});
+            graph.redraw
+        }
     });
     $("#newLabelDelete").click(function() {
         var i;
@@ -514,17 +584,23 @@ $("#minimize2").click(function() {
     $body.on('mousedown', function (evt) {
       $body.on('mouseup mousemove', function handler(evt) {
         if (evt.type === 'mouseup') {
-            /*
+
             document.getElementById("new").style.visibility= "visible" ;
             console.log("n clicked");
             console.log("X: " + mousePosition.x + "Y: " + mousePosition.y);
             var dataPoint2 = graph._dataPointFromXY(mousePosition.x, mousePosition.y);
             console.log("The DataPoint: " +dataPoint2.point.word + " " +  dataPoint2.point.x + " " + dataPoint2.point.y + " " + dataPoint2.point.color);
+            globalWord = dataPoint2.point.word;
             $("#hover1").val(dataPoint2.point.word);
-            $("#hover2").val(dataPoint2.point.x);
-            $("#hover3").val(dataPoint2.point.y);
-            $("#hover4").val(dataPoint2.point.z);
-            */
+            globalx1 = Number(dataPoint2.point.x);
+            $("#hover2").val(globalx1);
+            globaly1 = Number(dataPoint2.point.y);
+            $("#hover3").val(globaly1);
+            globalz1 = Number(dataPoint2.point.z);
+            $("#hover4").val(globalz1);
+            globalcolor = dataPoint2.point.color;
+            console.log("GLOBAL: " + globalx1 + " " + globaly1 + " " + globalz1 + " GlobalColor:" + globalcolor);
+
         } else {
           //console.log("drag");
         }
