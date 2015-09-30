@@ -28,6 +28,7 @@
  * FIND "translationOntoScreenX" to find the 3d to 2d translation
  * find "EDIT POINT3D VISUALIZATION"
  * FIND "TOOLTIP CONTENT EDIT"
+ * FIND "OVERRIDING COLOR" FOR VISUALLY DISTINCT COLOR SET OF 75
  */
 
 "use strict";
@@ -42,6 +43,11 @@ var shiftY = 0;
 var shiftZ = 0;
 //mouse position
 var mousePosition = {x: 0, y: 0};
+//center of the eye
+var editInProgress = false;
+//Visually distinct color
+var colorArray = ['#400000', '#997a00', '#004d33', '#263699', '#b30077', '#403030', '#ffd940', '#269973', '#0d0d33', '#ff80d5', '#bf4330', '#e6e2ac', '#bfffea', '#7979f2', '#ff0088', '#663a33', '#8c8a69', '#00f2c2', '#282633', '#ffbfe1', '#ffc8bf', '#5f6600', '#7ca6a3', '#6d3df2', '#660029', '#f29979', '#c3e639', '#00d6e6', '#a799cc', '#401023', '#592400', '#26330d', '#007780', '#5e5673', '#804059', '#ff8c40', '#4a592d', '#002933', '#3d0099', '#ff80a2', '#996b4d', '#639926', '#2d5059', '#311659', '#ff0022', '#7f4400', '#61f200', '#004466', '#b866cc', '#73000f', '#e5b073', '#96bf8f', '#3399cc', '#6b0073', '#d9364c', '#807160', '#006629', '#a3c7d9', '#e639da', '#806064', '#e59900', '#40ff8c', '#005299', '#4d2645', '#4c3300', '#43594c', '#80b3ff', '#997391'];
+
 
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -6820,9 +6826,15 @@ return /******/ (function(modules) { // webpackBootstrap
     this.scale.value = 1 / (this.valueMax - this.valueMin);
 
     // position the camera arm
-    var xCenter = (this.xMax + this.xMin) / 2 * this.scale.x + shiftX;
-    var yCenter = (this.yMax + this.yMin) / 2 * this.scale.y + shiftY;
-    var zCenter = (this.zMax + this.zMin) / 2 * this.scale.z + shiftZ;
+    var xCenter = (this.xMax + this.xMin) / 2 * this.scale.x;
+    var yCenter = (this.yMax + this.yMin) / 2 * this.scale.y;
+    var zCenter = (this.zMax + this.zMin) / 2 * this.scale.z;
+    if(editInProgress) {
+         xCenter = xCameraCenter;
+         yCenter = yCameraCenter;
+         zCenter = zCameraCenter;
+    }
+                                             
     this.camera.setArmLocation(xCenter, yCenter, zCenter);
   };
 
@@ -7606,7 +7618,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }
 
     this._redrawInfo();
-    this._redrawLegend();
+    //this._redrawLegend();
   };
 
   /**
@@ -8303,12 +8315,15 @@ return /******/ (function(modules) { // webpackBootstrap
         radius = 0;
       }
 
-      var hue, color, borderColor;
+      var hue, color, borderColor, colorValue;
       if (this.style === Graph3d.STYLE.DOTCOLOR) {
         // calculate the color based on the value
         hue = (1 - (point.point.value - this.valueMin) * this.scale.value) * 240;
         color = this._hsv2rgb(hue, 1, 1);
         borderColor = this._hsv2rgb(hue, 1, 0.8);
+                                                   //OVERRIDING COLOR
+                                                   colorValue = (point.point.value*10)%67;
+                                                   color = colorArray[colorValue];
       } else if (this.style === Graph3d.STYLE.DOTSIZE) {
         color = this.dataColor.fill;
         borderColor = this.dataColor.stroke;
@@ -26645,7 +26660,7 @@ return /******/ (function(modules) { // webpackBootstrap
         this.svg.style.width = '0px';
       } else {
         this.dom.frame.style.width = this.options.iconSize + 15 + this.dom.textArea.offsetWidth + 10 + 'px';
-        this.drawLegendIcons();
+        //this.drawLegendIcons();
       }
 
       var content = '';

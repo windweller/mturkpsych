@@ -79,6 +79,11 @@
     var globaly1 = null;
     var globalz1 = null;
     var globalcolor = null;
+    //GLOBAL CAMERA CENTER VARIABLE
+    var xCameraCenter;
+    var yCameraCenter;
+    var zCameraCenter;
+
   </script>
 
   <script type="text/javascript" src="js/vendor/jquery-2.1.4.min.js"></script>
@@ -122,23 +127,7 @@
             <button type="button" id="find" class="btn btn-primary" style="width:120px; height:45px;">Display</button>
             <hr>
             <div id = "visibleWhenClicked" class="jumbotron col-md-16 center">
-
             <h5 align = "center">Hover/Click each individual point to see detail</h5>
-
-            <div align = "center">
-                <hr>
-                Use below to shift center of X, Y, Z <br>
-                (Or use keyboard q,w,a,s,z,x, each corresponding to x+,x-,y+,y-,z+,z-)<br>
-            <button type="button" id="xplus" class="btn btn-primary" style="width:60px; height:45px;">x+</button>
-            <button type="button" id="xminus" class="btn btn-primary" style="width:60px; height:45px;">x-</button>
-            <button type="button" id="yplus" class="btn btn-primary" style="width:60px; height:45px;">y+</button>
-            <button type="button" id="yminus" class="btn btn-primary" style="width:60px; height:45px;">y-</button>
-            <button type="button" id="zplus" class="btn btn-primary" style="width:60px; height:45px;">z+</button>
-            <button type="button" id="zminus" class="btn btn-primary" style="width:60px; height:45px;">z-</button>
-            <button type="button" id="restoreCenter" class="btn btn-primary" style="width:120px; height:45px;">Restore</button>
-            &nbsp&nbsp&nbsp&nbsp&nbsp
-            <button type="button" id="download" class="btn btn-primary" style="width:150px; height:45px;">DOWNLOAD CSV</button>
-            </div>
             </div>
             <div id="mygraph">
                 <div style="position: relative; overflow: hidden; width: 600px; height: 600px;">
@@ -157,8 +146,9 @@
                     Xcoord: <textarea id = "hover2"  resize= none; rows="1" cols="10"></textarea> &nbsp
                     Ycoord: <textarea id = "hover3"  resize= none; rows="1" cols="10"></textarea> &nbsp
                     Zcoord: <textarea id = "hover4"  resize= none; rows="1" cols="10"></textarea> &nbsp
+                    <button align = "right" type="button" id="newLabelZoom" class="btn btn-primary" style="width:120px; height:45px;">Zoom Center</button>
                     <button align = "right" type="button" id="newLabelQuick" class="btn btn-primary" style="width:100px; height:45px;">Quick New</button>
-                    <button align = "right" type="button" id="newLabel" class="btn btn-primary" style="width:100px; height:45px;">Create New</button>
+                    <button align = "right" type="button" id="newLabel" class="btn btn-primary" style="width:110px; height:45px;">Create New</button>
                     <button align = "right" type="button" id="newLabelEdit" class="btn btn-primary" style="width:80px; height:45px;">Update</button>
                     <button align = "right" type="button" id="newLabelDelete" class="btn btn-primary" style="width:60x; height:45px;">Delete</button>
                     <button align = "right" type="button" id="newLabelClose" class="btn btn-primary" style="width:40px; height:45px;">X</button>
@@ -172,11 +162,19 @@
                     <h4 align = "center">
                         <button align = "right" type="button" id="minimize" class="btn btn-primary" style="width:100px; height:30px;">MINIMIZE</button>
                     </h4>
-                    <h4 align = "center">
+                    <h5 align = "center">
                         Adjust the SIZE of the POINT: <input type="text" id="foo" class="span2" value="" data-slider-min="10" data-slider-max="1000" data-slider-step="1" data-slider-value="1" data-slider-orientation="horizontal" data-slider-selection="after"data-slider-tooltip="hide">&nbsp&nbsp&nbsp
                         Adjust the SIZE of the LABEL: <input type="text" id="foo1" class="span2" value="" data-slider-min="1" data-slider-max="30" data-slider-step="1" data-slider-value="1" data-slider-orientation="horizontal" data-slider-selection="after"data-slider-tooltip="hide">&nbsp&nbsp&nbsp
                         <label class="checkbox-inline"><input id = "textCheck" type="checkbox" value="">SHOW TEXT LABEL</label>
-                    </h4>
+                        <hr>
+                        <textarea id = "searchContent" resize= none; rows="1" cols="10"></textarea>
+                        <button type="button" id = "search" class="btn btn-primary" style="width:100px; height:30px;">Search</button>
+                        <button type="button" id="restoreCenter" class="btn btn-primary" style="width:120px; height:45px;">Restore</button>
+                        <button type="button" id="download" class="btn btn-primary" style="width:150px; height:45px;">DOWNLOAD CSV</button>
+
+
+
+                    </h5>
 
 
                 </div>
@@ -253,7 +251,6 @@ $("#minimize2").click(function() {
     document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
   }
   document.getElementById('files').addEventListener('change', handleFileSelect);
-
 
   $("#find").click(function() {
       //RESET data
@@ -333,7 +330,6 @@ $("#minimize2").click(function() {
       showGrid: false,
       keepAspectRatio: true,
       verticalRatio: 1,
-      legendLabel: 'category',
       xValueLabel: function (x) {return ""},
       yValueLabel: function (y) {return ""},
       zValueLabel: function (z) {return ""},
@@ -351,6 +347,11 @@ $("#minimize2").click(function() {
     // create our graph
     var container = document.getElementById('mygraph');
     graph = new vis.Graph3d(container, data, options, inputDotSize);
+    editInProgress = true;
+    xCameraCenter = (graph.xMax + graph.xMin) / 2 * graph.scale.x;
+    yCameraCenter = (graph.yMax + graph.yMin) / 2 * graph.scale.y;
+    zCameraCenter = (graph.zMax + graph.zMin) / 2 * graph.scale.z;
+
   }
 
   $('#foo').slider("setValue", 1000)
@@ -383,45 +384,16 @@ $("#minimize2").click(function() {
         graph._setScale();
         graph.redraw();
     }
-    $("#xplus").click(function() {
-        shiftX = shiftX + shiftBy;
-        redrawScale();
-    });
-    $("#xminus").click(function() {
-        shiftX = shiftX - shiftBy
-        redrawScale();
-
-    });
-    $("#yplus").click(function() {
-        shiftY = shiftY + shiftBy;
-        redrawScale();
-
-    });
-    $("#yminus").click(function() {
-        shiftY = shiftY - shiftBy;
-        redrawScale();
-
-
-    });
-    $("#zplus").click(function() {
-        shiftZ = shiftZ + shiftBy;
-        redrawScale();
-
-
-    });
-    $("#zminus").click(function() {
-        shiftZ = shiftZ - shiftBy;
-        redrawScale();
-
-    });
     $("#restoreCenter").click(function() {
-        shiftX = 0;
-        shiftY = 0;
-        shiftZ = 0;
-        redrawScale();
+        var xCenter = (graph.xMax + graph.xMin) / 2 * graph.scale.x;
+        var yCenter = (graph.yMax + graph.yMin) / 2 * graph.scale.y;
+        var zCenter = (graph.zMax + graph.zMin) / 2 * graph.scale.z;
+        graph.camera.setArmLocation(xCenter, yCenter, zCenter);
+        graph.redraw();
 
     });
 
+    /*
     document.addEventListener('keydown', function(event) {
         if (event.keyCode == 81) {
             shiftX = shiftX - shiftBy
@@ -447,7 +419,23 @@ $("#minimize2").click(function() {
             shiftZ = shiftZ + shiftBy
             redrawScale();
         } }, true);
+*/
+        function clearTextBox() {
+            $("#hover1").val("");
+            $("#hover2").val("");
+            $("#hover3").val("");
+            $("#hover4").val("");
+            document.getElementById("new").style.visibility= "hidden" ;
+        }
 
+    $("#newLabelZoom").click(function() {
+
+        xCameraCenter = $("#hover2").val() * graph.scale.x;
+        yCameraCenter = $("#hover3").val() * graph.scale.y;
+        zCameraCenter = $("#hover4").val() * graph.scale.z;
+        graph.camera.setArmLocation(xCameraCenter,yCameraCenter,zCameraCenter);
+        graph.redraw();
+    });
     $("#newLabelQuick").click(function() {
         var word = $("#hover1").val();
         word = word + "*"
@@ -458,9 +446,36 @@ $("#minimize2").click(function() {
         y1 = Number(y1)+0.5;
         z1 = Number(z1)+0.5;
 
-        idCounter = idCounter + 1;
-        data.add({id: idCounter, x:x1,y:y1,z:z1, style:null, word:word, color: null});
-        graph.redraw();
+        var i;
+        var tempData;
+        var ids = data.getIds();
+        var flag = true;
+        for(i = 0; i < ids.length; i++) {
+            tempData = data.get(ids[i]);
+            if ((tempData.x == x1) && (tempData.y == y1) && (tempData.z == z1)) {
+                flag = false;
+                var r = confirm("A word [ " + word + " ] with same vector exists. Are you sure you want to continue?");
+                if (r) {
+                    idCounter = idCounter + 1;
+                    data.add({id: idCounter, x:x1,y:y1,z:z1, style:null, word:word, color: null});
+                    graph.camera.setArmLocation(xCameraCenter,yCameraCenter,zCameraCenter);
+                    graph.redraw
+                    alert("Point Inserted");
+                    break;
+                } else {
+                    alert("Stopped");
+                    break;
+                }
+            }
+        }
+        if(flag) {
+            console.log("this was entered");
+            idCounter = idCounter + 1;
+            data.add({id: idCounter, x:x1,y:y1,z:z1, style:null, word:word, color: null});
+            graph.camera.setArmLocation(xCameraCenter,yCameraCenter,zCameraCenter);
+            graph.redraw
+        }
+        clearTextBox();
     });
     $("#newLabel").click(function() {
         var word = $("#hover1").val();
@@ -476,15 +491,13 @@ $("#minimize2").click(function() {
         var flag = true;
         for(i = 0; i < ids.length; i++) {
             tempData = data.get(ids[i]);
-            console.log(tempData.x + " " + tempData.y + " " + tempData.z);
-            console.log("Global 2: " + globalx1 + " " + globaly1 + " " + globalz1);
             if ((tempData.x == globalx1) && (tempData.y == globaly1) && (tempData.z == globalz1)) {
                 flag = false;
-                console.log("ever entered??");
-                var r = confirm("A word ''" + word + "' with same vector exists. Are you sure you want to continue?");
+                var r = confirm("A word [ " + word + " ] with same vector exists. Are you sure you want to continue?");
                 if (r) {
                     idCounter = idCounter + 1;
                     data.add({id: idCounter, x:x1,y:y1,z:z1, style:null, word:word, color: null});
+                    graph.camera.setArmLocation(xCameraCenter,yCameraCenter,zCameraCenter);
                     graph.redraw
                     alert("Point Inserted");
                     break;
@@ -498,12 +511,14 @@ $("#minimize2").click(function() {
             console.log("this was entered");
             idCounter = idCounter + 1;
             data.add({id: idCounter, x:x1,y:y1,z:z1, style:null, word:word, color: null});
+            graph.camera.setArmLocation(xCameraCenter,yCameraCenter,zCameraCenter);
             graph.redraw
         }
-
+        clearTextBox();
     });
     $("#newLabelClose").click(function() {
         document.getElementById("new").style.visibility= "hidden" ;
+        clearTextBox();
     });
 
     $("#newLabelEdit").click(function() {
@@ -516,18 +531,14 @@ $("#minimize2").click(function() {
         var z1 = Number(globalz1);
         var tempData;
         var ids = data.getIds();
-        console.log(ids);
         for(i = 0; i < ids.length; i++) {
             tempData = data.get(ids[i]);
-            console.log(tempData);
             if ((tempData.x == x1) && (tempData.y == y1) && (tempData.z == z1) && (tempData.word == word)) {
                 data.remove(tempData.id);
-                console.log("found item to delete");
             }
         }
 
         //EDIT FUNCTION
-        console.log("starting to edit");
         word = $("#hover1").val();
 
         x1 = Number($("#hover2").val());
@@ -537,27 +548,40 @@ $("#minimize2").click(function() {
         //search if already exist
         ids = data.getIds();
         var flag = true;
+        var sameWord = false;
         for(i = 0; i < ids.length; i++) {
             tempData = data.get(ids[i]);
             if ((tempData.x == globalx1) && (tempData.y == globaly1) && (tempData.z == globalz1)) {
                 var flag = false;
-                var r = confirm("A word ''" + word + "' with same vector exists. Are you sure you want to continue?");
+                var r = confirm("A word [ " + word + " ] with same vector exists. Are you sure you want to continue?");
                 if (r) {
                     idCounter = idCounter + 1;
                     data.add({id: idCounter, x:x1,y:y1,z:z1, style:globalcolor, word:word, color: globalcolor});
+                    graph.camera.setArmLocation(xCameraCenter,yCameraCenter,zCameraCenter);
                     graph.redraw
                     alert("Point Inserted");
                 } else {
                     alert("Stopped");
                 }
             }
+            if(tempData.word == word) {
+                sameWord = true;
+            }
         }
         if(flag) {
-            console.log("this sentence is launched");
+            graph.camera.setArmLocation(xCameraCenter,yCameraCenter,zCameraCenter);
             idCounter = idCounter + 1;
-            data.add({id: idCounter, x:x1,y:y1,z:z1, style:globalcolor, word:word, color: globalcolor});
+            if(sameWord) {
+                alert("The Word [ " + word + " ] already exists." );
+                data.add({id: idCounter, x:x1,y:y1,z:z1, style:globalcolor, word:globalWord, color: globalcolor});
+
+            } else {
+                data.add({id: idCounter, x:x1,y:y1,z:z1, style:globalcolor, word:word, color: globalcolor});
+            }
+            graph.camera.setArmLocation(xCameraCenter,yCameraCenter,zCameraCenter);
             graph.redraw
         }
+        clearTextBox();
     });
     $("#newLabelDelete").click(function() {
         var i;
@@ -567,15 +591,13 @@ $("#minimize2").click(function() {
         var z1 = Number($("#hover4").val());
         var tempData;
         var ids = data.getIds();
-        console.log(ids);
         for(i = 0; i < ids.length; i++) {
             tempData = data.get(ids[i]);
-            console.log(tempData);
             if ((tempData.x == x1) && (tempData.y == y1) && (tempData.z == z1) && (tempData.word == word)) {
                 data.remove(tempData.id);
-                console.log("found item to delete");
             }
         }
+        clearTextBox();
         graph.redraw();
     });
 
@@ -586,10 +608,7 @@ $("#minimize2").click(function() {
         if (evt.type === 'mouseup') {
 
             document.getElementById("new").style.visibility= "visible" ;
-            console.log("n clicked");
-            console.log("X: " + mousePosition.x + "Y: " + mousePosition.y);
             var dataPoint2 = graph._dataPointFromXY(mousePosition.x, mousePosition.y);
-            console.log("The DataPoint: " +dataPoint2.point.word + " " +  dataPoint2.point.x + " " + dataPoint2.point.y + " " + dataPoint2.point.color);
             globalWord = dataPoint2.point.word;
             $("#hover1").val(dataPoint2.point.word);
             globalx1 = Number(dataPoint2.point.x);
@@ -599,13 +618,35 @@ $("#minimize2").click(function() {
             globalz1 = Number(dataPoint2.point.z);
             $("#hover4").val(globalz1);
             globalcolor = dataPoint2.point.color;
-            console.log("GLOBAL: " + globalx1 + " " + globaly1 + " " + globalz1 + " GlobalColor:" + globalcolor);
 
         } else {
           //console.log("drag");
         }
         $body.off('mouseup mousemove', handler);
       });
+    });
+
+    $("#search").click(function() {
+        var word = $('#searchContent').val();
+        var tempData;
+        var ids = data.getIds();
+        var x1,y1,z1 = null;
+        var found = false;
+
+        for(i = 0; i < ids.length; i++) {
+            tempData = data.get(ids[i]);
+            if (tempData.word == word) {
+                xCameraCenter = tempData.x * graph.scale.x;
+                yCameraCenter = tempData.y * graph.scale.y;
+                zCameraCenter = tempData.z * graph.scale.z;
+                graph.camera.setArmLocation(xCameraCenter,yCameraCenter,zCameraCenter);
+                graph.redraw();
+                found = true;
+                break;
+            }
+        }
+        if(!found)
+            alert("[ " + word + " ] NOT FOUND!");
     });
 
     //CSV Download
@@ -616,16 +657,13 @@ $("#minimize2").click(function() {
         for(i = 0; i < ids.length; i++) {
             var object = {};
             tempData = data.get(ids[i]);
-            console.log(tempData);
             object.verb = tempData.word;
             object.cluster = tempData.color;
             object.x = tempData.x;
             object.y = tempData.y;
             object.z = tempData.z;
-            console.log("OBJECT: " + object);
             theBigArray.push(object);
         }
-        console.log("THE BIG ARRAY: " + theBigArray);
 
         if(theBigArray.length == 0){
             alert("EMPTY");
@@ -634,7 +672,6 @@ $("#minimize2").click(function() {
             var downloadable = theBigArray;
             //Json Conversion Ends
             var csv = JSON2CSV(theBigArray);
-            console.log(theBigArray);
 
             if(isIE) {
                 //window.open("data:text/csv;charset=utf-8," + escape(csv) + ".csv", "table.csv");
