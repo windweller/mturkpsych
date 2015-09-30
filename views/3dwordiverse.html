@@ -83,6 +83,8 @@
     var xCameraCenter;
     var yCameraCenter;
     var zCameraCenter;
+    //GLOBAL CONTAINER OF WORDS
+    var globalContainer = {};
 
   </script>
 
@@ -314,7 +316,9 @@ $("#minimize2").click(function() {
       var x = dataContent[i][0];
       var y = dataContent[i][1];
       var z = dataContent[i][2];
-      var dist = categories[i]/10;
+      var dist = categories[i];
+      if(dist == 'null')
+        dist = null;
       var vocabulary = labels[i];
 
       data.add({id: idCounter, x:x,y:y,z:z, style:dist, word:vocabulary, color: dist});
@@ -379,7 +383,6 @@ $("#minimize2").click(function() {
         graph.redraw();
     }
     );
-    var shiftBy = 0.005
     function redrawScale () {
         graph._setScale();
         graph.redraw();
@@ -393,33 +396,6 @@ $("#minimize2").click(function() {
 
     });
 
-    /*
-    document.addEventListener('keydown', function(event) {
-        if (event.keyCode == 81) {
-            shiftX = shiftX - shiftBy
-            redrawScale();
-        }
-        else if (event.keyCode == 87) {
-            shiftX = shiftX + shiftBy
-            redrawScale();
-        }
-        else if (event.keyCode == 65) {
-            shiftY = shiftY - shiftBy
-            redrawScale();
-        }
-        else if (event.keyCode == 83) {
-            shiftY = shiftY + shiftBy
-            redrawScale();
-        }
-        else if (event.keyCode == 90) {
-            shiftZ = shiftZ - shiftBy
-            redrawScale();
-        }
-        else if (event.keyCode == 88) {
-            shiftZ = shiftZ + shiftBy
-            redrawScale();
-        } }, true);
-*/
         function clearTextBox() {
             $("#hover1").val("");
             $("#hover2").val("");
@@ -442,9 +418,9 @@ $("#minimize2").click(function() {
         var x1 = $("#hover2").val();
         var y1 = $("#hover3").val();
         var z1 = $("#hover4").val();
-        x1 = Number(x1)+0.5;
-        y1 = Number(y1)+0.5;
-        z1 = Number(z1)+0.5;
+        x1 = Number(x1)+1.5;
+        y1 = Number(y1)+1.5;
+        z1 = Number(z1)+1.5;
 
         var i;
         var tempData;
@@ -457,7 +433,7 @@ $("#minimize2").click(function() {
                 var r = confirm("A word [ " + word + " ] with same vector exists. Are you sure you want to continue?");
                 if (r) {
                     idCounter = idCounter + 1;
-                    data.add({id: idCounter, x:x1,y:y1,z:z1, style:null, word:word, color: null});
+                    data.add({id: idCounter, x:x1,y:y1,z:z1, style:-1, word:word, color: -1});
                     graph.camera.setArmLocation(xCameraCenter,yCameraCenter,zCameraCenter);
                     graph.redraw
                     alert("Point Inserted");
@@ -699,7 +675,7 @@ $("#minimize2").click(function() {
         var head = array[0];
         for (var index in array[0]) {
             var value = index + "";
-            line += '"' + value.replace(/"/g, '""') + '",';
+            line += '' + value.replace(/"/g, '""') + ',';
         }
         line = line.slice(0, -1);
         str += line + '\r\n';
@@ -707,7 +683,7 @@ $("#minimize2").click(function() {
            var line = '';
            for (var index in array[i]) {
                 var value = array[i][index] + "";
-                line += '"' + value.replace(/"/g, '""') + '",';
+                line += '' + value.replace(/"/g, '""') + ',';
             }
            line = line.slice(0, -1);
            str += line + '\r\n';

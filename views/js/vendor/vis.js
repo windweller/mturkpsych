@@ -29,6 +29,7 @@
  * find "EDIT POINT3D VISUALIZATION"
  * FIND "TOOLTIP CONTENT EDIT"
  * FIND "OVERRIDING COLOR" FOR VISUALLY DISTINCT COLOR SET OF 75
+ * http://phrogz.net/css/distinct-colors.html
  */
 
 "use strict";
@@ -8322,7 +8323,7 @@ return /******/ (function(modules) { // webpackBootstrap
         color = this._hsv2rgb(hue, 1, 1);
         borderColor = this._hsv2rgb(hue, 1, 0.8);
                                                    //OVERRIDING COLOR
-                                                   colorValue = (point.point.value*10)%67;
+                                                   colorValue = (point.point.value)%67;
                                                    color = colorArray[colorValue];
       } else if (this.style === Graph3d.STYLE.DOTSIZE) {
         color = this.dataColor.fill;
@@ -8340,11 +8341,12 @@ return /******/ (function(modules) { // webpackBootstrap
       ctx.fillStyle = color;
       ctx.beginPath();
       ctx.arc(point.screen.x, point.screen.y, radius, 0, Math.PI * 2, true);
+                                                   //ctx.rect(point.screen.x,point.screen.y,radius+3,radius+3);
+
       if(!(point.point.color == null)) {
          ctx.fill();
       } else {
           ctx.arc(point.screen.x, point.screen.y, radius+3, 0, Math.PI * 2, true);
-
       }
                                               
       ctx.stroke();
@@ -8352,9 +8354,9 @@ return /******/ (function(modules) { // webpackBootstrap
                                                    
     //draw text
     if(enableDrawText) {
-    ctx.fillStyle = "#000000";
-    ctx.font = fontSizeFromUser;
-    ctx.fillText(point.point.word, point.screen.x+15, point.screen.y+7);
+       ctx.fillStyle = "#000000";
+       ctx.font = fontSizeFromUser;
+       ctx.fillText(point.point.word, point.screen.x+15, point.screen.y+7);
     }
                                                   
 
