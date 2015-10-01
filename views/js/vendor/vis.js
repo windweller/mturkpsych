@@ -8346,7 +8346,7 @@ return /******/ (function(modules) { // webpackBootstrap
       if(!(point.point.color == null)) {
          ctx.fill();
       } else {
-          ctx.arc(point.screen.x, point.screen.y, radius+3, 0, Math.PI * 2, true);
+          ctx.arc(point.screen.x, point.screen.y, radius+7, 0, Math.PI * 2, true);
       }
                                               
       ctx.stroke();

@@ -84,7 +84,7 @@
     var yCameraCenter;
     var zCameraCenter;
     //GLOBAL CONTAINER OF WORDS
-    var globalContainer = {};
+    var globalContainer = [];
 
   </script>
 
@@ -170,9 +170,11 @@
                         <label class="checkbox-inline"><input id = "textCheck" type="checkbox" value="">SHOW TEXT LABEL</label>
                         <hr>
                         <textarea id = "searchContent" resize= none; rows="1" cols="10"></textarea>
-                        <button type="button" id = "search" class="btn btn-primary" style="width:100px; height:30px;">Search</button>
-                        <button type="button" id="restoreCenter" class="btn btn-primary" style="width:120px; height:45px;">Restore</button>
+                        <button type="button" id = "search" class="btn btn-primary" style="width:100px; height:30px;">SEARCH</button>
+                        <button type="button" id="restoreCenter" class="btn btn-primary" style="width:120px; height:45px;">RESTORE</button>
                         <button type="button" id="download" class="btn btn-primary" style="width:150px; height:45px;">DOWNLOAD CSV</button>
+                        <button type="button" id="dimensionReduction" class="btn btn-primary" style="width:200px; height:45px;">DIMENSION REDUCTION</button>
+
 
 
 
@@ -254,8 +256,108 @@ $("#minimize2").click(function() {
   }
   document.getElementById('files').addEventListener('change', handleFileSelect);
 
+</script>
+
+<script type="text/javascript">
+  var data = null;
+  var graph = null;
+
+
+  // Called when the Visualization API is loaded.
+  function drawVisualization(inputDotSize) {
+    // create the data table.
+    data = new vis.DataSet();
+    // create some shortcuts to math functions
+    var sqrt = Math.sqrt;
+    var pow = Math.pow;
+    var random = Math.random;
+
+    //FIND LARGEST CATEGORY Number
+    var numberOfCategory = 0;
+    for (var i = 0; i < dataContent.length; i++) {
+        var tempCategory = Number(categories[i]);
+        if(tempCategory > numberOfCategory) {
+            numberOfCategory = tempCategory;
+        }
+    }
+
+    //create objects inside array
+    for (var i = 0; i <= numberOfCategory; i++) {
+        globalContainer[i] = [];
+    }
+
+    // create the animation data
+    for (var i = 0; i < dataContent.length; i++) {
+        var content = {};
+
+      var x = dataContent[i][0];
+      var y = dataContent[i][1];
+      var z = dataContent[i][2];
+      var dist = categories[i];
+      if(dist == 'null')
+        dist = null;
+      var vocabulary = labels[i];
+
+      data.add({id: idCounter, x:x,y:y,z:z, style:dist, word:vocabulary, color: dist});
+      content.id = idCounter;
+      content.x = x;
+      content.y = y;
+      content.z = z;
+      content.style = dist;
+      content.word = vocabulary;
+      content.color = dist;
+      globalContainer[dist].push(content);
+      idCounter = idCounter + 1;
+    }
+
+
+    // specify options
+    var options = {
+      width:  '1000px',
+      height: '1000px',
+      style: 'dot-color',
+      showPerspective: false,
+      cameraPosition: {horizontal: -1.0, vertical: -10.5, distance: 1.7},
+      showGrid: false,
+      keepAspectRatio: true,
+      verticalRatio: 1,
+      xValueLabel: function (x) {return ""},
+      yValueLabel: function (y) {return ""},
+      zValueLabel: function (z) {return ""},
+      tooltip: function(point) {
+
+          return "TOOLTIP";
+      },
+      cameraPosition: {
+        horizontal: -0.35,
+        vertical: 0.22,
+        distance: 1.8
+      }
+    };
+
+    // create our graph
+    var container = document.getElementById('mygraph');
+    graph = new vis.Graph3d(container, data, options, inputDotSize);
+    editInProgress = true;
+    xCameraCenter = (graph.xMax + graph.xMin) / 2 * graph.scale.x;
+    yCameraCenter = (graph.yMax + graph.yMin) / 2 * graph.scale.y;
+    zCameraCenter = (graph.zMax + graph.zMin) / 2 * graph.scale.z;
+
+  }
+
   $("#find").click(function() {
       //RESET data
+       globalWord = null;
+       globalx1 = null;
+       globaly1 = null;
+       globalz1 = null;
+       globalcolor = null;
+      //GLOBAL CAMERA CENTER VARIABLE
+      xCameraCenter ;
+      yCameraCenter  ;
+      zCameraCenter ;
+      //GLOBAL CONTAINER OF WORDS
+       globalContainer = [];
 
 
       var d = ",";
@@ -294,69 +396,6 @@ $("#minimize2").click(function() {
           scrollTop: $("#mygraph").offset().top
       }, 1200);
   });
-
-</script>
-
-<script type="text/javascript">
-  var data = null;
-  var graph = null;
-
-
-  // Called when the Visualization API is loaded.
-  function drawVisualization(inputDotSize) {
-    // create the data table.
-    data = new vis.DataSet();
-    // create some shortcuts to math functions
-    var sqrt = Math.sqrt;
-    var pow = Math.pow;
-    var random = Math.random;
-
-    // create the animation data
-    for (var i = 0; i < dataContent.length; i++) {
-      var x = dataContent[i][0];
-      var y = dataContent[i][1];
-      var z = dataContent[i][2];
-      var dist = categories[i];
-      if(dist == 'null')
-        dist = null;
-      var vocabulary = labels[i];
-
-      data.add({id: idCounter, x:x,y:y,z:z, style:dist, word:vocabulary, color: dist});
-      idCounter = idCounter + 1;
-    }
-    // specify options
-    var options = {
-      width:  '1000px',
-      height: '1000px',
-      style: 'dot-color',
-      showPerspective: false,
-      cameraPosition: {horizontal: -1.0, vertical: -10.5, distance: 1.7},
-      showGrid: false,
-      keepAspectRatio: true,
-      verticalRatio: 1,
-      xValueLabel: function (x) {return ""},
-      yValueLabel: function (y) {return ""},
-      zValueLabel: function (z) {return ""},
-      tooltip: function(point) {
-
-          return "TOOLTIP";
-      },
-      cameraPosition: {
-        horizontal: -0.35,
-        vertical: 0.22,
-        distance: 1.8
-      }
-    };
-
-    // create our graph
-    var container = document.getElementById('mygraph');
-    graph = new vis.Graph3d(container, data, options, inputDotSize);
-    editInProgress = true;
-    xCameraCenter = (graph.xMax + graph.xMin) / 2 * graph.scale.x;
-    yCameraCenter = (graph.yMax + graph.yMin) / 2 * graph.scale.y;
-    zCameraCenter = (graph.zMax + graph.zMin) / 2 * graph.scale.z;
-
-  }
 
   $('#foo').slider("setValue", 1000)
     .on('slide', function(ev){
@@ -690,6 +729,31 @@ $("#minimize2").click(function() {
        }
        return str;
     }
+
+    $("#dimensionReduction").click(function() {
+        var globalContainer2 = []; //contains centroids for each category (color = index)
+        var globalContainer3 = [];
+        
+        for (var i = 0; i < globalContainer.length; i++) {
+            var x = 0, y = 0, z = 0, average = {};
+            for (var j = 0; j < globalContainer[i].length; j++) {
+                var temp = globalContainer[i][j];
+                x = x + temp.x;
+                y = y + temp.y;
+                z = z + temp.z;
+            }
+            average.x = (x/globalContainer[i].length);
+            average.y = (y/globalContainer[i].length);
+            average.z = (z/globalContainer[i].length);
+            console.log(average.x + " " + average.y + " " + average.z);
+            idCounter++;
+            data.add({id: idCounter, x:average.x,y:average.y,z:average.z, style:null, word:"Centroid " + i, color: null});
+            globalContainer2.push(average);
+            graph.redraw();
+        }
+
+    });
+
 
 
 </script>
