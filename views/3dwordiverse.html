@@ -174,10 +174,11 @@
                         <button type="button" id="restoreCenter" class="btn btn-primary" style="width:120px; height:45px;">RESTORE</button>
                         <button type="button" id="download" class="btn btn-primary" style="width:150px; height:45px;">DOWNLOAD CSV</button>
                         <button type="button" id="dimensionReduction" class="btn btn-primary" style="width:200px; height:45px;">DIMENSION REDUCTION</button>
-
-
-
-
+                        <hr>
+                         <!--<div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:70%">
+                              <span class="sr-only">70% Complete</span>
+                          </div> -->
                     </h5>
 
 
@@ -730,10 +731,19 @@ $("#minimize2").click(function() {
        return str;
     }
 
-    $("#dimensionReduction").click(function() {
+    function sleep(milliseconds) {
+      var start = new Date().getTime();
+      for (var i = 0; i < 1e7; i++) {
+        if ((new Date().getTime() - start) > milliseconds){
+          break;
+        }
+      }
+    }
+
+    function calculation() {
         var globalContainer2 = []; //contains centroids for each category (color = index)
         var globalContainer3 = [];
-        
+
         for (var i = 0; i < globalContainer.length; i++) {
             var x = 0, y = 0, z = 0, average = {};
             for (var j = 0; j < globalContainer[i].length; j++) {
@@ -749,10 +759,63 @@ $("#minimize2").click(function() {
             idCounter++;
             data.add({id: idCounter, x:average.x,y:average.y,z:average.z, style:null, word:"Centroid " + i, color: null});
             globalContainer2.push(average);
-            graph.redraw();
         }
+    }
+
+    $("#dimensionReduction").click(function() {
+
+        var globalContainer2 = []; //contains centroids for each category (color = index)
+        var globalContainer3 = [];
+
+        $(this).prop("disabled", true)
+      .text("Loading...")
+      .delay(1, "p")
+      .queue("p", function(next) {
+        next()
+      })
+      .dequeue("p")
+      .promise("p")
+      .then(function() {
+        var elem = this;
+        return $.Deferred(function(d) {
+
+          var i = 0, max = globalContainer.length;
+          for (; i < globalContainer.length; i++) {
+              var x = 0, y = 0, z = 0, average = {};
+              for (var j = 0; j < globalContainer[i].length; j++) {
+                  var temp = globalContainer[i][j];
+                  x = x + temp.x;
+                  y = y + temp.y;
+                  z = z + temp.z;
+              }
+              average.x = (x/globalContainer[i].length);
+              average.y = (y/globalContainer[i].length);
+              average.z = (z/globalContainer[i].length);
+              console.log(average.x + " " + average.y + " " + average.z);
+              idCounter++;
+              data.add({id: idCounter, x:average.x,y:average.y,z:average.z, style:null, word:"Centroid " + i, color: null});
+              globalContainer2.push(average);
+          }
+          if (i === max) {
+            d.resolveWith(elem, [i])
+          }
+
+        }).promise()
+      }).then(function(data) {
+        console.log(this, data);
+        $(this).prop("disabled", false)
+        .text("DIMENSION REDUCTION");
+      })
+
+
+
 
     });
+
+
+
+
+
 
 
 
