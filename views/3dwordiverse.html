@@ -130,7 +130,7 @@
             <button type="button" id="find" class="btn btn-primary" style="width:120px; height:45px;">Display</button>
             <hr>
             <div id = "visibleWhenClicked" class="jumbotron col-md-16 center">
-            <h5 align = "center">Hover/Click each individual point to see detail</h5>
+            <h5 align = "center">KNOWN ERROR: PLEASE REFRESH THE PAGE IF YOU LOAD ANOTHER CSV</h5>
             </div>
             <div id="mygraph">
                 <div style="position: relative; overflow: hidden; width: 600px; height: 600px;">
@@ -317,7 +317,6 @@ $("#minimize2").click(function() {
       }
     }
 
-    console.log(globalContainer);
     // specify options
     var options = {
       width:  '1000px',
@@ -360,9 +359,6 @@ $("#minimize2").click(function() {
        globalz1 = null;
        globalcolor = null;
       //GLOBAL CAMERA CENTER VARIABLE
-      xCameraCenter ;
-      yCameraCenter  ;
-      zCameraCenter ;
       //GLOBAL CONTAINER OF WORDS
        globalContainer = [];
 
@@ -785,9 +781,14 @@ $("#minimize2").click(function() {
         var elem = this;
         return $.Deferred(function(d) {
 
-          var i = 0, max = globalContainer.length;
+          var i = 0, maximum = globalContainer.length;
           for (; i < globalContainer.length; i++) {
               var x = 0, y = 0, z = 0, average = {};
+              var tempCentroidContainer = [];
+              var tempCentroidContainerWord = [];
+              var max = tempCentroidContainer[0];
+              var maxIndex = 0;
+
               for (var j = 0; j < globalContainer[i].length; j++) {
                   var temp = globalContainer[i][j];
                   x = x + temp.x;
@@ -797,10 +798,8 @@ $("#minimize2").click(function() {
               average.x = (x/globalContainer[i].length);
               average.y = (y/globalContainer[i].length);
               average.z = (z/globalContainer[i].length);
-              console.log(average.x + " " + average.y + " " + average.z);
 
-              var tempCentroidContainer = [];
-              var tempCentroidContainerWord = [];
+
               for(var j = 0; j < globalContainer[i].length; j++) {
                   var temp = globalContainer[i][j];
                   var distanceBeforeRoot = (average.x - temp.x)*(average.x - temp.x)+(average.y - temp.y)*(average.y - temp.y)+(average.z - temp.z)*(average.z - temp.z);
@@ -808,9 +807,6 @@ $("#minimize2").click(function() {
                   tempCentroidContainer.push(distance);
                   tempCentroidContainerWord.push(temp.word);
               }
-
-              var max = tempCentroidContainer[0];
-              var maxIndex = 0;
 
               for (var k = 1; k < tempCentroidContainer.length; k++) {
                     if (tempCentroidContainer[k] < max) {
@@ -822,9 +818,8 @@ $("#minimize2").click(function() {
               idCounter++;
               data.add({id: idCounter, x:average.x,y:average.y,z:average.z, style:-1, word:i+"_Centroid_"+tempCentroidContainerWord[maxIndex], color: -1});
               globalContainer2.push(average);
-              console.log("done finding centroid");
           }
-          if (i === max) {
+          if (i === maximum) {
             d.resolveWith(elem, [i])
           }
 
@@ -832,6 +827,8 @@ $("#minimize2").click(function() {
       }).then(function(data) {
         $(this).prop("disabled", false)
         .text("DIMENSION REDUCTION");
+        //document.getElementById("dimensionReduction").style.visibility= "hidden" ;
+
       })
 
 
