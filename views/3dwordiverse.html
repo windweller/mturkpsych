@@ -85,6 +85,7 @@
     var zCameraCenter;
     //GLOBAL CONTAINER OF WORDS
     var globalContainer = [];
+    var globalContainerCentroid = [];
 
   </script>
 
@@ -295,8 +296,6 @@ $("#minimize2").click(function() {
       var y = dataContent[i][1];
       var z = dataContent[i][2];
       var dist = categories[i];
-      if(dist == 'null')
-        dist = null;
       var vocabulary = labels[i];
 
       data.add({id: idCounter, x:x,y:y,z:z, style:dist, word:vocabulary, color: dist});
@@ -307,11 +306,18 @@ $("#minimize2").click(function() {
       content.style = dist;
       content.word = vocabulary;
       content.color = dist;
-      globalContainer[dist].push(content);
-      idCounter = idCounter + 1;
+      if(dist == -1) {
+          globalContainerCentroid.push(content);
+          idCounter = idCounter + 1;
+
+      } else {
+          globalContainer[dist].push(content);
+          idCounter = idCounter + 1;
+
+      }
     }
 
-
+    console.log(globalContainer);
     // specify options
     var options = {
       width:  '1000px',
@@ -487,7 +493,7 @@ $("#minimize2").click(function() {
         if(flag) {
             console.log("this was entered");
             idCounter = idCounter + 1;
-            data.add({id: idCounter, x:x1,y:y1,z:z1, style:null, word:word, color: null});
+            data.add({id: idCounter, x:x1,y:y1,z:z1, style:-1, word:word, color: -1});
             graph.camera.setArmLocation(xCameraCenter,yCameraCenter,zCameraCenter);
             graph.redraw
         }
@@ -512,7 +518,7 @@ $("#minimize2").click(function() {
                 var r = confirm("A word [ " + word + " ] with same vector exists. Are you sure you want to continue?");
                 if (r) {
                     idCounter = idCounter + 1;
-                    data.add({id: idCounter, x:x1,y:y1,z:z1, style:null, word:word, color: null});
+                    data.add({id: idCounter, x:x1,y:y1,z:z1, style:-1, word:word, color: -1});
                     graph.camera.setArmLocation(xCameraCenter,yCameraCenter,zCameraCenter);
                     graph.redraw
                     alert("Point Inserted");
@@ -526,7 +532,7 @@ $("#minimize2").click(function() {
         if(flag) {
             console.log("this was entered");
             idCounter = idCounter + 1;
-            data.add({id: idCounter, x:x1,y:y1,z:z1, style:null, word:word, color: null});
+            data.add({id: idCounter, x:x1,y:y1,z:z1, style:-1, word:word, color: -1});
             graph.camera.setArmLocation(xCameraCenter,yCameraCenter,zCameraCenter);
             graph.redraw
         }
@@ -757,7 +763,7 @@ $("#minimize2").click(function() {
             average.z = (z/globalContainer[i].length);
             console.log(average.x + " " + average.y + " " + average.z);
             idCounter++;
-            data.add({id: idCounter, x:average.x,y:average.y,z:average.z, style:null, word:"Centroid " + i, color: null});
+            data.add({id: idCounter, x:average.x,y:average.y,z:average.z, style:-1, word:"Centroid " + i, color: -1});
             globalContainer2.push(average);
         }
     }
@@ -792,9 +798,31 @@ $("#minimize2").click(function() {
               average.y = (y/globalContainer[i].length);
               average.z = (z/globalContainer[i].length);
               console.log(average.x + " " + average.y + " " + average.z);
+
+              var tempCentroidContainer = [];
+              var tempCentroidContainerWord = [];
+              for(var j = 0; j < globalContainer[i].length; j++) {
+                  var temp = globalContainer[i][j];
+                  var distanceBeforeRoot = (average.x - temp.x)*(average.x - temp.x)+(average.y - temp.y)*(average.y - temp.y)+(average.z - temp.z)*(average.z - temp.z);
+                  var distance = Math.sqrt(distanceBeforeRoot);
+                  tempCentroidContainer.push(distance);
+                  tempCentroidContainerWord.push(temp.word);
+              }
+
+              var max = tempCentroidContainer[0];
+              var maxIndex = 0;
+
+              for (var k = 1; k < tempCentroidContainer.length; k++) {
+                    if (tempCentroidContainer[k] < max) {
+                        maxIndex = k;
+                        max = tempCentroidContainer[k];
+                }
+              }
+
               idCounter++;
-              data.add({id: idCounter, x:average.x,y:average.y,z:average.z, style:null, word:"Centroid " + i, color: null});
+              data.add({id: idCounter, x:average.x,y:average.y,z:average.z, style:-1, word:i+"_Centroid_"+tempCentroidContainerWord[maxIndex], color: -1});
               globalContainer2.push(average);
+              console.log("done finding centroid");
           }
           if (i === max) {
             d.resolveWith(elem, [i])
@@ -802,11 +830,9 @@ $("#minimize2").click(function() {
 
         }).promise()
       }).then(function(data) {
-        console.log(this, data);
         $(this).prop("disabled", false)
         .text("DIMENSION REDUCTION");
       })
-
 
 
 

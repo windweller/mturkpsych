@@ -8343,7 +8343,7 @@ return /******/ (function(modules) { // webpackBootstrap
       ctx.arc(point.screen.x, point.screen.y, radius, 0, Math.PI * 2, true);
                                                    //ctx.rect(point.screen.x,point.screen.y,radius+3,radius+3);
 
-      if(!(point.point.color == null)) {
+      if(!(point.point.color == -1)) {
          ctx.fill();
       } else {
           ctx.arc(point.screen.x, point.screen.y, radius+7, 0, Math.PI * 2, true);
