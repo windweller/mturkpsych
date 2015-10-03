@@ -430,13 +430,53 @@ $("#minimize2").click(function() {
         graph.redraw();
     }
     $("#restoreCenter").click(function() {
-        var xCenter = (graph.xMax + graph.xMin) / 2 * graph.scale.x;
-        var yCenter = (graph.yMax + graph.yMin) / 2 * graph.scale.y;
-        var zCenter = (graph.zMax + graph.zMin) / 2 * graph.scale.z;
-        graph.camera.setArmLocation(xCenter, yCenter, zCenter);
+         xCameraCenter = (graph.xMax + graph.xMin) / 2 * graph.scale.x;
+         yCameraCenter = (graph.yMax + graph.yMin) / 2 * graph.scale.y;
+         zCameraCenter = (graph.zMax + graph.zMin) / 2 * graph.scale.z;
+        graph.camera.setArmLocation(xCameraCenter, yCameraCenter, zCameraCenter);
         graph.redraw();
 
     });
+
+
+  document.addEventListener('keydown', function(event) {
+
+      if ($("#searchContent").is(":focus")) {
+         return;
+      }
+
+      if (event.keyCode == 81) {
+          xCameraCenter = xCameraCenter + graph.scale.x;
+          graph.camera.setArmLocation(xCameraCenter, yCameraCenter, zCameraCenter);
+          graph.redraw();
+
+      }
+      else if (event.keyCode == 87) {
+          xCameraCenter = xCameraCenter - graph.scale.x;
+          graph.camera.setArmLocation(xCameraCenter, yCameraCenter, zCameraCenter);
+          graph.redraw();
+      }
+      else if (event.keyCode == 65) {
+          yCameraCenter = yCameraCenter + graph.scale.y;
+          graph.camera.setArmLocation(xCameraCenter, yCameraCenter, zCameraCenter);
+          graph.redraw();
+      }
+      else if (event.keyCode == 83) {
+          yCameraCenter = yCameraCenter - graph.scale.y;
+          graph.camera.setArmLocation(xCameraCenter, yCameraCenter, zCameraCenter);
+          graph.redraw();
+      }
+      else if (event.keyCode == 90) {
+          zCameraCenter = zCameraCenter + graph.scale.z;
+          graph.camera.setArmLocation(xCameraCenter, yCameraCenter, zCameraCenter);
+          graph.redraw();
+      }
+      else if (event.keyCode == 88) {
+          zCameraCenter = zCameraCenter - graph.scale.z;
+          graph.camera.setArmLocation(xCameraCenter, yCameraCenter, zCameraCenter);
+          graph.redraw();
+      } }, true);
+
 
         function clearTextBox() {
             $("#hover1").val("");
@@ -827,7 +867,6 @@ $("#minimize2").click(function() {
       }).then(function(data) {
         $(this).prop("disabled", false)
         .text("DIMENSION REDUCTION");
-        //document.getElementById("dimensionReduction").style.visibility= "hidden" ;
 
       })
 
