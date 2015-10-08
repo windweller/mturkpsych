@@ -107,6 +107,9 @@ trait StaticRoute extends Directives {
     path("delayeddiscountturkv4") {
       getFromFile(new File("views/delayedDiscounting/delayedDiscountTurkv4.html"), `text/html`)
     } ~
+    path("demoResult") {
+      getFromFile(new File("views/demoResult.csv"), `text/csv`)
+    } ~
     path("css" / Rest) {fileName =>
       compressResponse(Gzip) {
         getFromFile(new File("views/css/"+fileName), `text/css`)
