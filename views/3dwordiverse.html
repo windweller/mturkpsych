@@ -17,14 +17,14 @@
     .Fixed
     {
         position: fixed;
-        bottom: 30px;
+        bottom: 0px;
         left: 0px;
         right: 0px;
         border: dotted;
         border-width: thin;
         background-color:  #C3D9E0;
-        padding: 20px;
-        width: 90%;
+        padding: 3px;
+        width: 100%;
         opacity: 0.8;
         margin: 0 auto;
         visibility: hidden;
@@ -38,7 +38,7 @@
         border: dotted;
         border-width: thin;
         background-color:  #C3D9E0;
-        padding: 10px;
+        padding: 0px;
         width: 100%;
         opacity: 0.8;
         margin: 0 auto;
@@ -53,10 +53,18 @@
         opacity: 0.8;
         margin: 0 auto;
         visibility: hidden;
+        padding: 5px;
+    }
+    #insideFixed
+    {
+        border: 1px solid transparent;
+        padding: 2px;
     }
     textarea {
         resize: none;
     };
+    hr { margin-top: 1px; margin-bottom: 1px }
+
   </style>
 
   <link href="css/vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
@@ -133,7 +141,7 @@
             <h5 align = "center">KNOWN ERROR: PLEASE REFRESH THE PAGE IF YOU LOAD ANOTHER CSV</h5>
             </div>
             <div id="mygraph">
-                <div style="position: relative; overflow: hidden; width: 600px; height: 600px;">
+                <div style="position: relative; overflow: hidden; width: 100%; height: 100%;">
                     <canvas width="600" height="600" style="position: relative; width: 100%; height: 100%;">
                         <div style="color: red; font-weight: bold; padding: 10px;">Error: your browser does not support HTML canvas</div>
                     </canvas>
@@ -145,10 +153,12 @@
 
             <div class = "container fixed" id = "new">
                 <div align = "center" >
-                    Label: <textarea id = "hover1" resize= none; rows="1" cols="10"></textarea> &nbsp
-                    Xcoord: <textarea id = "hover2"  resize= none; rows="1" cols="10"></textarea> &nbsp
-                    Ycoord: <textarea id = "hover3"  resize= none; rows="1" cols="10"></textarea> &nbsp
-                    Zcoord: <textarea id = "hover4"  resize= none; rows="1" cols="10"></textarea> &nbsp
+                    <div id = "insideFixed">
+                        Label: <textarea id = "hover1" resize= none; rows="1" cols="10"></textarea> &nbsp
+                        Xcoord: <textarea id = "hover2"  resize= none; rows="1" cols="10"></textarea> &nbsp
+                        Ycoord: <textarea id = "hover3"  resize= none; rows="1" cols="10"></textarea> &nbsp
+                        Zcoord: <textarea id = "hover4"  resize= none; rows="1" cols="10"></textarea> &nbsp
+                    </div>
                     <button align = "right" type="button" id="newLabelZoom" class="btn btn-primary" style="width:120px; height:45px;">Zoom Center</button>
                     <button align = "right" type="button" id="newLabelQuick" class="btn btn-primary" style="width:100px; height:45px;">Quick New</button>
                     <button align = "right" type="button" id="newLabel" class="btn btn-primary" style="width:110px; height:45px;">Create New</button>
@@ -165,22 +175,18 @@
                     <h4 align = "center">
                         <button align = "right" type="button" id="minimize" class="btn btn-primary" style="width:100px; height:30px;">MINIMIZE</button>
                     </h4>
-                    <h5 align = "center">
+                    <h6 align = "center">
+                        <div id = "insideFixed">
                         Adjust the SIZE of the POINT: <input type="text" id="foo" class="span2" value="" data-slider-min="10" data-slider-max="1000" data-slider-step="1" data-slider-value="1" data-slider-orientation="horizontal" data-slider-selection="after"data-slider-tooltip="hide">&nbsp&nbsp&nbsp
                         Adjust the SIZE of the LABEL: <input type="text" id="foo1" class="span2" value="" data-slider-min="1" data-slider-max="30" data-slider-step="1" data-slider-value="1" data-slider-orientation="horizontal" data-slider-selection="after"data-slider-tooltip="hide">&nbsp&nbsp&nbsp
-                        <label class="checkbox-inline"><input id = "textCheck" type="checkbox" value="">SHOW TEXT LABEL</label>
-                        <hr>
-                        <textarea id = "searchContent" resize= none; rows="1" cols="10"></textarea>
+                        <label class="checkbox-inline"><input id = "textCheck" type="checkbox" value="" checked>SHOW TEXT LABEL</label>&nbsp&nbsp&nbsp
+                        </div>
+                        <textarea id = "searchContent" resize= none; rows="1" cols="10" placeholder = "Enter Word"></textarea>
                         <button type="button" id = "search" class="btn btn-primary" style="width:100px; height:30px;">SEARCH</button>
-                        <button type="button" id="restoreCenter" class="btn btn-primary" style="width:120px; height:45px;">RESTORE</button>
-                        <button type="button" id="download" class="btn btn-primary" style="width:150px; height:45px;">DOWNLOAD CSV</button>
-                        <button type="button" id="dimensionReduction" class="btn btn-primary" style="width:200px; height:45px;">DIMENSION REDUCTION</button>
-                        <hr>
-                         <!--<div class="progress">
-                            <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:70%">
-                              <span class="sr-only">70% Complete</span>
-                          </div> -->
-                    </h5>
+                        <button type="button" id="restoreCenter" class="btn btn-primary" style="width:120px; height:30px;">RESTORE</button>
+                        <button type="button" id="download" class="btn btn-primary" style="width:150px; height:30px;">DOWNLOAD CSV</button>
+                        <button type="button" id="dimensionReduction" class="btn btn-primary" style="width:200px; height:30px;">DIMENSION REDUCTION</button>
+                    </h6>
 
 
                 </div>
@@ -227,7 +233,7 @@ $("#minimize2").click(function() {
      categories = [];
      isThereLimitOnCameraRotation = false;
      canZoomInfinite = true;
-     dotSizeFromUser = 0.001;
+     dotSizeFromUser = 0.0001;
      if($('#textCheck').prop("checked") == true) {
          enableDrawText = true;
      } else {
@@ -319,7 +325,7 @@ $("#minimize2").click(function() {
 
     // specify options
     var options = {
-      width:  '1000px',
+      width:  '100%',
       height: '1000px',
       style: 'dot-color',
       showPerspective: false,
@@ -386,7 +392,7 @@ $("#minimize2").click(function() {
       }
       dataContent = raw_data; // set global
 
-      drawVisualization(1000/100000.0);
+      drawVisualization(100/100000.0);
       document.getElementById("visibleWhenClicked").style.visibility= "visible" ;
       document.getElementById("topMenu").style.visibility= "hidden" ;
       document.getElementById("topIcon").style.visibility= "hidden" ;
@@ -400,7 +406,7 @@ $("#minimize2").click(function() {
       }, 1200);
   });
 
-  $('#foo').slider("setValue", 1000)
+  $('#foo').slider("setValue", 100)
     .on('slide', function(ev){
 
        $('#bar').val(ev.value/100000.0);
@@ -408,7 +414,7 @@ $("#minimize2").click(function() {
        graph.redraw();
     });
 
-    $('#foo1').slider("setValue", 15)
+    $('#foo1').slider("setValue", 10)
       .on('slide', function(ev){
 
          $('#bar').val(ev.value);

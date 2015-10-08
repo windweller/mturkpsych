@@ -36,8 +36,8 @@
 var isThereLimitOnCameraRotation = false;
 var canZoomInfinite = true;
 var enableDrawText = false;
-var dotSizeFromUser = 0.001;
-var fontSizeFromUser = "15px Arial";
+var dotSizeFromUser = 0.0001;
+var fontSizeFromUser = "10px Arial";
 //shift center
 var shiftX = 0;
 var shiftY = 0;
