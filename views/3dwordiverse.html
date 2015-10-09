@@ -7,7 +7,7 @@
   <style>
 
     #minimize {
-        float: left;
+        float: right;
     }
     body {font: 10pt arial;}
     #visibleWhenClicked {
@@ -171,6 +171,9 @@
             <hr>
             <div id = "visibleWhenClicked" class="jumbotron col-md-16 center">
             <h5 align = "center">KNOWN ERROR: PLEASE REFRESH THE PAGE IF YOU LOAD ANOTHER CSV</h5>
+            <h5 align = "center">USAGE: You can change the perspective of the graph by using keyboard q,w,a,s,z,x to shift according to x, y, z axis.</h5>
+
+
             </div>
             <div id="mygraph">
                 <div style="position: relative; overflow: hidden; width: 100%; height: 100%;">
@@ -196,7 +199,7 @@
                     <button align = "right" type="button" id="newLabel" class="btn btn-primary" style="width:110px; height:45px;">Create New</button>
                     <button align = "right" type="button" id="newLabelEdit" class="btn btn-primary" style="width:80px; height:45px;">Update</button>
                     <button align = "right" type="button" id="newLabelDelete" class="btn btn-primary" style="width:60x; height:45px;">Delete</button>
-                    <button align = "right" type="button" id="newLabelClose" class="btn btn-primary" style="width:40px; height:45px;">X</button>
+                   
 
 
                 </div>
@@ -258,10 +261,12 @@ var categories = [];
 $("#minimize").click(function() {
         document.getElementById("topMenu").style.visibility= "hidden" ;
         document.getElementById("topIcon").style.visibility= "visible" ;
+        document.getElementById("new").style.visibility= "hidden" ;
 });
 $("#minimize2").click(function() {
         document.getElementById("topMenu").style.visibility= "visible" ;
         document.getElementById("topIcon").style.visibility= "hidden" ;
+        document.getElementById("new").style.visibility= "visible" ;
 });
 
 
@@ -716,7 +721,11 @@ $("#minimize2").click(function() {
 
             document.getElementById("new").style.visibility= "visible" ;
             var dataPoint2 = graph._dataPointFromXY(mousePosition.x, mousePosition.y);
+            if(dataPoint2 == null) {
+                    document.getElementById("new").style.visibility= "hidden" ;
+            } else {
             globalWord = dataPoint2.point.word;
+
             $("#hover1").val(dataPoint2.point.word);
             globalx1 = Number(dataPoint2.point.x);
             $("#hover2").val(globalx1);
@@ -725,6 +734,9 @@ $("#minimize2").click(function() {
             globalz1 = Number(dataPoint2.point.z);
             $("#hover4").val(globalz1);
             globalcolor = dataPoint2.point.color;
+
+            }
+         
 
         } else {
           //console.log("drag");
