@@ -42,7 +42,7 @@
         width: 100%;
         opacity: 0.8;
         margin: 0 auto;
-        visibility: hidden;
+        visibility: visible;
     }
     .Fixed3
     {
@@ -62,7 +62,29 @@
     }
     textarea {
         resize: none;
-    };
+        height: 24px;
+    }
+    #temp{
+	    display:inline-block;
+	    position:relative;
+	    bottom: -5px;
+	    height: 48px;
+	}
+
+	#foundText{
+	 position:absolute;
+	 left:1px;
+	 bottom: 10px;
+	}
+
+	#next{
+	 position:absolute;
+	 right:1px;
+	 bottom: 7px;
+	 height: 5px;
+	 visibility: hidden;
+
+	}
 
   </style>
 
@@ -93,6 +115,12 @@
     //GLOBAL CONTAINER OF WORDS
     var globalContainer = [];
     var globalContainerCentroid = [];
+    //GLOBAL VARIABLE FOR REGEX SEARCH
+    var queue = [];
+    var matchCounter;
+    var currentCounter;
+
+
 
   </script>
 
@@ -114,7 +142,6 @@
                    <li><a href="realTimeGraph">Statistical graph</a></li>
                    <li><a href="trainingCorpus">Training Corpus</a></li>
                    <li><a href="sourceCode">Source Code</a></li>
-                   <li><a href="wordiverse5">Wordiverse</a></li>
                    <li><a href="3dwordiverse">3D-Wordiverse</a></li>
 
                  </ul>
@@ -186,11 +213,19 @@
                         Adjust the SIZE of the LABEL: <input type="text" id="foo1" class="span2" value="" data-slider-min="1" data-slider-max="30" data-slider-step="1" data-slider-value="1" data-slider-orientation="horizontal" data-slider-selection="after"data-slider-tooltip="hide">&nbsp&nbsp&nbsp
                         <label class="checkbox-inline"><input id = "textCheck" type="checkbox" value="" checked>SHOW TEXT LABEL</label>&nbsp&nbsp&nbsp
                         </div>
-                        <textarea id = "searchContent" resize= none; rows="1" cols="10" placeholder = "Enter Word"></textarea>
-                        <button type="button" id = "search" class="btn btn-primary" style="width:100px; height:30px;">SEARCH</button>
+                        <div>
+                       		<input type="radio" id="regularSearch" name = "search" value="male" checked>Exact Search&nbsp
+							<input type="radio" id="regexSearch" name = "search" value="female">All Occurences of Substring
+						<div id = "temp">
+                        	<textarea id = "searchContent" resize= none; rows="1" cols="30" placeholder = "Enter Word"></textarea>
+                        	<div id = "foundText">[YOUR SEARCH]</div>
+                        	<button type="button" id = "next">NEXT</button>
+                        </div>
+                        <button type="button" id = "search" class="btn btn-primary" style="width:100px; height:30px;">SEARCH</button>&nbsp&nbsp&nbsp&nbsp&nbsp
                         <button type="button" id="restoreCenter" class="btn btn-primary" style="width:120px; height:30px;">RESTORE</button>
                         <button type="button" id="download" class="btn btn-primary" style="width:150px; height:30px;">DOWNLOAD CSV</button>
                         <button type="button" id="dimensionReduction" class="btn btn-primary" style="width:200px; height:30px;">DIMENSION REDUCTION</button>
+                        </div>
                     </h6>
 
 
@@ -278,6 +313,7 @@ $("#minimize2").click(function() {
 
   // Called when the Visualization API is loaded.
   function drawVisualization(inputDotSize) {
+
     // create the data table.
     data = new vis.DataSet();
     // create some shortcuts to math functions
@@ -287,6 +323,7 @@ $("#minimize2").click(function() {
 
     //FIND LARGEST CATEGORY Number
     var numberOfCategory = 0;
+
     for (var i = 0; i < dataContent.length; i++) {
         var tempCategory = Number(categories[i]);
         if(tempCategory > numberOfCategory) {
@@ -363,6 +400,7 @@ $("#minimize2").click(function() {
   }
 
   $("#find").click(function() {
+
       //RESET data
        globalWord = null;
        globalx1 = null;
@@ -374,10 +412,12 @@ $("#minimize2").click(function() {
        globalContainer = [];
 
 
+
       var d = ",";
       var lines = data_txt.split("\n");
       var raw_data = [];
       for(var i=1;i<lines.length;i++) {
+
         var row = lines[i];
         if (! /\S/.test(row)) {
           // row is empty and only has whitespace
@@ -396,7 +436,6 @@ $("#minimize2").click(function() {
         raw_data.push(data_point);
       }
       dataContent = raw_data; // set global
-
       drawVisualization(100/100000.0);
       document.getElementById("visibleWhenClicked").style.visibility= "visible" ;
       document.getElementById("topMenu").style.visibility= "hidden" ;
@@ -538,7 +577,6 @@ $("#minimize2").click(function() {
             }
         }
         if(flag) {
-            console.log("this was entered");
             idCounter = idCounter + 1;
             data.add({id: idCounter, x:x1,y:y1,z:z1, style:-1, word:word, color: -1});
             graph.camera.setArmLocation(xCameraCenter,yCameraCenter,zCameraCenter);
@@ -547,6 +585,7 @@ $("#minimize2").click(function() {
         clearTextBox();
     });
     $("#newLabel").click(function() {
+    	
         var word = $("#hover1").val();
 
         var x1 = Number($("#hover2").val());
@@ -577,7 +616,6 @@ $("#minimize2").click(function() {
             }
         }
         if(flag) {
-            console.log("this was entered");
             idCounter = idCounter + 1;
             data.add({id: idCounter, x:x1,y:y1,z:z1, style:-1, word:word, color: -1});
             graph.camera.setArmLocation(xCameraCenter,yCameraCenter,zCameraCenter);
@@ -696,13 +734,29 @@ $("#minimize2").click(function() {
     });
 
     $("#search").click(function() {
+
+    	var regularSearchBoolean = false;;
+    	var regexSearchBoolean = false;
+    	if($('#regularSearch').is(':checked')) { 
+    		regularSearchBoolean = true;
+    	}
+    	if($('#regexSearch').is(':checked')) { 
+    		regexSearchBoolean = true;
+    	}
+
+
+
+
         var word = $('#searchContent').val();
+        word = word.toLowerCase();
         var tempData;
         var ids = data.getIds();
         var x1,y1,z1 = null;
         var found = false;
+        if(regularSearchBoolean) {
+        	document.getElementById("next").style.visibility= "hidden" ;
 
-        for(i = 0; i < ids.length; i++) {
+        	for(var i = 0; i < ids.length; i++) {
             tempData = data.get(ids[i]);
             if (tempData.word == word) {
                 xCameraCenter = tempData.x * graph.scale.x;
@@ -711,12 +765,68 @@ $("#minimize2").click(function() {
                 graph.camera.setArmLocation(xCameraCenter,yCameraCenter,zCameraCenter);
                 graph.redraw();
                 found = true;
+                document.getElementById("foundText").innerHTML = "[" + word + "]";
                 break;
+            	}
+        	}
+       		 if(!found) {
+            	alert("[ " + word + " ] NOT FOUND!");
+                document.getElementById("foundText").innerHTML = "NOT FOUND!";
             }
+
         }
-        if(!found)
-            alert("[ " + word + " ] NOT FOUND!");
+        else if (regexSearchBoolean){
+        	queue = [];
+
+        	for(var i = 0; i < ids.length; i++) {
+            tempData = data.get(ids[i]);
+            if (tempData.word.indexOf(word) >= 0) {
+                found = true;
+                queue.push(tempData);
+            	}
+        	}
+        	matchCounter = queue.length;
+
+       		if(!found) {
+            	alert("[ " + word + " ] NOT FOUND!");
+                document.getElementById("foundText").innerHTML = "NOT FOUND!";
+            } else {
+           		var poppedWord = queue[0];
+           		currentCounter = 1;
+            	xCameraCenter = poppedWord.x * graph.scale.x;
+                yCameraCenter = poppedWord.y * graph.scale.y;
+                zCameraCenter = poppedWord.z * graph.scale.z;
+                graph.camera.setArmLocation(xCameraCenter,yCameraCenter,zCameraCenter);
+                graph.redraw();
+                document.getElementById("foundText").innerHTML = "[" + poppedWord.word + "]  " + currentCounter + "/" + matchCounter;
+                if(matchCounter > 1) {
+                	document.getElementById("next").style.visibility= "visible" ;
+                } else {
+                	document.getElementById("next").style.visibility= "hidden" ;
+                }
+            }
+
+ 
+
+        }
     });
+
+	$("#next").click(function() {
+		currentCounter++;
+		if(currentCounter > matchCounter) {
+			alert("No More");
+		} else {
+			var poppedWord = queue[currentCounter-1];
+			xCameraCenter = poppedWord.x * graph.scale.x;
+            yCameraCenter = poppedWord.y * graph.scale.y;
+            zCameraCenter = poppedWord.z * graph.scale.z;
+            graph.camera.setArmLocation(xCameraCenter,yCameraCenter,zCameraCenter);
+            graph.redraw();
+            document.getElementById("foundText").innerHTML = "[" + poppedWord.word + "]  " + currentCounter + "/" + matchCounter;
+
+		}
+
+	});
 
     //CSV Download
     $("#download").click(function() {
