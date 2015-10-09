@@ -920,7 +920,7 @@ $("#minimize2").click(function() {
             average.z = (z/globalContainer[i].length);
             console.log(average.x + " " + average.y + " " + average.z);
             idCounter++;
-            data.add({id: idCounter, x:average.x,y:average.y,z:average.z, style:-1, word:"Centroid " + i, color: -1});
+            data.add({id: idCounter, x:average.x,y:average.y,z:average.z, style:-1, word:"centroid " + i, color: -1});
             globalContainer2.push(average);
         }
     }
