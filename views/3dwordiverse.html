@@ -960,8 +960,11 @@ $("#minimize2").click(function() {
               var x = 0, y = 0, z = 0, average = {};
               var tempCentroidContainer = [];
               var tempCentroidContainerWord = [];
-              var max = tempCentroidContainer[0];
+              var max = Number.MAX_SAFE_INTEGER;
               var maxIndex = 0;
+              var max2 = Number.MAX_SAFE_INTEGER;
+              var maxIndex2 = 0;
+
 
               for (var j = 0; j < globalContainer[i].length; j++) {
                   var temp = globalContainer[i][j];
@@ -981,16 +984,30 @@ $("#minimize2").click(function() {
                   tempCentroidContainer.push(distance);
                   tempCentroidContainerWord.push(temp.word);
               }
-
               for (var k = 1; k < tempCentroidContainer.length; k++) {
                     if (tempCentroidContainer[k] < max) {
+
                         maxIndex = k;
                         max = tempCentroidContainer[k];
                 }
               }
+              var firstWord = tempCentroidContainerWord[maxIndex];
+
+              for (var l = 1; l < tempCentroidContainer.length; l++) {
+                    if ((tempCentroidContainer[l] < max2) && (l != maxIndex)) {
+                        maxIndex2 = l;
+                        max2 = tempCentroidContainer[l];
+                }
+              }
+              var secondWord = tempCentroidContainerWord[maxIndex2];
+
+              if(tempCentroidContainer.length == 1) {
+                  secondWord = "NULL"
+              }
+
 
               idCounter++;
-              data.add({id: idCounter, x:average.x,y:average.y,z:average.z, style:-1, word:i+"_centroid_"+tempCentroidContainerWord[maxIndex], color: -1});
+              data.add({id: idCounter, x:average.x,y:average.y,z:average.z, style:-1, word:i+"_centroid_"+firstWord + "_" + secondWord, color: -1});
               globalContainer2.push(average);
           }
           if (i === maximum) {
