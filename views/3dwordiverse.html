@@ -213,9 +213,11 @@
                     </h4>
                     <h6 align = "center">
                         <div id = "insideFixed">
-                        Adjust the SIZE of the POINT: <input type="text" id="foo" class="span2" value="" data-slider-min="10" data-slider-max="1000" data-slider-step="1" data-slider-value="1" data-slider-orientation="horizontal" data-slider-selection="after"data-slider-tooltip="hide">&nbsp&nbsp&nbsp
-                        Adjust the SIZE of the LABEL: <input type="text" id="foo1" class="span2" value="" data-slider-min="1" data-slider-max="30" data-slider-step="1" data-slider-value="1" data-slider-orientation="horizontal" data-slider-selection="after"data-slider-tooltip="hide">&nbsp&nbsp&nbsp
+                        POINT SIZE: <input type="text" id="foo" class="span2" value="" data-slider-min="10" data-slider-max="1000" data-slider-step="1" data-slider-value="1" data-slider-orientation="horizontal" data-slider-selection="after"data-slider-tooltip="hide">&nbsp&nbsp&nbsp
+                        LABEL SIZE: <input type="text" id="foo1" class="span2" value="" data-slider-min="1" data-slider-max="30" data-slider-step="1" data-slider-value="1" data-slider-orientation="horizontal" data-slider-selection="after"data-slider-tooltip="hide">&nbsp&nbsp&nbsp
                         <label class="checkbox-inline"><input id = "textCheck" type="checkbox" value="" checked>SHOW TEXT LABEL</label>&nbsp&nbsp&nbsp
+                        <label class="checkbox-inline"><input id = "textColorCheck" type="checkbox" value="" checked>ENABLE TEXT COLORING</label>&nbsp&nbsp&nbsp
+
                         </div>
                         <div>
                        		<input type="radio" id="regularSearch" name = "search" value="male">Exact Search&nbsp
@@ -477,6 +479,15 @@ $("#minimize2").click(function() {
             enableDrawText = false;
         else
             enableDrawText = true;
+
+        graph.redraw();
+    }
+    );
+    $('#textColorCheck').change( function() {
+        if(enableTextColoring == true)
+            enableTextColoring = false;
+        else
+            enableTextColoring = true;
 
         graph.redraw();
     }

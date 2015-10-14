@@ -38,6 +38,7 @@ var canZoomInfinite = true;
 var enableDrawText = false;
 var dotSizeFromUser = 0;
 var fontSizeFromUser = "10px Arial";
+var enableTextColoring = true;
 //shift center
 var shiftX = 0;
 var shiftY = 0;
@@ -8354,7 +8355,12 @@ return /******/ (function(modules) { // webpackBootstrap
                                                    
     //draw text
     if(enableDrawText) {
-       ctx.fillStyle = "#000000";
+      if(enableTextColoring) {
+        ctx.fillStyle = color;
+      } else {
+        ctx.fillStyle = '#000000';
+
+      }
        ctx.font = fontSizeFromUser;
        ctx.fillText(point.point.word, point.screen.x+15, point.screen.y+7);
     }
