@@ -8322,10 +8322,11 @@ return /******/ (function(modules) { // webpackBootstrap
         // calculate the color based on the value
         hue = (1 - (point.point.value - this.valueMin) * this.scale.value) * 240;
         color = this._hsv2rgb(hue, 1, 1);
-        borderColor = this._hsv2rgb(hue, 1, 0.8);
-                                                   //OVERRIDING COLOR
-                                                   colorValue = (point.point.value)%67;
-                                                   color = colorArray[colorValue];
+        //borderColor = this._hsv2rgb(hue, 1, 0.8);
+        //OVERRIDING COLOR
+        colorValue = (point.point.value)%67;
+        color = colorArray[colorValue];
+        //borderColor = color;
       } else if (this.style === Graph3d.STYLE.DOTSIZE) {
         color = this.dataColor.fill;
         borderColor = this.dataColor.stroke;
@@ -8337,12 +8338,13 @@ return /******/ (function(modules) { // webpackBootstrap
       }
 
       // draw the circle
-      ctx.lineWidth = 1;
-      ctx.fillStyle = 'rgba(0,0,0,0.1)';
+      ctx.lineWidth = 3;
+      //ctx.fillStyle = 'rgba(0,0,0,0.1)';
       ctx.fillStyle = color;
+      ctx.strokeStyle = color;
       ctx.beginPath();
       ctx.arc(point.screen.x, point.screen.y, radius, 0, Math.PI * 2, true);
-                                                   //ctx.rect(point.screen.x,point.screen.y,radius+3,radius+3);
+      //ctx.rect(point.screen.x,point.screen.y,radius+3,radius+3);
 
       if(!(point.point.color == -1)) {
          ctx.fill();
