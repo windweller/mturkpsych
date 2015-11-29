@@ -8334,6 +8334,9 @@ return /******/ (function(modules) { // webpackBootstrap
         if (!colorOff) {
             color = colorArray[colorValue];
         }
+        if (switchTheme) {
+            color = 'rgba(255,255,255,1)';
+        }
 
       } else if (this.style === Graph3d.STYLE.DOTSIZE) {
         color = this.dataColor.fill;
