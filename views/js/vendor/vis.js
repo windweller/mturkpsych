@@ -29,6 +29,7 @@
  * find "EDIT POINT3D VISUALIZATION"
  * FIND "TOOLTIP CONTENT EDIT"
  * FIND "OVERRIDING COLOR" FOR VISUALLY DISTINCT COLOR SET OF 75
+ * FIND "Redraw the Graph." FOR AXIS VISIBLITY
  * http://phrogz.net/css/distinct-colors.html
  */
 
@@ -7606,7 +7607,11 @@ return /******/ (function(modules) { // webpackBootstrap
     this._resizeCenter();
     this._redrawSlider();
     this._redrawClear();
-    this._redrawAxis();
+
+    //SHOW AXIS OR NOT//
+    if(showAxis) {
+      this._redrawAxis();
+    }
 
     if (this.style === Graph3d.STYLE.GRID || this.style === Graph3d.STYLE.SURFACE) {
       this._redrawDataGrid();
@@ -8321,12 +8326,15 @@ return /******/ (function(modules) { // webpackBootstrap
       if (this.style === Graph3d.STYLE.DOTCOLOR) {
         // calculate the color based on the value
         hue = (1 - (point.point.value - this.valueMin) * this.scale.value) * 240;
-        color = this._hsv2rgb(hue, 1, 1);
+        //color = this._hsv2rgb(hue, 1, 1);
         //borderColor = this._hsv2rgb(hue, 1, 0.8);
-        //OVERRIDING COLOR
+        
+        //OVERRIDING DOT COLOR
         colorValue = (point.point.value)%67;
-        color = colorArray[colorValue];
-        //borderColor = color;
+        if (!colorOff) {
+            color = colorArray[colorValue];
+        }
+
       } else if (this.style === Graph3d.STYLE.DOTSIZE) {
         color = this.dataColor.fill;
         borderColor = this.dataColor.stroke;

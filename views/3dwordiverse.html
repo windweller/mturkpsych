@@ -10,10 +10,15 @@
       position: absolute;
       top: 0px;
       right: 5px;
+      font-size: 6px;
     }
     body {font: 10pt arial;}
     #visibleWhenClicked {
         visibility: hidden;
+    }
+
+    #lowerTopMenu .btn{
+      font-size: 10px;
     }
 
     .Fixed
@@ -95,6 +100,7 @@
 
   <script>
     var idCounter = 0;
+
     /** DETECTING BROWSER **/
     var isOpera = !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
     // Opera 8.0+ (UA detection to detect Blink/v8-powered Opera)
@@ -104,6 +110,7 @@
     var isChrome = !!window.chrome && !isOpera;              // Chrome 1+
     var isIE = /*@cc_on!@*/false || !!document.documentMode;   // At least IE6
     /** DETECTING BROWSER ENDS**/
+
     var globalWord = null;
     var globalx1 = null;
     var globaly1 = null;
@@ -120,6 +127,12 @@
     var queue = [];
     var matchCounter;
     var currentCounter;
+    //GLOBAL VARIABLE FOR SHOWING AXIS
+    var showAxis = false;
+    //GLOBAL VARIABLE FOR CHANGING THEME
+    var switchTheme = false;
+    //GLOBAL VARIABLE FOR COLOR OFF
+    var colorOff = false;
 
 
 
@@ -209,29 +222,33 @@
             <div class = "container fixed2" id = "topMenu">
                 <div align = "center">
                     <h4 align = "center">
-                        <button align = "right" type="button" id="minimize" class="btn btn-primary" style="width:100px; height:30px;">MINIMIZE</button>
+                        <button align = "right" type="button" id="minimize" class="btn btn-primary" style="width:50px; height:20px;">MINIMIZE</button>
                     </h4>
                     <h6 align = "center">
                         <div id = "insideFixed">
                         POINT SIZE: <input type="text" id="foo" class="span2" value="" data-slider-min="10" data-slider-max="1000" data-slider-step="1" data-slider-value="1" data-slider-orientation="horizontal" data-slider-selection="after"data-slider-tooltip="hide">&nbsp&nbsp&nbsp
                         LABEL SIZE: <input type="text" id="foo1" class="span2" value="" data-slider-min="1" data-slider-max="30" data-slider-step="1" data-slider-value="1" data-slider-orientation="horizontal" data-slider-selection="after"data-slider-tooltip="hide">&nbsp&nbsp&nbsp
-                        <label class="checkbox-inline"><input id = "textCheck" type="checkbox" value="" checked>SHOW TEXT LABEL</label>&nbsp&nbsp&nbsp
-                        <label class="checkbox-inline"><input id = "textColorCheck" type="checkbox" value="" checked>ENABLE TEXT COLOR</label>&nbsp&nbsp&nbsp
+                        <label class="checkbox-inline"><input id = "textCheck" type="checkbox" value="" checked>TEXT LABEL</label>&nbsp
+                        <label class="checkbox-inline"><input id = "textColorCheck" type="checkbox" value="" checked>TEXT COLOR</label>&nbsp
+                        <label class="checkbox-inline"><input id = "showAxisCheck" type="checkbox" value="">SHOW AXIS</label>&nbsp
+                        <label class="checkbox-inline"><input id = "switchTheme" type="checkbox" value="">SWITCH THEME</label>&nbsp
+                         <label class="checkbox-inline"><input id = "colorOff" type="checkbox" value="">COLOR OFF</label>&nbsp
 
                         </div>
-                        <div>
-                       		<input type="radio" id="regularSearch" name = "search" value="male">Exact Search&nbsp
-							<input type="radio" id="regexSearch" name = "search" value="female" checked="">All Occurences of Substring
-						<div id = "temp">
-                        	<textarea id = "searchContent" resize= none; rows="1" cols="30" placeholder = "Enter Word"></textarea>
-                        	<div id = "foundText">[YOUR SEARCH]</div>
-                        	<button type="button" id = "next">NEXT</button>
-                        </div>
-                        <button type="button" id = "search" class="btn btn-primary" style="width:100px; height:30px;">SEARCH</button>&nbsp&nbsp&nbsp&nbsp&nbsp
-                        <button type="button" id="restoreCenter" class="btn btn-primary" style="width:90px; height:30px;">RESTORE</button>
-                        <button type="button" id="download" class="btn btn-primary" style="width:140px; height:30px;">DOWNLOAD CSV</button>
-                        <button type="button" id="dimensionReduction" class="btn btn-primary" style="width:200px; height:30px;">DIMENSION REDUCTION</button>
-                        </div>
+                    <div id = "lowerTopMenu">
+                      <input type="radio" id="regularSearch" name = "search" value="male">Exact Search&nbsp
+  							      <input type="radio" id="regexSearch" name = "search" value="female" checked="">All Occurences of Substring
+  						        <div id = "temp">
+                          <textarea id = "searchContent" resize= none; rows="1" cols="30" placeholder = "Enter Word"></textarea>
+                          	<div id = "foundText">[YOUR SEARCH]</div>
+                          	<button type="button" id = "next">NEXT</button>
+                      </div>
+                      
+                          <button type="button" id = "search" class="btn btn-primary" style="width:70px; height:25;">SEARCH</button>&nbsp
+                          <button type="button" id="restoreCenter" class="btn btn-primary" style="width:70px; height:25;">RESTORE</button>
+                          <button type="button" id="download" class="btn btn-primary" style="width:110px; height:25;">DOWNLOAD CSV</button>
+                          <button type="button" id="dimensionReduction" class="btn btn-primary" style="width:150px; height:25;">DIMENSION REDUCTION</button>
+                    </div>
                     </h6>
 
 
@@ -481,8 +498,8 @@ $("#minimize2").click(function() {
             enableDrawText = true;
 
         graph.redraw();
-    }
-    );
+    });
+    
     $('#textColorCheck').change( function() {
         if(enableTextColoring == true)
             enableTextColoring = false;
@@ -490,8 +507,41 @@ $("#minimize2").click(function() {
             enableTextColoring = true;
 
         graph.redraw();
-    }
-    );
+    });
+    
+    $('#showAxisCheck').change( function() {
+        if(showAxis == true)
+            showAxis = false;
+        else
+            showAxis= true;
+
+        graph.redraw();
+    });
+
+    $('#switchTheme').change( function() {
+        if(switchTheme == true) {
+            switchTheme = false;
+            $('#mygraph').css('background-color', 'white');
+        }
+        else {
+            switchTheme = true;
+            $('#mygraph').css('background-color', 'black');
+        }
+            
+
+        graph.redraw();
+    });
+   $('#colorOff').change( function() {
+        if(colorOff == true) {
+            colorOff = false;
+        }
+        else {
+            colorOff = true;
+        }
+            
+        graph.redraw();
+    });
+    
     function redrawScale () {
         graph._setScale();
         graph.redraw();
