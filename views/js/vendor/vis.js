@@ -36,7 +36,6 @@
 "use strict";
 var isThereLimitOnCameraRotation = false;
 var canZoomInfinite = true;
-var enableDrawText = false;
 var dotSizeFromUser = 0;
 var fontSizeFromUser = "10px Arial";
 var enableTextColoring = true;

@@ -97,6 +97,8 @@
   <link href="css/vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="css/vendor/slider.css">
   <link rel="stylesheet" type="text/css" href="css/mystyle.css">
+  <link rel="stylesheet" type="text/css" href="css/vendor/bootstrap-multiselect.css">
+
 
   <script>
     var idCounter = 0;
@@ -133,6 +135,8 @@
     var switchTheme = false;
     //GLOBAL VARIABLE FOR COLOR OFF
     var colorOff = false;
+    // GLOBAL VARIABLE FOR DRAWING TEXT
+    var enableDrawText = true;
 
 
 
@@ -141,7 +145,44 @@
   <script type="text/javascript" src="js/vendor/jquery-2.1.4.min.js"></script>
   <script type="text/javascript" src="js/vendor/vis.js"></script>
   <script type="text/javascript" src="js/vendor/bootstrapslider.js"></script>
+  <script type="text/javascript" src="js/vendor/bootstrap.min.js"></script>
+  <script type="text/javascript" src="js/vendor/bootstrap-multiselect.js"></script>
 
+
+  <script type="text/javascript">
+      $(document).ready(function() {
+             $('#example-getting-started').multiselect({
+             onChange: function(option, checked, select) { //DETECTING CHANGES TO THE DROPDOWN CHECKBOX
+                if($(option).val() == "0") {
+                  enableDrawText = enableDrawText ? false : true;
+                  graph.redraw();
+                } else if ($(option).val() == "1") {
+                  enableTextColoring = enableTextColoring ? false: true;
+                  graph.redraw();
+                } else if ($(option).val() == "2") {
+                  showAxis = showAxis ? false : true;
+                  graph.redraw();
+
+                } else if ($(option).val() == "3") {
+                   if(switchTheme == true) {
+                      switchTheme = false;
+                       $('#mygraph').css('background-color', 'white');
+                    }
+                     else {
+                    switchTheme = true;
+                   $('#mygraph').css('background-color', 'black');
+                }
+                graph.redraw();
+
+                } else if ($(option).val() == "4") {
+                  colorOff = colorOff ? false : true;
+                  graph.redraw();
+
+                }
+            }
+        });
+      });
+  </script>
 
 </head>
 
@@ -227,12 +268,22 @@
                     <h6 align = "center">
                         <div id = "insideFixed">
                         POINT SIZE: <input type="text" id="foo" class="span2" value="" data-slider-min="10" data-slider-max="1000" data-slider-step="1" data-slider-value="1" data-slider-orientation="horizontal" data-slider-selection="after"data-slider-tooltip="hide">&nbsp&nbsp&nbsp
-                        LABEL SIZE: <input type="text" id="foo1" class="span2" value="" data-slider-min="1" data-slider-max="30" data-slider-step="1" data-slider-value="1" data-slider-orientation="horizontal" data-slider-selection="after"data-slider-tooltip="hide">&nbsp&nbsp&nbsp
+                        LABEL SIZE: <input type="text" id="foo1" class="span2" value="" data-slider-min="1" data-slider-max="30" data-slider-step="1" data-slider-value="1" data-slider-orientation="horizontal" data-slider-selection="after"data-slider-tooltip="hide">&nbsp&nbsp
+
+                          OPTIONS: 
+                          <select id="example-getting-started" multiple="multiple">
+                              <option id = "textCheck" value= "0" selected = "selected">TEXT LABEL</option>
+                              <option id = "textColorCheck" value= "1" selected = "selected">TEXT COLOR</option>
+                              <option id = "showAxisCheck" value="2">SHOW AXIS</option>
+                              <option id = "switchTheme" value="3">SWITCH THEME</option>
+                              <option id = "colorOff" value="4">COLOR OFF</option>
+                          </select>
+                        <!--
                         <label class="checkbox-inline"><input id = "textCheck" type="checkbox" value="" checked>TEXT LABEL</label>&nbsp
                         <label class="checkbox-inline"><input id = "textColorCheck" type="checkbox" value="" checked>TEXT COLOR</label>&nbsp
                         <label class="checkbox-inline"><input id = "showAxisCheck" type="checkbox" value="">SHOW AXIS</label>&nbsp
                         <label class="checkbox-inline"><input id = "switchTheme" type="checkbox" value="">SWITCH THEME</label>&nbsp
-                         <label class="checkbox-inline"><input id = "colorOff" type="checkbox" value="">COLOR OFF</label>&nbsp
+                         <label class="checkbox-inline"><input id = "colorOff" type="checkbox" value="">COLOR OFF</label>&nbsp -->
 
                         </div>
                     <div id = "lowerTopMenu">
@@ -299,11 +350,6 @@ $("#minimize2").click(function() {
      isThereLimitOnCameraRotation = false;
      canZoomInfinite = true;
      dotSizeFromUser = 0.0001;
-     if($('#textCheck').prop("checked") == true) {
-         enableDrawText = true;
-     } else {
-         enableDrawText = false;
-     }
  }
 
  );
@@ -492,6 +538,7 @@ $("#minimize2").click(function() {
       });
 
     $('#textCheck').change( function() {
+      console.log("textcheck changed");
         if(enableDrawText == true)
             enableDrawText = false;
         else
