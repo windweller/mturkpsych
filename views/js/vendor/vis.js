@@ -24,6 +24,7 @@
  */
 
 /*
+ * FIND "Draw all datapoints as dots."
  * FIND "theCameraRotation" to find the camera rotating angle
  * FIND "translationOntoScreenX" to find the 3d to 2d translation
  * find "EDIT POINT3D VISUALIZATION"
@@ -8269,6 +8270,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
     // calculate the translations of all points
     for (i = 0; i < this.dataPoints.length; i++) {
+      //console.log(this.dataPoints[i].point);
       var trans = this._convertPointToTranslation(this.dataPoints[i].point);
       var screen = this._convertTranslationToScreen(trans);
       this.dataPoints[i].trans = trans;
@@ -8379,6 +8381,32 @@ return /******/ (function(modules) { // webpackBootstrap
                                                   
 
     }
+
+      //IF SPIDER WEB IS ENABLED
+      if (spiderSearchBoolean) {
+        console.log("spider search is on");
+        console.log(spiderContainer);
+        for(var i =0; i < spiderContainer.length; i++) {
+           var screenProjection = this._convertTranslationToScreen(this._convertPointToTranslation(spiderContainer[i]));
+           spiderContainer[i].screenProjection = screenProjection;
+           console.log(spiderContainer[i].word + " " +spiderContainer[i].connectedTo[0].word);
+        }
+        for(var i =0; i < spiderContainer.length; i++) {
+            for(var j = 0; j < spiderContainer[i].connectedTo.length; j++) {
+              if(spiderContainer[i].connectedTo.length > 1)
+                console.log("MULTIPLE");
+              ctx.lineWidth = 1;
+              ctx.strokeStyle = this.gridColor;
+              ctx.beginPath();
+              ctx.moveTo(spiderContainer[i].screenProjection.x, spiderContainer[i].screenProjection.y);
+              ctx.lineTo(spiderContainer[i].connectedTo[j].screenProjection.x, spiderContainer[i].connectedTo[j].screenProjection.y);
+                    
+              ctx.stroke();
+            }
+            
+
+        }
+      }
   };
 
   /**

@@ -137,7 +137,11 @@
     var colorOff = false;
     // GLOBAL VARIABLE FOR DRAWING TEXT
     var enableDrawText = true;
-
+    // GLOBAL VARIABLE FOR SPIDER SEARCH
+    var spiderContainer = [];
+    var regularSearchBoolean = false;;
+    var regexSearchBoolean = false;
+    var spiderSearchBoolean = false;
 
 
   </script>
@@ -232,7 +236,7 @@
             </div>
             <div id="mygraph">
                 <div style="position: relative; overflow: hidden; width: 100%; height: 100%;">
-                    <canvas width="600" height="600" style="position: relative; width: 100%; height: 100%;">
+                    <canvas id = "theCanvas" width="600" height="600" style="position: relative; width: 100%; height: 100%;">
                         <div style="color: red; font-weight: bold; padding: 10px;">Error: your browser does not support HTML canvas</div>
                     </canvas>
                 <div style="position: absolute; bottom: 0px; left: 0px; width: 580px;">
@@ -278,18 +282,14 @@
                               <option id = "switchTheme" value="3">SWITCH THEME</option>
                               <option id = "colorOff" value="4">COLOR OFF</option>
                           </select>
-                        <!--
-                        <label class="checkbox-inline"><input id = "textCheck" type="checkbox" value="" checked>TEXT LABEL</label>&nbsp
-                        <label class="checkbox-inline"><input id = "textColorCheck" type="checkbox" value="" checked>TEXT COLOR</label>&nbsp
-                        <label class="checkbox-inline"><input id = "showAxisCheck" type="checkbox" value="">SHOW AXIS</label>&nbsp
-                        <label class="checkbox-inline"><input id = "switchTheme" type="checkbox" value="">SWITCH THEME</label>&nbsp
-                         <label class="checkbox-inline"><input id = "colorOff" type="checkbox" value="">COLOR OFF</label>&nbsp -->
 
                         </div>
                     <div id = "lowerTopMenu">
-                      <input type="radio" id="regularSearch" name = "search" value="male">Exact Search&nbsp
-  							      <input type="radio" id="regexSearch" name = "search" value="female" checked="">All Occurences of Substring
-  						        <div id = "temp">
+
+                    <input type="radio" id="regularSearch" name = "search" value="male">Exact Search&nbsp
+  					<input type="radio" id="regexSearch" name = "search" value="female" checked="">All Occurences of Substring
+  					<input type="radio" id="spiderSearch" name = "search" value="female">Spider Search
+  						  <div id = "temp">
                           <textarea id = "searchContent" resize= none; rows="1" cols="30" placeholder = "Enter Word"></textarea>
                           	<div id = "foundText">[YOUR SEARCH]</div>
                           	<button type="button" id = "next">NEXT</button>
@@ -332,12 +332,12 @@ var categories = [];
 $("#minimize").click(function() {
         document.getElementById("topMenu").style.visibility= "hidden" ;
         document.getElementById("topIcon").style.visibility= "visible" ;
-        document.getElementById("new").style.visibility= "hidden" ;
+        //document.getElementById("new").style.visibility= "hidden" ;
 });
 $("#minimize2").click(function() {
         document.getElementById("topMenu").style.visibility= "visible" ;
         document.getElementById("topIcon").style.visibility= "hidden" ;
-        document.getElementById("new").style.visibility= "visible" ;
+        //document.getElementById("new").style.visibility= "visible" ;
 });
 
 
@@ -828,7 +828,7 @@ $("#minimize2").click(function() {
       $body.on('mouseup mousemove', function handler(evt) {
         if (evt.type === 'mouseup') {
 
-            document.getElementById("new").style.visibility= "visible" ;
+            //document.getElementById("new").style.visibility= "visible" ;
             var dataPoint2 = graph._dataPointFromXY(mousePosition.x, mousePosition.y);
             if(dataPoint2 == null) {
                     document.getElementById("new").style.visibility= "hidden" ;
@@ -856,13 +856,20 @@ $("#minimize2").click(function() {
 
     $("#search").click(function() {
 
-    	var regularSearchBoolean = false;;
-    	var regexSearchBoolean = false;
     	if($('#regularSearch').is(':checked')) { 
     		regularSearchBoolean = true;
+    		regexSearchBoolean = false;
+    		spiderSearchBoolean = false;
     	}
-    	if($('#regexSearch').is(':checked')) { 
+    	else if($('#regexSearch').is(':checked')) { 
+    		regularSearchBoolean = false;
     		regexSearchBoolean = true;
+    		spiderSearchBoolean = false;
+    	}
+    	else if($('#spiderSearch').is(':checked')) { 
+    		regularSearchBoolean = false;
+    		regexSearchBoolean = false;
+    		spiderSearchBoolean = true;
     	}
 
 
@@ -875,6 +882,8 @@ $("#minimize2").click(function() {
         var x1,y1,z1 = null;
         var found = false;
         if(regularSearchBoolean) {
+
+        	console.log("REGULAR SERACH");
         	document.getElementById("next").style.visibility= "hidden" ;
 
         	for(var i = 0; i < ids.length; i++) {
@@ -896,7 +905,113 @@ $("#minimize2").click(function() {
             }
 
         }
+        else if(spiderSearchBoolean) {
+        	console.log("SPIDER SERACH");
+        	var regexSymbol;
+        	var spiderQueue = [];
+          queue = [];
+
+        	for(var i = 0; i < ids.length; i++) {
+            tempData = data.get(ids[i]);
+
+            regexSymbol = word + " ?[0-9]+";
+            regexSymbol = new RegExp(regexSymbol);
+
+            if (regexSymbol.test(tempData.word) || tempData.word == word) {
+               // console.log(tempData);
+                tempData.connectedTo = [];
+                found = true;
+                spiderQueue.push(tempData);
+                queue.push(tempData);
+            	}
+        	}
+
+          for(var i = 0; i < spiderQueue.length; i++) {
+              console.log(" [" + spiderQueue[i].word + "] ");
+              var containerToSort = [];
+              for(var j = 0; j < spiderQueue.length; j++) {
+                if (j == i)
+                  continue;
+                else {
+                    var temp = {};
+                    temp.vertex = spiderQueue[j];
+                    temp.word = spiderQueue[j].word; 
+                    temp.index = j;
+                    temp.distance = Math.sqrt(Math.pow(spiderQueue[i].x-spiderQueue[j].x, 2) + Math.pow(spiderQueue[i].y-spiderQueue[j].y, 2) + Math.pow(spiderQueue[i].z-spiderQueue[j].z, 2));
+
+                    containerToSort.push(temp);
+                    containerToSort.sort(function(a,b) {
+                        return a.distance - b.distance;
+                    });
+                }
+               
+              }
+
+              //now containerToSort contains the word's closest adj vertices
+              var temp = containerToSort.shift();
+              var foundIt = 0;
+              var counter = 0
+              while(1) {
+                  counter++;
+                  if(counter > 20)
+                    break;
+                  if(foundIt == 1) {
+                    break;
+                  }
+                  if(typeof temp === 'undefined') {
+                    console.log("Cant Find it");
+                    break;
+                  }
+
+                  if(temp.vertex.connectedTo.length == 0)
+                    break;
+
+                  for(var k = 0; k < temp.vertex.connectedTo.length; k++){
+                      console.log("THE WORD IS: " + temp.vertex.word);
+                      console.log("THIS IS CONNECTED TO: " + temp.vertex.connectedTo[k].word);
+                      if (spiderQueue[i].word == temp.vertex.connectedTo[k].word) {
+                          console.log("BIDIRECTION");
+                          temp = containerToSort.shift();
+                          break;
+                      } else {
+                          foundIt = 1;
+                      }
+
+                  }
+              }
+              if(typeof temp !== 'undefined') {
+                 spiderQueue[i].connectedTo.push(spiderQueue[temp.index]);
+              }
+
+          }
+
+          spiderContainer = spiderQueue;
+
+
+        	matchCounter = queue.length;
+
+       		if(!found) {
+            	alert("[ " + word + " ] NOT FOUND!");
+              document.getElementById("foundText").innerHTML = "NOT FOUND!";
+            } else {
+           		var poppedWord = queue[0];
+           		currentCounter = 1;
+            	xCameraCenter = poppedWord.x * graph.scale.x;
+                yCameraCenter = poppedWord.y * graph.scale.y;
+                zCameraCenter = poppedWord.z * graph.scale.z;
+                graph.camera.setArmLocation(xCameraCenter,yCameraCenter,zCameraCenter);
+                graph.redraw();
+                document.getElementById("foundText").innerHTML = "[" + poppedWord.word + "]  " + currentCounter + "/" + matchCounter;
+                if(matchCounter > 1) {
+                	document.getElementById("next").style.visibility= "visible" ;
+                } else {
+                	document.getElementById("next").style.visibility= "hidden" ;
+                }
+            }
+
+        }
         else if (regexSearchBoolean){
+        	console.log("REGEX SERACH");
         	queue = [];
 
         	for(var i = 0; i < ids.length; i++) {
@@ -907,6 +1022,7 @@ $("#minimize2").click(function() {
             	}
         	}
         	matchCounter = queue.length;
+          console.log(matchCounter);
 
        		if(!found) {
             	alert("[ " + word + " ] NOT FOUND!");
@@ -934,10 +1050,12 @@ $("#minimize2").click(function() {
 
 	$("#next").click(function() {
 		currentCounter++;
+    console.log("current counter: " + currentCounter);
 		if(currentCounter > matchCounter) {
 			alert("No More");
 		} else {
 			var poppedWord = queue[currentCounter-1];
+      console.log(poppedWord);
 			xCameraCenter = poppedWord.x * graph.scale.x;
             yCameraCenter = poppedWord.y * graph.scale.y;
             zCameraCenter = poppedWord.z * graph.scale.z;
@@ -1039,7 +1157,7 @@ $("#minimize2").click(function() {
             average.x = (x/globalContainer[i].length);
             average.y = (y/globalContainer[i].length);
             average.z = (z/globalContainer[i].length);
-            console.log(average.x + " " + average.y + " " + average.z);
+            //console.log(average.x + " " + average.y + " " + average.z);
             idCounter++;
             data.add({id: idCounter, x:average.x,y:average.y,z:average.z, style:-1, word:"centroid " + i, color: -1});
             globalContainer2.push(average);
@@ -1132,13 +1250,6 @@ $("#minimize2").click(function() {
 
 
     });
-
-
-
-
-
-
-
 
 </script>
 
