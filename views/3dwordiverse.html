@@ -210,23 +210,25 @@
                 <br/><br/>
                 <hr/>
                 <br/>
-                <h1 style="display: inline;">3D Wordiverse</h1>
+                <h3 style="display: inline;">3D Wordiverse </h3>
+                <form align = "right" action="http://www.mindandlanguagelab.com/demoResult">
+                   <input class = "btn btn-primary" type="submit" value="Download Sample Data">
+                </form>
+            
 
             </div>
             <br/> <br/>
 
             <div class="jumbotron col-md-16 center">
             <input type="file" id="files" name="files[]" multiple />
-              <div align="right">
-              <form action="http://www.mindandlanguagelab.com/demoResult">
-                <input class = "btn btn-primary" type="submit" value="Download Sample Data">
-              </form>
+            <div align="right">
+               <button type="button" id="find" class="btn btn-primary" style="width:120px; height:45px;" >Display</button>
+           
             </div>
             <output id="list"></output>
-          
             </div>
 
-            <button type="button" id="find" class="btn btn-primary" style="width:120px; height:45px;">Display</button>
+           
             <hr>
             <div id = "visibleWhenClicked" class="jumbotron col-md-16 center">
             <h5 align = "center">KNOWN ERROR: PLEASE REFRESH THE PAGE IF YOU LOAD ANOTHER CSV</h5>
@@ -828,7 +830,7 @@ $("#minimize2").click(function() {
       $body.on('mouseup mousemove', function handler(evt) {
         if (evt.type === 'mouseup') {
 
-            //document.getElementById("new").style.visibility= "visible" ;
+            document.getElementById("new").style.visibility= "visible" ;
             var dataPoint2 = graph._dataPointFromXY(mousePosition.x, mousePosition.y);
             if(dataPoint2 == null) {
                     document.getElementById("new").style.visibility= "hidden" ;
