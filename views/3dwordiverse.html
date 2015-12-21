@@ -914,7 +914,7 @@ $("#minimize2").click(function() {
         	for(var i = 0; i < ids.length; i++) {
             tempData = data.get(ids[i]);
 
-            regexSymbol = word + " ?[0-9]+";
+            regexSymbol = "^"+word + "_?[0-9]+_?[0-9]+";
             regexSymbol = new RegExp(regexSymbol);
 
             if (regexSymbol.test(tempData.word) || tempData.word == word) {

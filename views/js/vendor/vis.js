@@ -8395,8 +8395,8 @@ return /******/ (function(modules) { // webpackBootstrap
             for(var j = 0; j < spiderContainer[i].connectedTo.length; j++) {
               if(spiderContainer[i].connectedTo.length > 1)
                 console.log("MULTIPLE");
-              ctx.lineWidth = 3;
-              ctx.strokeStyle = this.gridColor;
+              ctx.lineWidth = 1;
+              ctx.strokeStyle = '#000000';
               ctx.beginPath();
               ctx.moveTo(spiderContainer[i].screenProjection.x, spiderContainer[i].screenProjection.y);
               ctx.lineTo(spiderContainer[i].connectedTo[j].screenProjection.x, spiderContainer[i].connectedTo[j].screenProjection.y);
