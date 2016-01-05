@@ -107,6 +107,66 @@ trait StaticRoute extends Directives {
     path("delayeddiscountturkv4") {
       getFromFile(new File("views/delayedDiscounting/delayedDiscountTurkv4.html"), `text/html`)
     } ~
+    path("delayLeft") {
+      getFromFile(new File("views/video/delayLeft.html"), `text/html`)
+    } ~
+    path("delayLeftVideo") {
+      getFromFile(new File("views/video/delay_LEFT.mp4"), `video/mp4`)
+    } ~
+    path("delayRight") {
+      getFromFile(new File("views/video/delayRight.html"), `text/html`)
+    } ~
+    path("delayRightVideo") {
+      getFromFile(new File("views/video/delay_RIGHT.mp4"), `video/mp4`)
+    } ~
+    path("launchLeft") {
+      getFromFile(new File("views/video/launchLeft.html"), `text/html`)
+    } ~
+    path("launchLeftVideo") {
+      getFromFile(new File("views/video/launch_LEFT.mp4"), `video/mp4`)
+    } ~
+    path("launchRight") {
+      getFromFile(new File("views/video/launchRight.html"), `text/html`)
+    } ~
+    path("launchRightVideo") {
+      getFromFile(new File("views/video/launch_RIGHT.mp4"), `video/mp4`)
+    } ~
+     path("overlapLaunchLeft") {
+      getFromFile(new File("views/video/overlapLaunchLeft.html"), `text/html`)
+    } ~
+    path("overlapLaunchLeftVideo") {
+      getFromFile(new File("views/video/overlap_launch_LEFT.mp4"), `video/mp4`)
+    } ~
+    path("overlapLaunchRight") {
+      getFromFile(new File("views/video/overlapLaunchRight.html"), `text/html`)
+    } ~
+    path("overlapLaunchRightVideo") {
+      getFromFile(new File("views/video/overlap_launch_RIGHT.mp4"), `video/mp4`)
+    } ~
+    path("passLaunchLeft") {
+      getFromFile(new File("views/video/passLaunchLeft.html"), `text/html`)
+    } ~
+    path("passLaunchLeftVideo") {
+      getFromFile(new File("views/video/pass_launch_LEFT.mp4"), `video/mp4`)
+    } ~
+     path("passLaunchRight") {
+      getFromFile(new File("views/video/passLaunchRight.html"), `text/html`)
+    } ~
+    path("passLaunchRightVideo") {
+      getFromFile(new File("views/video/pass_launch_Right.mp4"), `video/mp4`)
+    } ~
+     path("passLeft") {
+      getFromFile(new File("views/video/passLeft.html"), `text/html`)
+    } ~
+    path("passLeftVideo") {
+      getFromFile(new File("views/video/pass_Left.mp4"), `video/mp4`)
+    } ~
+    path("passRight") {
+      getFromFile(new File("views/video/passRight.html"), `text/html`)
+    } ~
+    path("passRightVideo") {
+      getFromFile(new File("views/video/pass_Right.mp4"), `video/mp4`)
+    } ~
     path("demoResult") {
       getFromFile(new File("views/demoResult.csv"), `text/csv`)
     } ~
