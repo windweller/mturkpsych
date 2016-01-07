@@ -153,19 +153,28 @@ trait StaticRoute extends Directives {
       getFromFile(new File("views/video/passLaunchRight.html"), `text/html`)
     } ~
     path("passLaunchRightVideo") {
-      getFromFile(new File("views/video/pass_launch_Right.mp4"), `video/mp4`)
+      getFromFile(new File("views/video/pass_launch_RIGHT.mp4"), `video/mp4`)
     } ~
      path("passLeft") {
       getFromFile(new File("views/video/passLeft.html"), `text/html`)
     } ~
     path("passLeftVideo") {
-      getFromFile(new File("views/video/pass_Left.mp4"), `video/mp4`)
+      getFromFile(new File("views/video/pass_LEFT.mp4"), `video/mp4`)
     } ~
     path("passRight") {
       getFromFile(new File("views/video/passRight.html"), `text/html`)
     } ~
-    path("passRightVideo") {
-      getFromFile(new File("views/video/pass_Right.mp4"), `video/mp4`)
+    path("overlapLeft") {
+      getFromFile(new File("views/video/overlap_LEFT.mp4"), `video/mp4`)
+    } ~
+     path("overlapRight") {
+      getFromFile(new File("views/video/overlap_RIGHT.mp4"), `video/mp4`)
+    } ~
+    path("catchMiddle") {
+      getFromFile(new File("views/video/catch_Middle.mp4"), `video/mp4`)
+    } ~
+    path("catchRight") {
+      getFromFile(new File("views/video/catch_RIGHT.mp4"), `video/mp4`)
     } ~
     path("demoResult") {
       getFromFile(new File("views/demoResult.csv"), `text/csv`)
