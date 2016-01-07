@@ -164,16 +164,16 @@ trait StaticRoute extends Directives {
     path("passRightVideo") {
       getFromFile(new File("views/video/pass_RIGHT.mp4"), `video/mp4`)
     } ~
-    path("overlapLeft") {
+    path("overlapLeftVideo") {
       getFromFile(new File("views/video/overlap_LEFT.mp4"), `video/mp4`)
     } ~
-     path("overlapRight") {
+     path("overlapRightVideo") {
       getFromFile(new File("views/video/overlap_RIGHT.mp4"), `video/mp4`)
     } ~
-    path("catchMiddle") {
-      getFromFile(new File("views/video/catch_Middle.mp4"), `video/mp4`)
+    path("catchMiddleVideo") {
+      getFromFile(new File("views/video/catch_MIDDLE.mp4"), `video/mp4`)
     } ~
-    path("catchRight") {
+    path("catchRightVideo") {
       getFromFile(new File("views/video/catch_RIGHT.mp4"), `video/mp4`)
     } ~
     path("demoResult") {
