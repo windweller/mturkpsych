@@ -8386,21 +8386,20 @@ return /******/ (function(modules) { // webpackBootstrap
       if (spiderSearchBoolean) {
         console.log("spider search is on");
         console.log(spiderContainer);
+        //IMPLEMENTING SCREEN PROJECTION
         for(var i =0; i < spiderContainer.length; i++) {
            var screenProjection = this._convertTranslationToScreen(this._convertPointToTranslation(spiderContainer[i]));
            spiderContainer[i].screenProjection = screenProjection;
-           console.log(spiderContainer[i].word + " " +spiderContainer[i].connectedTo[0].word);
         }
         for(var i =0; i < spiderContainer.length; i++) {
             for(var j = 0; j < spiderContainer[i].connectedTo.length; j++) {
-              if(spiderContainer[i].connectedTo.length > 1)
-                console.log("MULTIPLE");
+              console.log("CONNECTION From: " + spiderContainer[i].word + " To: " + spiderContainer[i].connectedTo[j].word);      
+
               ctx.lineWidth = 1;
               ctx.strokeStyle = '#000000';
               ctx.beginPath();
               ctx.moveTo(spiderContainer[i].screenProjection.x, spiderContainer[i].screenProjection.y);
               ctx.lineTo(spiderContainer[i].connectedTo[j].screenProjection.x, spiderContainer[i].connectedTo[j].screenProjection.y);
-                    
               ctx.stroke();
             }
             

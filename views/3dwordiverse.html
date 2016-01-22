@@ -913,85 +913,89 @@ $("#minimize2").click(function() {
         	console.log("SPIDER SERACH");
         	var regexSymbol;
         	var spiderQueue = [];
-          queue = [];
+         	queue = [];
 
         	for(var i = 0; i < ids.length; i++) {
             tempData = data.get(ids[i]);
 
-            regexSymbol = "^"+word + "_?[0-9]+_?[0-9]+";
+            regexSymbol = "^"+word + "_?[0-9]*_?[0-9]*";
             regexSymbol = new RegExp(regexSymbol);
 
             if (regexSymbol.test(tempData.word) || tempData.word == word) {
-               // console.log(tempData);
                 tempData.connectedTo = [];
+                tempData.hello = [];
                 found = true;
-                spiderQueue.push(tempData);
                 queue.push(tempData);
             	}
         	}
 
-          for(var i = 0; i < spiderQueue.length; i++) {
-              console.log(" [" + spiderQueue[i].word + "] ");
-              var containerToSort = [];
-              for(var j = 0; j < spiderQueue.length; j++) {
-                if (j == i)
+          //CREATE ADJACENCY TREE
+          adjacencyListArray = [];
+          var startIndex = 0;
+          for(var i = 0; i < queue.length; i++){
+            for(var j = startIndex; j < queue.length; j++) {
+               if(i==j) {
                   continue;
-                else {
-                    var temp = {};
-                    temp.vertex = spiderQueue[j];
-                    temp.word = spiderQueue[j].word; 
-                    temp.index = j;
-                    temp.distance = Math.sqrt(Math.pow(spiderQueue[i].x-spiderQueue[j].x, 2) + Math.pow(spiderQueue[i].y-spiderQueue[j].y, 2) + Math.pow(spiderQueue[i].z-spiderQueue[j].z, 2));
+               }
+               var adjacencyObject = {};
+               adjacencyObject.from = i;
+               adjacencyObject.to = j;
+               adjacencyObject.distance = Math.sqrt(Math.pow(queue[i].x-queue[j].x, 2) + Math.pow(queue[i].y-queue[j].y, 2) + Math.pow(queue[i].z-queue[j].z, 2));
+               adjacencyListArray.push(adjacencyObject);
+               adjacencyListArray.sort(function(a,b) {
+                  return a.distance - b.distance;
+               });
 
-                    containerToSort.push(temp);
-                    containerToSort.sort(function(a,b) {
-                        return a.distance - b.distance;
-                    });
-                }
-               
-              }
-
-              //now containerToSort contains the word's closest adj vertices
-              var temp = containerToSort.shift();
-              var foundIt = 0;
-              var counter = 0
-              while(1) {
-                  counter++;
-                  if(counter > 20)
-                    break;
-                  if(foundIt == 1) {
-                    break;
-                  }
-                  if(typeof temp === 'undefined') {
-                    console.log("Cant Find it");
-                    break;
-                  }
-
-                  if(temp.vertex.connectedTo.length == 0)
-                    break;
-
-                  for(var k = 0; k < temp.vertex.connectedTo.length; k++){
-                      console.log("THE WORD IS: " + temp.vertex.word);
-                      console.log("THIS IS CONNECTED TO: " + temp.vertex.connectedTo[k].word);
-                      if (spiderQueue[i].word == temp.vertex.connectedTo[k].word) {
-                          console.log("BIDIRECTION");
-                          temp = containerToSort.shift();
-                          break;
-                      } else {
-                          foundIt = 1;
-                      }
-
-                  }
-              }
-              if(typeof temp !== 'undefined') {
-                 spiderQueue[i].connectedTo.push(spiderQueue[temp.index]);
-              }
-
+            }
+            startIndex++;
           }
 
-          spiderContainer = spiderQueue;
+          //MINIMUM SPANNING TREE GREEDY ALGORITHM
+          var pointsAllocated = [];
+          while(pointsAllocated.length < queue.length) {
+              if(pointsAllocated.length == 0) {
+                  var shiftedElement = adjacencyListArray.shift();
+                  console.log(shiftedElement);
+                  pointsAllocated.push(shiftedElement.to);
+                  pointsAllocated.push(shiftedElement.from);
+                  console.log("ADDED " + shiftedElement.to + " " + shiftedElement.from);
+                  queue[shiftedElement.from].connectedTo.push(queue[shiftedElement.to]);
+              } else {
+                   for(var k = 0; k < adjacencyListArray.length; k++) {
+                      var getpoint1 = adjacencyListArray[k].from;
+                      var getpoint2 = adjacencyListArray[k].to;
+                      var theDistanc = adjacencyListArray[k].distance;
+
+                      if(pointsAllocated.indexOf(getpoint1) != -1 && pointsAllocated.indexOf(getpoint2) != -1) {
+                        continue;
+                      }
+
+                      if(pointsAllocated.indexOf(getpoint1) != -1) {
+                          shiftedElement = adjacencyListArray.splice(k,1);
+                          console.log(shiftedElement[0]);
+                          pointsAllocated.push(getpoint2);
+                          console.log("ADDED " + getpoint2 + " FROM: " + getpoint1);
+                          queue[getpoint1].connectedTo.push(queue[getpoint2]);
+                          break;
+                      } else if(pointsAllocated.indexOf(getpoint2) != -1) {
+                          shiftedElement = adjacencyListArray.splice(k,1);
+                          console.log(shiftedElement[0]);
+                          pointsAllocated.push(getpoint1);
+                          console.log("ADDED " + getpoint1 + " FROM: " + getpoint2);
+                          queue[getpoint1].connectedTo.push(queue[getpoint2]);
+                          break;
+                      }
+                   }
+              }
+          }
+          console.log("POINT ALLOCATED");
+          for(number in queue)
+            console.log(queue[number]);
 
 
+         	
+          //FOR DRAWING PURPOSE. PUT DATAPOINTS IN SPIDERCONTAINER TO DISPLAY LINE CONNECTION
+          spiderContainer = queue;
         	matchCounter = queue.length;
 
        		if(!found) {
