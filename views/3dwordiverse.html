@@ -138,7 +138,7 @@
     // GLOBAL VARIABLE FOR DRAWING TEXT
     var enableDrawText = true;
     // GLOBAL VARIABLE FOR SPIDER SEARCH
-    var spiderContainer = [];
+    var spiderContainerOuter = [];
     var regularSearchBoolean = false;;
     var regexSearchBoolean = false;
     var spiderSearchBoolean = false;
@@ -995,7 +995,7 @@ $("#minimize2").click(function() {
 
          	
           //FOR DRAWING PURPOSE. PUT DATAPOINTS IN SPIDERCONTAINER TO DISPLAY LINE CONNECTION
-          spiderContainer = queue;
+          spiderContainerOuter.push(queue);
         	matchCounter = queue.length;
 
        		if(!found) {

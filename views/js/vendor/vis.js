@@ -8387,23 +8387,26 @@ return /******/ (function(modules) { // webpackBootstrap
         console.log("spider search is on");
         console.log(spiderContainer);
         //IMPLEMENTING SCREEN PROJECTION
-        for(var i =0; i < spiderContainer.length; i++) {
-           var screenProjection = this._convertTranslationToScreen(this._convertPointToTranslation(spiderContainer[i]));
-           spiderContainer[i].screenProjection = screenProjection;
-        }
-        for(var i =0; i < spiderContainer.length; i++) {
-            for(var j = 0; j < spiderContainer[i].connectedTo.length; j++) {
-              console.log("CONNECTION From: " + spiderContainer[i].word + " To: " + spiderContainer[i].connectedTo[j].word);      
+        for(var k = 0; k < spiderContainerOuter.length; k++) {
+          var spiderContainer = spiderContainerOuter[k];
+          for(var i =0; i < spiderContainer.length; i++) {
+             var screenProjection = this._convertTranslationToScreen(this._convertPointToTranslation(spiderContainer[i]));
+             spiderContainer[i].screenProjection = screenProjection;
+          }
+          for(var i =0; i < spiderContainer.length; i++) {
+              for(var j = 0; j < spiderContainer[i].connectedTo.length; j++) {
+                console.log("CONNECTION From: " + spiderContainer[i].word + " To: " + spiderContainer[i].connectedTo[j].word);      
 
-              ctx.lineWidth = 1;
-              ctx.strokeStyle = '#000000';
-              ctx.beginPath();
-              ctx.moveTo(spiderContainer[i].screenProjection.x, spiderContainer[i].screenProjection.y);
-              ctx.lineTo(spiderContainer[i].connectedTo[j].screenProjection.x, spiderContainer[i].connectedTo[j].screenProjection.y);
-              ctx.stroke();
-            }
-            
+                ctx.lineWidth = 1;
+                ctx.strokeStyle = colorArray[k];
+                ctx.beginPath();
+                ctx.moveTo(spiderContainer[i].screenProjection.x, spiderContainer[i].screenProjection.y);
+                ctx.lineTo(spiderContainer[i].connectedTo[j].screenProjection.x, spiderContainer[i].connectedTo[j].screenProjection.y);
+                ctx.stroke();
+              }
+              
 
+          }
         }
       }
   };
