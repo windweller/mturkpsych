@@ -15,12 +15,12 @@ object Boot extends App with MainActors with RootApi {
   //construct database tables; it needs improvement
   implicit lazy val system = ActorSystem("mturk-survey")
 
-  val dbconn = Try(DAL.databaseInit())
+//  val dbconn = Try(DAL.databaseInit())
 
-  dbconn match {
-    case Success(nothing) => println("successfully connected to database")
-    case Failure(ex) => println("failed to connect with database")
-  }
+//  dbconn match {
+//    case Success(nothing) => println("successfully connected to database")
+//    case Failure(ex) => println("failed to connect with database")
+//  }
 
   //wss is not working for some reason
 //  private val ws = new WsServer(Config.portWs)
