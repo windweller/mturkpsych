@@ -23,11 +23,11 @@ object Boot extends App with MainActors with RootApi {
   }
 
   //wss is not working for some reason
-  private val ws = new WsServer(Config.portWs)
-  ws.forResource("/ws/script", Some(processActor))
-  ws.start()
+//  private val ws = new WsServer(Config.portWs)
+//  ws.forResource("/ws/script", Some(processActor))
+//  ws.start()
 
-  sys.addShutdownHook({system.shutdown(); ws.stop()})
+//  sys.addShutdownHook({system.shutdown(); ws.stop()})
 
   IO(Http) ! Http.Bind(rootService, interface = Config.host, port = Config.portHTTP)
 

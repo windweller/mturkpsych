@@ -29,10 +29,10 @@ trait RootApi extends RouteConcatenation with StaticRoute with AbstractSystem {
   val rootService = system.actorOf(Props(new RootService(routes)))
 
   lazy val routes = logRequest(showReq _) {
-    new SECCompanyService(companyActor).route ~
-    new MTurkerProgressService(mTurkerActor).route ~
-    new TriadTestService(triadActor).route ~
-    new DelayedDiscountService(delayedDiscountActor).route ~
+//    new SECCompanyService(companyActor).route ~
+//    new MTurkerProgressService(mTurkerActor).route ~
+//    new TriadTestService(triadActor).route ~
+//    new DelayedDiscountService(delayedDiscountActor).route ~
     new FutureDemoService(futureDemoActor).route ~
     staticRoute
   }
@@ -45,20 +45,21 @@ trait StaticRoute extends Directives {
 
   lazy val staticRoute =
     pathEndOrSingleSlash {
-        getFromFile(new File("views/home.html"), `text/html`)
+//        getFromFile(new File("views/home.html"), `text/html`)
+      getFromFile(new File("views/future.html"), `text/html`)
     } ~
-    path("sec") {
-      getFromFile(new File("views/sec.html"), `text/html`)
-    } ~
-    path("secturk") {
-      getFromFile(new File("views/secturk.html"), `text/html`)
-    } ~
-    path("triad") {
-      getFromFile(new File("views/triad.html"), `text/html`)
-    } ~
-    path("triadturk") {
-      getFromFile(new File("views/triadturk.html"), `text/html`)
-    } ~
+//    path("sec") {
+//      getFromFile(new File("views/sec.html"), `text/html`)
+//    } ~
+//    path("secturk") {
+//      getFromFile(new File("views/secturk.html"), `text/html`)
+//    } ~
+//    path("triad") {
+//      getFromFile(new File("views/triad.html"), `text/html`)
+//    } ~
+//    path("triadturk") {
+//      getFromFile(new File("views/triadturk.html"), `text/html`)
+//    } ~
     path("future") {
       getFromFile(new File("views/future.html"), `text/html`)
     } ~
@@ -83,30 +84,30 @@ trait StaticRoute extends Directives {
     path("sourceCode") {
       getFromFile(new File("views/sourceCode.html"), `text/html`)
     } ~
-    path("delayeddiscountv1") {
-      getFromFile(new File("views/delayedDiscounting/delayedDiscountv1.html"), `text/html`)
-    } ~
-    path("delayeddiscountturkv1") {
-      getFromFile(new File("views/delayedDiscounting/delayedDiscountTurkv1.html"), `text/html`)
-    } ~
-    path("delayeddiscountv2") {
-      getFromFile(new File("views/delayedDiscounting/delayedDiscountv2.html"), `text/html`)
-    } ~
-    path("delayeddiscountturkv2") {
-      getFromFile(new File("views/delayedDiscounting/delayedDiscountTurkv2.html"), `text/html`)
-    } ~
-    path("delayeddiscountv3") {
-      getFromFile(new File("views/delayedDiscounting/delayedDiscountv3.html"), `text/html`)
-    } ~
-    path("delayeddiscountturkv3") {
-      getFromFile(new File("views/delayedDiscounting/delayedDiscountTurkv3.html"), `text/html`)
-    } ~
-    path("delayeddiscountv4") {
-      getFromFile(new File("views/delayedDiscounting/delayedDiscountv4.html"), `text/html`)
-    } ~
-    path("delayeddiscountturkv4") {
-      getFromFile(new File("views/delayedDiscounting/delayedDiscountTurkv4.html"), `text/html`)
-    } ~
+//    path("delayeddiscountv1") {
+//      getFromFile(new File("views/delayedDiscounting/delayedDiscountv1.html"), `text/html`)
+//    } ~
+//    path("delayeddiscountturkv1") {
+//      getFromFile(new File("views/delayedDiscounting/delayedDiscountTurkv1.html"), `text/html`)
+//    } ~
+//    path("delayeddiscountv2") {
+//      getFromFile(new File("views/delayedDiscounting/delayedDiscountv2.html"), `text/html`)
+//    } ~
+//    path("delayeddiscountturkv2") {
+//      getFromFile(new File("views/delayedDiscounting/delayedDiscountTurkv2.html"), `text/html`)
+//    } ~
+//    path("delayeddiscountv3") {
+//      getFromFile(new File("views/delayedDiscounting/delayedDiscountv3.html"), `text/html`)
+//    } ~
+//    path("delayeddiscountturkv3") {
+//      getFromFile(new File("views/delayedDiscounting/delayedDiscountTurkv3.html"), `text/html`)
+//    } ~
+//    path("delayeddiscountv4") {
+//      getFromFile(new File("views/delayedDiscounting/delayedDiscountv4.html"), `text/html`)
+//    } ~
+//    path("delayeddiscountturkv4") {
+//      getFromFile(new File("views/delayedDiscounting/delayedDiscountTurkv4.html"), `text/html`)
+//    } ~
     path("delayLeft") {
       getFromFile(new File("views/video/delayLeft.html"), `text/html`)
     } ~

@@ -12,11 +12,10 @@ import com.mturk.tasks.triadTest.TriadTestActor
 trait MainActors {
   this: AbstractSystem =>
 
-  lazy val companyActor = system.actorOf(Props[SECCompanyActor], "SECCompany")
-  lazy val mTurkerActor = system.actorOf(Props[MTurkerProgressActor], "mTurker")
-  lazy val triadActor = system.actorOf(Props[TriadTestActor], "triad")
-  lazy val processActor = system.actorOf(Props(new ProcessActor), "REPLProcess")
-  lazy val delayedDiscountActor = system.actorOf(Props[DelayedDiscountActor], "delayedDiscount")
+//  lazy val companyActor = system.actorOf(Props[SECCompanyActor], "SECCompany")
+//  lazy val mTurkerActor = system.actorOf(Props[MTurkerProgressActor], "mTurker")
+//  lazy val triadActor = system.actorOf(Props[TriadTestActor], "triad")
+//  lazy val processActor = system.actorOf(Props(new ProcessActor), "REPLProcess")
+//  lazy val delayedDiscountActor = system.actorOf(Props[DelayedDiscountActor], "delayedDiscount")
   lazy val futureDemoActor = system.actorOf(Props[FutureDemoActor], "futureDemo")
-
 }
