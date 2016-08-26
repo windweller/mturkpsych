@@ -24,10 +24,10 @@ class FutureDemoActor extends Actor with ActorLogging {
 
   val lp = LexicalizedParser.loadModel("edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz", "-MAX_ITEMS","50000")
 
-  val tnterms = List("today", "tomorrow", "tom", "tmrw")
-  val tcterms = List("second", "sec", "minute", "min")
+  val tnterms = List("today","tonight","tonite","yesterday","yest","tomorrow","tom","tmrw","morning","morn","evening","night","nite","midnight","midnite","now")
+  val tcterms = List("awhile","while","second","sec","minute","min","half-hour","half-hr","hour","hr","day","week","wk","weekend","wknd","month","mo","year","yr","decade","dec","century","cent","C","millennium","moment","instant","flash","millisecond","ms","microsecond","season","spring","summer","fall","autumn","winter","semester","sem","trimester","term","quarter","qtr")
 
-  val patternsFuture = preprocessTregex(patternFuture2_2_2).map(e => TregexPattern.compile(e))
+  val patternsFuture = preprocessTregex(patternFuture2_6).map(e => TregexPattern.compile(e))
   val patternsPast = preprocessTregex(patternPast).map(e => TregexPattern.compile(e))
 
   override def receive = {
@@ -107,7 +107,7 @@ class FutureDemoActor extends Actor with ActorLogging {
       }
     }
 
-    ResultArray(futureStats.sum, mutable.HashMap(preprocessTregex(patternFuture2_2_2).zip(futureStats): _*), pastStats.sum, mutable.HashMap(preprocessTregex(patternPast).zip(pastStats): _*))
+    ResultArray(futureStats.sum, mutable.HashMap(preprocessTregex(patternFuture2_6).zip(futureStats): _*), pastStats.sum, mutable.HashMap(preprocessTregex(patternPast).zip(pastStats): _*))
   }
 
 

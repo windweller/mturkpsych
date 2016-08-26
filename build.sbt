@@ -1,11 +1,11 @@
-import sbtassembly.Plugin.AssemblyKeys._
 import com.typesafe.sbt.SbtStartScript
+import sbtassembly.Plugin.AssemblyKeys._
 
 name := "mTurk-experiment"
 
 organization  := "com.psychology"
 
-version       := "0.1"
+version       := "0.2"
 
 scalaVersion  := "2.10.3"
 
@@ -48,5 +48,5 @@ jarName in assembly := "spray-mTurk-server.jar"
 assemblySettings
 
 // StartScript settings
-seq(SbtStartScript.startScriptForClassesSettings: _*)
+Seq(SbtStartScript.startScriptForClassesSettings: _*)
 
