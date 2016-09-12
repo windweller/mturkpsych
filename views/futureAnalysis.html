@@ -73,11 +73,28 @@
             <div class="col-md-12 center">
                 <form>
                     <textarea class="form-control" id = "futureInput" placeholder="Enter your text" rows="4" cols="100%" required></textarea><br>
+                    Optional : <a class="btn btn-default" role="button" data-toggle="collapse" href="#frules" aria-expanded="false" aria-controls="frules">
+                        Change Future Rules
+                    </a>
+                    <a class="btn btn-default" role="button" data-toggle="collapse" href="#prules" aria-expanded="false" aria-controls="prules">
+                        Change Past Rules
+                    </a><br><br>
+                    <div class="collapse" id="frules">
+                        <textarea class="form-control" id = "i1" placeholder="Enter new future rules" rows="1" cols="100%"></textarea><br>
+                        <button type="button" class="btn btn-default btn-sm erasei1">
+                            <span class="glyphicon glyphicon-erase" aria-hidden="true"></span> Clear Future Rules
+                        </button>
+                    </div>
+                    <div class="collapse" id="prules">
+                        <textarea class="form-control" id = "i2" placeholder="Enter new past rules" rows="1" cols="100%"></textarea><br>
+                        <button type="button" class="btn btn-default btn-sm erasei2">
+                            <span class="glyphicon glyphicon-erase" aria-hidden="true"></span> Clear Past Rules
+                        </button>
+                    </div><br>
                     <button type= "button" id = "submit" class="btn btn-primary">Run Analysis</button>
                 </form>
 
             </div>
-
             <br>
 
             <div class="col-md-12 center">
@@ -148,14 +165,23 @@
     if(document.URL.indexOf("mind") < 0) {
         theURL = "http://127.0.0.1:8080/future/sentence";
     } else {
-        console.log("this is it");
         theURL = "http://www.mindandlanguagelab.com/future/sentence";
     }
+
+    $(".erasei1").click(function() {
+        $("#i1").val('');
+    });
+
+    $(".erasei2").click(function() {
+        $("#i2").val('');
+    });
 
 
     $("#submit").click(function() {
         document.getElementById("demoContainer").style.visibility= "hidden" ;
         var sentence = document.getElementById('futureInput').value;
+        var frules = document.getElementById('i1').value;
+        var prules = document.getElementById('i2').value;
         var list = document.getElementById('demo');
         list.innerHTML = "";
         theBigArray = []; //THIS CONTAINS THE ACTUAL DATA
@@ -170,14 +196,12 @@
 
             //SPLITTING
             splitedSentences = split(sentence)
-            console.log(splitedSentences);
 
             //SHOW LOADING BAR
             percentage = 1/(splitedSentences.length)*100;
             document.getElementById("loadingBar").setAttribute("aria-valuenow", percentage)
             document.getElementById("loadingBar").style.visibility= "visible" ;
             initializePost(splitedSentences, splitedSentences.length);
-            console.log("skipped this line");
         }
     });
 
@@ -185,7 +209,7 @@
         var splitInput = [];
         var temp = input.split("\n");
         for (var i = 0; i < temp.length; i++) {
-            if (temp[i] != "")
+            if (temp[i].trim() != "")
                 splitInput.push(temp[i]);
         }
         return splitInput;
@@ -199,7 +223,9 @@
             datatype: "json",
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify({
-              "sentences": array[0]
+              "sentences": array[0],
+              "userRulesFuture": split(frules),
+              "userRulesPast": split(prules)
             }) //JSON.stringify(data)
         }).done(function (data, textStatus, jqXHR) {
             callBackFunc(data, array, arraySize, 1, 0)
