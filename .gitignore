@@ -11,3 +11,5 @@ test-output/
 *.key
 *.key.secure
 *.csr
+*.sc
+.DS_Store
