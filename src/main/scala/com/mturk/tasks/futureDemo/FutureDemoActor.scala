@@ -7,11 +7,10 @@ import edu.stanford.nlp.ling.HasWord
 import edu.stanford.nlp.parser.lexparser.LexicalizedParser
 import edu.stanford.nlp.process.DocumentPreprocessor
 import edu.stanford.nlp.trees.Tree
-import edu.stanford.nlp.trees.tregex.TregexPattern
+import edu.stanford.nlp.trees.tregex.{TregexParseException, TregexPattern}
 import org.json4s.JsonAST.JObject
 
 import scala.collection.mutable
-import scala.collection.mutable.ListBuffer
 
 /**
  * Created by Aimingnie on 7/20/15
@@ -35,17 +34,16 @@ class FutureDemoActor extends Actor with ActorLogging {
       if (jObject.isDefined("sentences")) {
         val rawSentences = jObject.getValue("sentences")
 
-        //TODO gestion d'erreurs des règles passées
-        val userRulesF = jObject.values.get("userRulesFuture") match {
+        val userRulesF:List[Option[(String,TregexPattern)]] = jObject.values.get("userRulesFuture") match {
           case Some(r:List[String]) => r.map(e => getRule(e))
-          case Some(_) => List[(String, TregexPattern)]()
-          case None => List[(String, TregexPattern)]()
+          case Some(_) => List[Option[(String,TregexPattern)]]()
+          case None => List[Option[(String,TregexPattern)]]()
         }
 
-        val userRulesP = jObject.values.get("userRulesPast") match {
+        val userRulesP:List[Option[(String,TregexPattern)]] = jObject.values.get("userRulesPast") match {
           case Some(r:List[String]) => r.map(e => getRule(e))
-          case Some(_) => List[(String, TregexPattern)]()
-          case None => List[(String, TregexPattern)]()
+          case Some(_) => List[Option[(String,TregexPattern)]]()
+          case None => List[Option[(String,TregexPattern)]]()
         }
 
         //first break it down to tokenizer
@@ -55,7 +53,9 @@ class FutureDemoActor extends Actor with ActorLogging {
         val parsedSentences = sentences.map(sen => (sen, lp.parse(sen)))
 
         //then match them
-        val matchedResult = parsedSentences.map(tuple => MatchedResult(tuple._1, tuple._2.toString, search(tuple._2, userRulesF, userRulesP)))
+        val matchedResult = parsedSentences.map(
+          tuple => MatchedResult(tuple._1, tuple._2.toString, search(
+            tuple._2, if(userRulesF.isEmpty) dRF else userRulesF, if(userRulesP.isEmpty) dRP else userRulesP)))
 
         sender ! TransOk(Some(matchedResult), succeedOrNot = true, None)
 
@@ -64,7 +64,18 @@ class FutureDemoActor extends Actor with ActorLogging {
       }
   }
 
-  private[this] def getRule(r: String) = Tuple2(r, TregexPattern.compile(preprocessTNTC(r)))
+  private[this] def getRule(r: String): Option[(String, TregexPattern)] = {
+    try {
+      val compiledRule = TregexPattern.compile(preprocessTNTC(r))
+      Some(r, TregexPattern.compile(preprocessTNTC(r)))
+    }
+    catch {
+      case e: TregexParseException => {
+        println("Bad rule by user : " + preprocessTNTC(r))
+        None
+      }
+    }
+  }
 
   private[this] def preprocessTNTC(pattern: String): String = {
     if(pattern.contains("TN|TC") || pattern.contains("TC|TN")) {
@@ -79,36 +90,13 @@ class FutureDemoActor extends Actor with ActorLogging {
     pattern
   }
 
-  private[this] def preprocessTregex(patterns: List[String]): List[String] = {
-    val result = ListBuffer.empty[String]
-    patterns.foreach { p =>
-      if (p.contains("TN|TC")) {
-        //just replace all TN and TC
-        //we are not replacing TN right now
-        result ++= tnterms.map(tn => p.replace("TN|TC", tn))
-        result ++= tcterms.map(tc => p.replace("TN|TC", tc))
-      }
-      else if (p.contains("TC|TN")) {
-        result ++= tnterms.map(tn => p.replace("TC|TN", tn))
-        result ++= tcterms.map(tc => p.replace("TC|TN", tc))
-      }
-      else if (p.contains("TN")) {
-        result ++= tnterms.map(tn => p.replace("TN", tn))
-      }
-      else if (p.contains("TC")) {
-        result ++= tcterms.map(tc => p.replace("TC", tc))
-      }
-      else result += p
-    }
-    result.toList
-  }
-
-  private[this] def search(tree: Tree, future: List[(String, TregexPattern)], past: List[(String, TregexPattern)]): ResultArray = {
+  private[this] def search(tree: Tree, future: List[Option[(String, TregexPattern)]], past: List[Option[(String, TregexPattern)]]): ResultArray = {
     val futureStats =  Array.fill[Int](future.size)(0)
 
-    future.indices.foreach { i =>
+    //TODO Test if there's None on rule
+    future.flatten.indices.foreach { i =>
       try {
-        val matcher = future(i)._2.matcher(tree)
+        val matcher = future(i).get._2.matcher(tree)
         if (matcher.find()) {
           futureStats(i) = futureStats(i) + 1
         }
@@ -122,9 +110,9 @@ class FutureDemoActor extends Actor with ActorLogging {
 
     val pastStats =  Array.fill[Int](past.size)(0)
 
-    past.indices.foreach { i =>
+    past.flatten.indices.foreach { i =>
       try {
-        val matcher = past(i)._2.matcher(tree)
+        val matcher = past(i).get._2.matcher(tree)
         if (matcher.find()) {
           pastStats(i) = pastStats(i) + 1
         }
@@ -136,8 +124,8 @@ class FutureDemoActor extends Actor with ActorLogging {
       }
     }
 
-    ResultArray(futureStats.sum, mutable.HashMap(future.map(e => e._1).zip(futureStats): _*),
-      pastStats.sum, mutable.HashMap(past.map(e => e._1).zip(pastStats): _*))
+    ResultArray(futureStats.sum, mutable.HashMap(future.flatten.map(e => e._1).zip(futureStats): _*),
+      pastStats.sum, mutable.HashMap(past.flatten.map(e => e._1).zip(pastStats): _*))
   }
 
 
