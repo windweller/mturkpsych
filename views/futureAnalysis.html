@@ -50,50 +50,49 @@
             <h4>Usage</h4>
 
             <section>
-          <small class="size16">
-                Here we extract future thinking from text.
-                To run, paste text into the textbox and click the "Run Analysis" button.
-                Results will appear on the bottom of the page.
-                You can also be downloaded by pressing the "Download CSV" button.
-          </small>
-          </section>
-
+              <small class="size16">
+                    Here we extract future thinking from text.
+                    To run, paste text into the textbox and click the "Run Analysis" button.
+                    Optional : Overwrite future or past rules.
+                    Results will appear on the bottom of the page.
+                    You can also be downloaded by pressing the "Download CSV" button.
+              </small>
+            </section>
             <section>
-          <small class="size16">
-                Past: only past orientation <br>
-                Present: neither past nor future orientation<br>
-                Future: any future orientation, possibly future of past <br><br>
+              <small class="size16">
+                    Past: only past orientation <br>
+                    Present: neither past nor future orientation<br>
+                    Future: any future orientation, possibly future of past <br><br>
 
-                Warning: we are running StanfordNLP PCFG English parser on the server, it might take a long time to process for a large chunk of text.
-          </small>
-          </section>
-
+                    Warning: we are running StanfordNLP PCFG English parser on the server, it might take a long time to process for a large chunk of text.
+              </small>
+            </section>
             </div>
 
             <div class="col-md-12 center">
                 <form>
                     <textarea class="form-control" id = "futureInput" placeholder="Enter your text" rows="4" cols="100%" required></textarea><br>
-                    Optional : <a class="btn btn-default" role="button" data-toggle="collapse" href="#frules" aria-expanded="false" aria-controls="frules">
+                    Optional : <a class="btn btn-default" role="button" data-toggle="collapse" href="#inputRuleF" aria-expanded="false" aria-controls="inputRuleF">
                         Change Future Rules
                     </a>
-                    <a class="btn btn-default" role="button" data-toggle="collapse" href="#prules" aria-expanded="false" aria-controls="prules">
+                    <a class="btn btn-default" role="button" data-toggle="collapse" href="#inputRuleP" aria-expanded="false" aria-controls="inputRuleP">
                         Change Past Rules
-                    </a><br><br>
-                    <div class="collapse" id="frules">
-                        <textarea class="form-control" id = "i1" placeholder="Enter new future rules" rows="1" cols="100%"></textarea><br>
-                        <button type="button" class="btn btn-default btn-sm erasei1">
-                            <span class="glyphicon glyphicon-erase" aria-hidden="true"></span> Clear Future Rules
-                        </button>
+                    </a>
+                    <a id="eraseRuleF" class="btn btn-default disabled" role="button">
+                        <span class="glyphicon glyphicon-erase" aria-hidden="true"></span> Clear New Future Rules
+                    </a>
+                    <a id="eraseRuleP" class="btn btn-default disabled" role="button">
+                        <span class="glyphicon glyphicon-erase" aria-hidden="true"></span> Clear New Past Rules
+                    </a>
+                    <br><br>
+                    <div class="collapse" id="inputRuleF">
+                        <textarea class="form-control" id = "listRulesF" placeholder="Enter new future rules" rows="1" cols="100%"></textarea><br>
                     </div>
-                    <div class="collapse" id="prules">
-                        <textarea class="form-control" id = "i2" placeholder="Enter new past rules" rows="1" cols="100%"></textarea><br>
-                        <button type="button" class="btn btn-default btn-sm erasei2">
-                            <span class="glyphicon glyphicon-erase" aria-hidden="true"></span> Clear Past Rules
-                        </button>
+                    <div class="collapse" id="inputRuleP">
+                        <textarea class="form-control" id = "listRulesP" placeholder="Enter new past rules" rows="1" cols="100%"></textarea><br>
                     </div><br>
                     <button type= "button" id = "submit" class="btn btn-primary">Run Analysis</button>
                 </form>
-
             </div>
             <br>
 
@@ -168,20 +167,30 @@
         theURL = "http://www.mindandlanguagelab.com/future/sentence";
     }
 
-    $(".erasei1").click(function() {
-        $("#i1").val('');
+    $("#listRulesF").keyup(function() {
+        $("#eraseRuleF").removeClass("disabled");
     });
 
-    $(".erasei2").click(function() {
-        $("#i2").val('');
+    $("#listRulesP").keyup(function() {
+        $("#eraseRuleP").removeClass("disabled");
+    });
+
+    $("#eraseRuleF").click(function() {
+        $("#listRulesF").val('');
+        $("#eraseRuleF").addClass("disabled");
+    });
+
+    $("#eraseRuleP").click(function() {
+        $("#listRulesP").val('');
+        $("#eraseRuleP").addClass("disabled");
     });
 
 
     $("#submit").click(function() {
         document.getElementById("demoContainer").style.visibility= "hidden" ;
         var sentence = document.getElementById('futureInput').value;
-        var frules = document.getElementById('i1').value;
-        var prules = document.getElementById('i2').value;
+        var listRulesF = splitChoices(document.getElementById('listRulesF').value);
+        var listRulesP = splitChoices(document.getElementById('listRulesF').value);
         var list = document.getElementById('demo');
         list.innerHTML = "";
         theBigArray = []; //THIS CONTAINS THE ACTUAL DATA
@@ -195,17 +204,17 @@
             $(this).text("Loading...");
 
             //SPLITTING
-            splitedSentences = split(sentence)
+            splitedSentences = splitChoices(sentence)
 
             //SHOW LOADING BAR
             percentage = 1/(splitedSentences.length)*100;
             document.getElementById("loadingBar").setAttribute("aria-valuenow", percentage)
             document.getElementById("loadingBar").style.visibility= "visible" ;
-            initializePost(splitedSentences, splitedSentences.length);
+            initializePost(splitedSentences, splitedSentences.length, listRulesF, listRulesP);
         }
     });
 
-    function split(input) {
+    function splitChoices(input) {
         var splitInput = [];
         var temp = input.split("\n");
         for (var i = 0; i < temp.length; i++) {
@@ -215,7 +224,7 @@
         return splitInput;
     }
 
-    function initializePost(array, arraySize) {
+    function initializePost(array, arraySize, listRulesF, listRulesP) {
         //arraySize = # of paragraphs
         $.ajax({
             url: theURL,
@@ -224,8 +233,8 @@
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify({
               "sentences": array[0],
-              "userRulesFuture": split(frules),
-              "userRulesPast": split(prules)
+              "userRulesFuture": listRulesF,
+              "userRulesPast": listRulesP
             }) //JSON.stringify(data)
         }).done(function (data, textStatus, jqXHR) {
             callBackFunc(data, array, arraySize, 1, 0)
