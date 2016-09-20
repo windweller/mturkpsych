@@ -189,8 +189,8 @@
     $("#submit").click(function() {
         document.getElementById("demoContainer").style.visibility= "hidden" ;
         var sentence = document.getElementById('futureInput').value;
-        var listRulesF = splitChoices(document.getElementById('listRulesF').value);
-        var listRulesP = splitChoices(document.getElementById('listRulesF').value);
+        var listRulesF = splitRules(document.getElementById('listRulesF').value);
+        var listRulesP = splitRules(document.getElementById('listRulesP').value);
         var list = document.getElementById('demo');
         list.innerHTML = "";
         theBigArray = []; //THIS CONTAINS THE ACTUAL DATA
@@ -204,7 +204,7 @@
             $(this).text("Loading...");
 
             //SPLITTING
-            splitedSentences = splitChoices(sentence)
+            splitedSentences = splitSentences(sentence)
 
             //SHOW LOADING BAR
             percentage = 1/(splitedSentences.length)*100;
@@ -214,12 +214,23 @@
         }
     });
 
-    function splitChoices(input) {
+    function splitSentences(input) {
         var splitInput = [];
         var temp = input.split("\n");
         for (var i = 0; i < temp.length; i++) {
             if (temp[i].trim() != "")
                 splitInput.push(temp[i]);
+        }
+        return splitInput;
+    }
+
+    function splitRules(input) {
+        var splitInput = [];
+        var temp = input.split("\n");
+        for (var i = 0; i < temp.length; i++) {
+            var rule = temp[i].split(/->|\\t/);
+            if (rule[0].trim() != "")
+                splitInput.push(rule[0].trim());
         }
         return splitInput;
     }
