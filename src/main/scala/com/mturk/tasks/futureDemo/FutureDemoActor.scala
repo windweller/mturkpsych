@@ -34,16 +34,16 @@ class FutureDemoActor extends Actor with ActorLogging {
       if (jObject.isDefined("sentences")) {
         val rawSentences = jObject.getValue("sentences")
 
-        val userRulesF:List[Option[(String,TregexPattern)]] = jObject.values.get("userRulesFuture") match {
+        val userRulesF:List[Option[(String,Option[TregexPattern])]] = jObject.values.get("userRulesFuture") match {
           case Some(r:List[String]) => r.map(e => getRule(e))
-          case Some(_) => List[Option[(String,TregexPattern)]]()
-          case None => List[Option[(String,TregexPattern)]]()
+          case Some(_) => List[Option[(String,Option[TregexPattern])]]()
+          case None => List[Option[(String,Option[TregexPattern])]]()
         }
 
-        val userRulesP:List[Option[(String,TregexPattern)]] = jObject.values.get("userRulesPast") match {
+        val userRulesP:List[Option[(String,Option[TregexPattern])]] = jObject.values.get("userRulesPast") match {
           case Some(r:List[String]) => r.map(e => getRule(e))
-          case Some(_) => List[Option[(String,TregexPattern)]]()
-          case None => List[Option[(String,TregexPattern)]]()
+          case Some(_) => List[Option[(String, Option[TregexPattern])]]()
+          case None => List[Option[(String,Option[TregexPattern])]]()
         }
 
         //first break it down to tokenizer
@@ -57,6 +57,8 @@ class FutureDemoActor extends Actor with ActorLogging {
           tuple => MatchedResult(tuple._1, tuple._2.toString, search(
             tuple._2, if(userRulesF.isEmpty) dRF else userRulesF, if(userRulesP.isEmpty) dRP else userRulesP)))
 
+
+
         sender ! TransOk(Some(matchedResult), succeedOrNot = true, None)
 
       } else {
@@ -64,16 +66,15 @@ class FutureDemoActor extends Actor with ActorLogging {
       }
   }
 
-  private[this] def getRule(r: String): Option[(String, TregexPattern)] = {
+  private[this] def getRule(r: String): Option[(String, Option[TregexPattern])] = {
     try {
       val compiledRule = TregexPattern.compile(preprocessTNTC(r))
-      Some(r, TregexPattern.compile(preprocessTNTC(r)))
+      Some(r, Some(TregexPattern.compile(preprocessTNTC(r))))
     }
     catch {
-      case e: TregexParseException => {
-        println("Bad rule by user : " + preprocessTNTC(r))
-        None
-      }
+      case e: TregexParseException =>
+//        println("Bad rule by user : " + preprocessTNTC(r))
+        Some(r, None)
     }
   }
 
@@ -90,21 +91,31 @@ class FutureDemoActor extends Actor with ActorLogging {
     pattern
   }
 
-  private[this] def search(tree: Tree, future: List[Option[(String, TregexPattern)]], past: List[Option[(String, TregexPattern)]]): ResultArray = {
-    val futureStats =  Array.fill[Int](future.size)(0)
+  private[this] def search(tree: Tree, futureRules: List[Option[(String, Option[TregexPattern])]], past: List[Option[(String, Option[TregexPattern])]]): ResultArray = {
+    val futureStats =  Array.fill[Int](futureRules.size)(0)
+
+    val malformedTrees = mutable.ArrayBuffer[String]()
+    val unparsedRules = mutable.ArrayBuffer[String]()
 
     //TODO Test if there's None on rule
-    future.flatten.indices.foreach { i =>
+    futureRules.flatten.indices.foreach { i =>
       try {
-        val matcher = future(i).get._2.matcher(tree)
-        if (matcher.find()) {
-          futureStats(i) = futureStats(i) + 1
+        if (futureRules(i).get._2.nonEmpty) {
+          val matcher = futureRules(i).get._2.get.matcher(tree)
+          if (matcher.find()) {
+            futureStats(i) = futureStats(i) + 1
+          }
         }
+        else {
+          unparsedRules += futureRules(i).get._1
+        }
+
       } catch {
         case e: NullPointerException =>
           //this happens when a tree is malformed
           //we will not add any number to stats, just return it as is
-          println("NULL Pointer with " + tree.toString)
+//          println("NULL Pointer with " + tree.toString)
+          malformedTrees.append(tree.toString)
       }
     }
 
@@ -112,9 +123,14 @@ class FutureDemoActor extends Actor with ActorLogging {
 
     past.flatten.indices.foreach { i =>
       try {
-        val matcher = past(i).get._2.matcher(tree)
-        if (matcher.find()) {
-          pastStats(i) = pastStats(i) + 1
+        if (past(i).get._2.nonEmpty) {
+          val matcher = past(i).get._2.get.matcher(tree)
+          if (matcher.find()) {
+            pastStats(i) = pastStats(i) + 1
+          }
+        }
+        else {
+          unparsedRules += past(i).get._1
         }
       } catch {
         case e: NullPointerException =>
@@ -124,8 +140,8 @@ class FutureDemoActor extends Actor with ActorLogging {
       }
     }
 
-    ResultArray(futureStats.sum, mutable.HashMap(future.flatten.map(e => e._1).zip(futureStats): _*),
-      pastStats.sum, mutable.HashMap(past.flatten.map(e => e._1).zip(pastStats): _*))
+    ResultArray(futureStats.sum, mutable.HashMap(futureRules.flatten.map(e => e._1).zip(futureStats): _*),
+      pastStats.sum, mutable.HashMap(past.flatten.map(e => e._1).zip(pastStats): _*), malformedTrees, unparsedRules)
   }
 
 
@@ -158,6 +174,7 @@ object FutureDemoProtocol {
   import scala.collection.mutable
   case class JObjectSentences(jObject: JObject)
   case class MatchedResult(sen: String, parsed: String, result: ResultArray)
-  case class ResultArray(future: Int, futureResult: mutable.HashMap[String, Int], past: Int, pastResult: mutable.HashMap[String, Int])
+  case class ResultArray(future: Int, futureResult: mutable.HashMap[String, Int], past: Int, pastResult: mutable.HashMap[String, Int],
+                        malformedTrees:mutable.ArrayBuffer[String], unparsedRules:mutable.ArrayBuffer[String])
   case class TransOk(sentencesResult: Option[mutable.Queue[MatchedResult]], succeedOrNot: Boolean, errorMessage: Option[String])
 }
