@@ -73,7 +73,6 @@ class FutureDemoActor extends Actor with ActorLogging {
     }
     catch {
       case e: TregexParseException =>
-//        println("Bad rule by user : " + preprocessTNTC(r))
         Some(r, None)
     }
   }
@@ -91,13 +90,12 @@ class FutureDemoActor extends Actor with ActorLogging {
     pattern
   }
 
-  private[this] def search(tree: Tree, futureRules: List[Option[(String, Option[TregexPattern])]], past: List[Option[(String, Option[TregexPattern])]]): ResultArray = {
+  private[this] def search(tree: Tree, futureRules: List[Option[(String, Option[TregexPattern])]], pastRules: List[Option[(String, Option[TregexPattern])]]): ResultArray = {
     val futureStats =  Array.fill[Int](futureRules.size)(0)
 
     val malformedTrees = mutable.ArrayBuffer[String]()
     val unparsedRules = mutable.ArrayBuffer[String]()
 
-    //TODO Test if there's None on rule
     futureRules.flatten.indices.foreach { i =>
       try {
         if (futureRules(i).get._2.nonEmpty) {
@@ -114,34 +112,33 @@ class FutureDemoActor extends Actor with ActorLogging {
         case e: NullPointerException =>
           //this happens when a tree is malformed
           //we will not add any number to stats, just return it as is
-//          println("NULL Pointer with " + tree.toString)
           malformedTrees.append(tree.toString)
       }
     }
 
-    val pastStats =  Array.fill[Int](past.size)(0)
+    val pastStats =  Array.fill[Int](pastRules.size)(0)
 
-    past.flatten.indices.foreach { i =>
+    pastRules.flatten.indices.foreach { i =>
       try {
-        if (past(i).get._2.nonEmpty) {
-          val matcher = past(i).get._2.get.matcher(tree)
+        if (pastRules(i).get._2.nonEmpty) {
+          val matcher = pastRules(i).get._2.get.matcher(tree)
           if (matcher.find()) {
             pastStats(i) = pastStats(i) + 1
           }
         }
         else {
-          unparsedRules += past(i).get._1
+          unparsedRules += pastRules(i).get._1
         }
       } catch {
         case e: NullPointerException =>
           //this happens when a tree is malformed
           //we will not add any number to stats, just return it as is
-          println("NULL Pointer with " + tree.toString)
+          malformedTrees.append(tree.toString)
       }
     }
 
     ResultArray(futureStats.sum, mutable.HashMap(futureRules.flatten.map(e => e._1).zip(futureStats): _*),
-      pastStats.sum, mutable.HashMap(past.flatten.map(e => e._1).zip(pastStats): _*), malformedTrees, unparsedRules)
+      pastStats.sum, mutable.HashMap(pastRules.flatten.map(e => e._1).zip(pastStats): _*), malformedTrees, unparsedRules)
   }
 
 
