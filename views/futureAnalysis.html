@@ -127,6 +127,7 @@
                     <span class="label label-success">Future</span>
                 </div>
                 <!-- LEGEND ENDS-->
+                <p class="text-warning rulesError"></p><br>
 
 
                 <h1 id = "resultID">Results</h1><br>
@@ -268,6 +269,25 @@
             object.parsedSentence = arr[i].parsed;
             object.numberFuture = arr[i].result.future;
             object.numberPast = arr[i].result.past;
+            object.malformedTrees = arr[i].result.malformedTrees;
+            object.unparsedRules = arr[i].result.unparsedRules;
+
+            if(object.malformedTrees.length > 0 || object.unparsedRules.length > 0) {
+                var messageRulesError = "These rules have some problems : ";
+
+                for(j = 0; j < object.malformedTrees.length; j++) {
+                    messageRulesError = messageRulesError.concat("[");
+                    messageRulesError = messageRulesError.concat(object.malformedTrees[j]);
+                    messageRulesError = messageRulesError.concat("] ");
+                }
+                for(j = 0; j < object.unparsedRules.length; j++) {
+                messageRulesError = messageRulesError.concat("[");
+                    messageRulesError = messageRulesError.concat(object.unparsedRules[j]);
+                    messageRulesError = messageRulesError.concat("] ");
+                }
+                $(".rulesError").text(messageRulesError);
+            }
+
             for(j = 0; j < arr[i].result.futureResult.length; j++) {
                 object[arr[i].result.futureResult[j]._1] = arr[i].result.futureResult[j]._2;
             }
