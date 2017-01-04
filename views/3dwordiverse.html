@@ -142,6 +142,7 @@
     var regularSearchBoolean = false;;
     var regexSearchBoolean = false;
     var spiderSearchBoolean = false;
+    var drawLine = false;
 
 
   </script>
@@ -300,11 +301,12 @@
                           <button type="button" id = "search" class="btn btn-primary" style="width:70px; height:25;">SEARCH</button>&nbsp
                           <button type="button" id="restoreCenter" class="btn btn-primary" style="width:70px; height:25;">RESTORE</button>
                           <button type="button" id="download" class="btn btn-primary" style="width:110px; height:25;">DOWNLOAD CSV</button>
+                          <button type="button" id="drawLine" class="btn btn-primary" style="width:110px; height:25;">DRAW LINE</button>
                           <!--
                           <button type="button" id="dimensionReduction" class="btn btn-primary" style="width:150px; height:25;">DIMENSION REDUCTION</button> -->
                           
                           <button type="button" id="animation_play" class="btn btn-primary" style="width:90px; height:25;">PLAY/STOP</button>
-                          ANIMATION SPEED: <input type="text" id="animation_speed" class="span2" value="" data-slider-min="1" data-slider-max="50" data-slider-step="1" data-slider-value="1" data-slider-orientation="horizontal" data-slider-selection="after"data-slider-tooltip="show">&nbsp&nbsp
+                          <input type="text" id="animation_speed" class="span2" value="" data-slider-min="1" data-slider-max="50" data-slider-step="1" data-slider-value="1" data-slider-orientation="horizontal" data-slider-selection="after"data-slider-tooltip="show">&nbsp
 
                     </div>
                     </h6>
@@ -479,7 +481,7 @@ $("#minimize2").click(function() {
 
   var animationOn = false
   var myVar
-  var animation_speed = 0.03
+  var animation_speed = 0.01
 
   $("#animation_play").click(function() {
     
@@ -569,7 +571,7 @@ $("#minimize2").click(function() {
       .on('slide', function(ev){
 
          $('#bar').val(ev.value);
-         animation_speed = ev.value/1000.0;
+         animation_speed = ev.value/2000.0;
 
          if (animationOn) {
          clearInterval(myVar)
@@ -897,6 +899,21 @@ $("#minimize2").click(function() {
         $body.off('mouseup mousemove', handler);
       });
     });
+
+    $("#drawLine").click(function() {
+      console.log("DRAW LINE")
+      drawLine = true;
+      var ids = data.getIds();
+      for(var i = 0; i < ids.length-1; i++) {
+            tempData = data.get(ids[i]);
+            tempData.connectedTo = data.get(ids[i+1])
+            spiderContainerOuter.push(tempData)
+      }
+      spiderContainerOuter.push(data.get(ids[ids.length-1]))
+      console.log(spiderContainerOuter)
+      graph.redraw();
+
+    })
 
     $("#search").click(function() {
 

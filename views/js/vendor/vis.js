@@ -8409,6 +8409,26 @@ return /******/ (function(modules) { // webpackBootstrap
           }
         }
       }
+
+      //DRAW SEQUENTIAL LINE
+      if (drawLine) {
+        console.log("drawing...");
+        //CREATE SCREEN PROJECTIONS
+
+        for(var i = 0; i < spiderContainerOuter.length-1; i++) {
+          console.log("CONNECTION From: " + spiderContainerOuter[i].word + " To: " + spiderContainerOuter[i].connectedTo.word);  
+
+          ctx.lineWidth = 1;
+          ctx.strokeStyle = '#000000';
+          ctx.beginPath();
+          var screenProjectionFrom = this._convertTranslationToScreen(this._convertPointToTranslation(spiderContainerOuter[i]));
+          var screenProjectionTo = this._convertTranslationToScreen(this._convertPointToTranslation(spiderContainerOuter[i].connectedTo));
+          ctx.moveTo(screenProjectionFrom.x, screenProjectionFrom.y);
+          ctx.lineTo(screenProjectionTo.x, screenProjectionTo.y);
+          ctx.stroke();    
+        }
+        console.log("ended")
+      }
   };
 
   /**
